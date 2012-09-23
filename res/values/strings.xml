@@ -1,8 +1,9 @@
 <resources>
 
     <string name="app_name">Feedlr</string>
-    <string name="twitter_status">Twitter is authorized!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_feed">FeedActivity</string>
-
+    
+    <string name="authorize_twitter">Authorize Twitter</string>
+	<string name="twitter_status">Twitter not authorized</string>
 </resources>
