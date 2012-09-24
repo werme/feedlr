@@ -1,6 +1,7 @@
 package com.chalmers.feedlr;
 
 import com.chalmers.twitter.TwitterHelper;
+import com.chalmers.twitter.TwitterRequest;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -32,8 +33,9 @@ public class FeedActivity extends Activity {
     protected void onResume() {
         super.onResume();
         
-        if (twitter.isAuthorized())
+        if (twitter.isAuthorized()) {
         	twitterStatusTV.setText("Twitter is authorized!");
+        }
         
         // Check for different service callbacks here.
         
