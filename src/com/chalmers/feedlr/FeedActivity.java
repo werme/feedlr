@@ -24,7 +24,7 @@ public class FeedActivity extends Activity {
         initServiceHelpers();
         
         TwitterClient client = new TwitterClient(this);
-        client.connectToService();
+        client.bindService();
     }
 
     @Override
