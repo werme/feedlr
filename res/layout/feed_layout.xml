@@ -10,13 +10,5 @@
     android:layout_height="wrap_content"
     android:text="@string/authorize_twitter"
     android:onClick="authorizeTwitter" />
-    
-    <TextView
-        android:id="@+id/twitter_status"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center"
-        android:text="@string/twitter_status"
-         />    
 
 </RelativeLayout>

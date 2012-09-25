@@ -11,6 +11,7 @@ import org.scribe.builder.api.TwitterApi;
 import org.scribe.oauth.OAuthService;
 
 import android.content.Context;
+import android.content.Intent;
 
 public class TwitterHelper {
 	
@@ -43,7 +44,7 @@ public class TwitterHelper {
 		authHelper.startProcess();
 	}
 	
-	public void onAuthCallback(String data) {
+	public void onAuthCallback(Intent data) {
 		authHelper.onCallback(data);
 	}
 	

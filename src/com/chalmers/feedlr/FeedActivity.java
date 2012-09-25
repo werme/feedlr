@@ -1,30 +1,26 @@
 package com.chalmers.feedlr;
-
-import com.chalmers.feedlr.services.TwitterClient;
 import com.chalmers.feedlr.twitter.TwitterHelper;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.TextView;
 
 public class FeedActivity extends Activity {
+	
+	public static final int TWITTER_AUTHORIZATION = 1;
 
 	private TwitterHelper twitter;
-	
-	private TextView twitterStatusTV;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_layout);
         
-        twitterStatusTV = (TextView) findViewById(R.id.twitter_status);
         initServiceHelpers();
         
-        TwitterClient client = new TwitterClient(this);
-        client.connectToService();
     }
 
     @Override
@@ -32,27 +28,21 @@ public class FeedActivity extends Activity {
         getMenuInflater().inflate(R.menu.feed_layout, menu);
         return true;
     }
+	
 	@Override
-    protected void onResume() {
-        super.onResume();
-        
-        if (twitter.isAuthorized()) {
-        	twitterStatusTV.setText("Twitter is authorized!");
-        }
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 
-        // Check for different service callbacks here.
-        
-        if (isCallback() && !twitter.isAuthorized()) {  	   	
-        	
-        	if(getIntent().getData().getQueryParameter("oauth_verifier") != null) {
-        		twitterStatusTV.setText("Twitter is authorized!");
-	        	twitter.onAuthCallback(getIntent().getData().getQueryParameter("oauth_verifier"));
-        	}
-        }
-    }
-
-	private boolean isCallback() {
-		return getIntent().getData() != null;
+		if (resultCode == Activity.RESULT_OK) {
+			
+			switch (requestCode) {
+				case TWITTER_AUTHORIZATION:
+					twitter.onAuthCallback(data);
+					break;
+				default:
+					Log.wtf(getClass().getName(), "Result callback from unknown intent");
+			}
+		}
 	}
 	
 	private void initServiceHelpers() {

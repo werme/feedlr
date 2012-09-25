@@ -30,5 +30,12 @@
 	            <data android:scheme="feedlr" android:host="twitter"/>
         	</intent-filter>
         </activity>
+        <activity
+            android:name="com.chalmers.feedlr.twitter.TwitterWebActivity"
+            android:label="@string/title_activity_webview" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.chalmers.feedlr.FeedActivity" />
+        </activity>
     </application>
 </manifest>
