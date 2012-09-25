@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-     >
-    
+    android:layout_height="match_parent" >
+
     <Button
-    android:id="@+id/button_send"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/authorize_twitter"
-    android:onClick="authorizeTwitter" />
-    
+        android:id="@+id/button_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="authorizeTwitter"
+        android:text="@string/authorize_twitter" />
+
+    <Button
+        android:id="@+id/button_send_facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button_send"
+        android:onClick="authorizeFacebook"
+        android:text="@string/authorize_facebook" />
+
     <TextView
         android:id="@+id/twitter_status"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:gravity="center"
-        android:text="@string/twitter_status"
-         />    
+        android:text="@string/twitter_status" />
+
+    <TextView
+        android:id="@+id/facebook_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/twitter_status"
+        android:gravity="center"
+        android:text="@string/facebook_status" />
 
 </RelativeLayout>

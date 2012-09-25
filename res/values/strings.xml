@@ -6,4 +6,6 @@
     
     <string name="authorize_twitter">Authorize Twitter</string>
 	<string name="twitter_status">Twitter not authorized</string>
+	<string name="authorize_facebook">Authorize Facebook</string>
+	<string name="facebook_status">Facebook not authorized</string>
 </resources>
