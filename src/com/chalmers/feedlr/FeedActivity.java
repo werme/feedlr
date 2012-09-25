@@ -1,4 +1,5 @@
 package com.chalmers.feedlr;
+import com.chalmers.feedlr.services.TwitterClient;
 import com.chalmers.feedlr.twitter.TwitterHelper;
 
 import android.os.Bundle;
@@ -21,6 +22,8 @@ public class FeedActivity extends Activity {
         
         initServiceHelpers();
         
+        TwitterClient client = new TwitterClient(this);
+        client.bindService();
     }
 
     @Override
