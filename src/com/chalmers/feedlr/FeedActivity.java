@@ -35,7 +35,7 @@ public class FeedActivity extends Activity {
         if (twitter.isAuthorized()) {
         	twitterStatusTV.setText("Twitter is authorized!");
         }
-        
+
         // Check for different service callbacks here.
         
         if (isCallback() && !twitter.isAuthorized()) {  	   	

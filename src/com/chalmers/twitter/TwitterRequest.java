@@ -1,5 +1,6 @@
 package com.chalmers.twitter;
 
+import org.scribe.exceptions.OAuthException;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
@@ -24,13 +25,21 @@ public class TwitterRequest {
 
 	private class HTTPRequestTask extends AsyncTask<String, Void, String> {
 		protected String doInBackground(String...requestURL) {
-			OAuthRequest request = new OAuthRequest(Verb.GET, requestURL[0]);
-			service.signRequest(accessToken, request);
-			Response response = request.send();
-			return response.getBody();
+			
+			try {
+				OAuthRequest request = new OAuthRequest(Verb.GET, requestURL[0]);
+				service.signRequest(accessToken, request);
+				Response response = request.send();
+				return response.getBody();
+			} catch (OAuthException e) {
+				e.printStackTrace();
+			}
+			
+			return null;
 		}      
 		protected void onPostExecute (String JSONresponse) {
-			TwitterJSONParser.parse(JSONresponse);
+			if(JSONresponse !=null)
+				TwitterJSONParser.parse(JSONresponse);
 		}
 	}
 }
