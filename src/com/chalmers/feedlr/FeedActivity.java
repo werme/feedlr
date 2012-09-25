@@ -1,5 +1,6 @@
 package com.chalmers.feedlr;
 
+import com.chalmers.feedlr.services.TwitterClient;
 import com.chalmers.feedlr.twitter.TwitterHelper;
 
 import android.os.Bundle;
@@ -21,6 +22,9 @@ public class FeedActivity extends Activity {
         
         twitterStatusTV = (TextView) findViewById(R.id.twitter_status);
         initServiceHelpers();
+        
+        TwitterClient client = new TwitterClient(this);
+        client.connectToService();
     }
 
     @Override
