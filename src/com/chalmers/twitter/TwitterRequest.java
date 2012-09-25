@@ -29,8 +29,8 @@ public class TwitterRequest {
 			Response response = request.send();
 			return response.getBody();
 		}      
-		protected void onPostExecute (String response) {
-			// Handle JSON response
+		protected void onPostExecute (String JSONresponse) {
+			TwitterJSONParser.parse(JSONresponse);
 		}
 	}
 }

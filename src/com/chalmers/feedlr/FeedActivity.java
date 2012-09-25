@@ -1,7 +1,6 @@
 package com.chalmers.feedlr;
 
 import com.chalmers.twitter.TwitterHelper;
-import com.chalmers.twitter.TwitterRequest;
 
 import android.os.Bundle;
 import android.app.Activity;
