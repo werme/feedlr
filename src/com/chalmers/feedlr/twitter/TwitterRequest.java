@@ -29,23 +29,26 @@ public class TwitterRequest {
 		new HTTPRequestTask().execute(requestURL);
 	}
 
-	private class HTTPRequestTask extends AsyncTask<String, Void, String> {
-		protected String doInBackground(String...requestURL) {
+	private class HTTPRequestTask extends AsyncTask<String, Void, Response> {
+		protected Response doInBackground(String...requestURL) {
 			
 			try {
 				OAuthRequest request = new OAuthRequest(Verb.GET, requestURL[0]);
 				service.signRequest(accessToken, request);
 				Response response = request.send();
-				return response.getBody();
+				return response;
 			} catch (OAuthException e) {
 				e.printStackTrace();
 			}
 			
 			return null;
 		}      
-		protected void onPostExecute (String JSONresponse) {
-			if(JSONresponse !=null)
-				TwitterJSONParser.parse(JSONresponse);
+		protected void onPostExecute (Response response) {
+			if(response.isSuccessful()) {
+				TwitterJSONParser.parse(response.getBody());
+			} else {
+				// Handle token not valid
+			}					
 		}
 	}
 }

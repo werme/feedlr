@@ -1,34 +1,35 @@
 package com.chalmers.feedlr.services;
 
+import com.chalmers.feedlr.FeedActivity;
+
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.widget.Toast;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 public class TwitterService extends Service {
+	private final IBinder binder = new TwitterServiceBinder();
 
-	static final int MSG_TEST = 1;
+	public class TwitterServiceBinder extends Binder {
+		TwitterService getService() {
+			return TwitterService.this;
+		}
+	}
 
-	private final Messenger messenger = new Messenger(new MessageHandler());
-	
-    class MessageHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_TEST:
-                    Toast.makeText(getApplicationContext(), "Messenging working!", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    super.handleMessage(msg);
-            }
-        }
-    }
+	@Override
+	public IBinder onBind(Intent arg0) {
+		return binder;
+	}
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return messenger.getBinder();
-    }
+	public void doStuff() {
+		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+		
+		Intent intent = new Intent();
+		intent.setAction(FeedActivity.BROADCAST_ACTION);
+		lbm.sendBroadcast(intent);
+		
+		Log.wtf(getClass().getName(), "Result callback from unknown intent");
+	}
 }

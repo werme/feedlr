@@ -15,6 +15,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <service android:name=".services.TwitterService" />
+        
         <activity
             android:name=".FeedActivity"
             android:label="@string/title_activity_feed" >

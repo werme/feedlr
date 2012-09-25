@@ -1,18 +1,16 @@
 package com.chalmers.feedlr.services;
 
+import com.chalmers.feedlr.services.TwitterService.TwitterServiceBinder;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
-import android.view.View;
 
 public class TwitterClient {
 	private Context context;
-	private Messenger service;
+	private TwitterService service;
 	private boolean isBound;
 
 	public TwitterClient(Context context) {
@@ -23,6 +21,7 @@ public class TwitterClient {
 	public void bindService() {
 		Intent intent = new Intent(context, TwitterService.class);
 		isBound = context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
 	}
 
 	public void unbindService() {
@@ -32,29 +31,23 @@ public class TwitterClient {
 		}
 	}
 	
-	public void callService(View v) {
-	    if (!isBound) return;
-	    
-	    Message msg = Message.obtain(null, TwitterService.MSG_TEST, 0, 0);
-	    try {
-	        service.send(msg);
-	    } catch (RemoteException e) {
-	        e.printStackTrace();
-	    }
+	public void doStuff() {
+		if(!isBound) return;
+		service.doStuff();
 	}
 	
 	private ServiceConnection connection = new ServiceConnection() {
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-	        TwitterClient.this.service = new Messenger (service);
+			TwitterServiceBinder binder = (TwitterServiceBinder) service;
+	        TwitterClient.this.service = binder.getService();
 	        isBound = true;
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			service = null;
-			isBound = false;
 		}
 	};
 }
