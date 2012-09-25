@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 public class TwitterAuthHelper {
 	
@@ -46,6 +47,8 @@ public class TwitterAuthHelper {
     	editor.putString("accessToken", token.getToken());
     	editor.putString("accessSecret", token.getSecret());
 		editor.commit();
+		
+		Toast.makeText(context, "Twitter is now authorized", Toast.LENGTH_LONG).show();
 	}
 	private void saveRequestToken(Token token) { 
     	SharedPreferences.Editor editor = settings.edit();
