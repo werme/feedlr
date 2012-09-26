@@ -12,19 +12,15 @@ public class FacebookHelper {
 
 	private FacebookAuthHelper authHelper;
 
-	private Facebook facebook = new Facebook(APP_ID);
+	private Facebook facebook;
 
 	public FacebookHelper(Context context) {
+		facebook = new Facebook(APP_ID);
 		authHelper = new FacebookAuthHelper(context, facebook);
-		init();
 	}
 
 	public void init() {
 		authHelper.setAccessToken();
-		authHelper.authorize();
-	}
-
-	public void authorize() {
 		authHelper.authorize();
 	}
 

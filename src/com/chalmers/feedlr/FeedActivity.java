@@ -73,7 +73,7 @@ public class FeedActivity extends Activity {
 	}
 
 	public void authorizeFacebook(View v) {
-		facebookHelper.authorize();
+		facebookHelper.init();
 	}
 
 	@Override

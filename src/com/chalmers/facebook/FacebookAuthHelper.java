@@ -13,6 +13,8 @@ import android.os.Bundle;
 
 public class FacebookAuthHelper {
 
+	private static final String APP_NAME = "feedlr";
+
 	private Context context;
 	private SharedPreferences settings;
 	private Facebook facebook;
@@ -24,8 +26,7 @@ public class FacebookAuthHelper {
 
 	// Get access token if there is one
 	public void setAccessToken() {
-		// Fullösning.
-		settings = ((Activity) context).getPreferences(Context.MODE_PRIVATE);
+		this.settings = context.getSharedPreferences(APP_NAME, 0);
 		String access_token = settings.getString("access_token", null);
 		long expires = settings.getLong("access_expires", 0);
 		if (access_token != null) {
@@ -37,11 +38,14 @@ public class FacebookAuthHelper {
 	}
 
 	public void authorize() {
+		System.out.println("FacebookAuthHelper.authorize");
+		System.out.println(facebook.isSessionValid());
 		// Authorize if access token is expired
 		if (!facebook.isSessionValid()) {
-			// Måste lösa detta på ett snyggare sätt.
+			
+			System.out.println("Hit måste vi komma");
 			facebook.authorize((Activity) context,
-					new String[] { "friends_status" },
+					new String[] {},
 
 					new DialogListener() {
 						@Override
