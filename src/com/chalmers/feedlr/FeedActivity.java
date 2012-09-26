@@ -28,7 +28,7 @@ public class FeedActivity extends Activity {
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Feed data was updated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Feed data was updated", Toast.LENGTH_SHORT).show();
             Log.i(getClass().getName(), "Recieved broadcast!");
         }
     };
@@ -42,6 +42,7 @@ public class FeedActivity extends Activity {
         
         initServiceHelpers();
         feedData = new FeedDataClient(this);
+        feedData.startService();
     }
 
     @Override

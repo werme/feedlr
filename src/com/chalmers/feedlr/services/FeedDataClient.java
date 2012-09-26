@@ -15,7 +15,16 @@ public class FeedDataClient {
 
 	public FeedDataClient(Context context) {
 		this.context = context;		
-		isBound = false;	
+		isBound = false;		
+	}
+	
+	public void startService() {
+		Intent intent = new Intent(context, FeedDataService.class);
+		context.startService(intent);
+	}
+	public void stopService() {
+		Intent intent = new Intent(context, FeedDataService.class);
+		context.stopService(intent);
 	}
 
 	public void bindService() {
@@ -36,7 +45,7 @@ public class FeedDataClient {
 	}
 	
 	private ServiceConnection connection = new ServiceConnection() {
-
+		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			TwitterServiceBinder binder = (TwitterServiceBinder) service;

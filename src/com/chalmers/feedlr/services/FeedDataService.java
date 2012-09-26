@@ -19,17 +19,22 @@ public class FeedDataService extends Service {
 	}
 
 	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		return START_STICKY;
+	}
+
+	@Override
 	public IBinder onBind(Intent arg0) {
 		return binder;
 	}
 
 	public void updateData() {
 		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-		
+
 		Intent intent = new Intent();
 		intent.setAction(FeedActivity.DATA_UPDATED);
 		lbm.sendBroadcast(intent);
-		
+
 		Log.i(getClass().getName(), "sent broadcast from updateData()");
 	}
 }
