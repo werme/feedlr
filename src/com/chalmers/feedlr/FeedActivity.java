@@ -1,5 +1,5 @@
 package com.chalmers.feedlr;
-import com.chalmers.feedlr.services.TwitterClient;
+import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.twitter.TwitterHelper;
 
 import android.os.Bundle;
@@ -19,35 +19,33 @@ public class FeedActivity extends Activity {
 	public static final int TWITTER_AUTHORIZATION = 1;
 
 	private TwitterHelper twitter;
-	private TwitterClient client;
+	private FeedDataClient feedData;
 
-	public static final String BROADCAST_ACTION = "com.chalmers.feedlr.BROADCAST_ACTION";
+	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
 
 	private LocalBroadcastManager lbm;
 
-	private BroadcastReceiver receiver;
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "Feed data was updated", Toast.LENGTH_SHORT).show();
+            Log.i(getClass().getName(), "Recieved broadcast!");
+        }
+    };
 		
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_layout);
         
+        // Register our BroadcastReciever
         lbm = LocalBroadcastManager.getInstance(this);
-        
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
-                Log.wtf(getClass().getName(), "Result callback from unknown intent");
-            }
-        };
-        
         IntentFilter filter = new IntentFilter();
-        filter.addAction(BROADCAST_ACTION);
+        filter.addAction(DATA_UPDATED);
         lbm.registerReceiver(receiver, filter);
         
         initServiceHelpers();
-        client = new TwitterClient(this);
+        feedData = new FeedDataClient(this);
     }
 
     @Override
@@ -59,13 +57,13 @@ public class FeedActivity extends Activity {
     @Override
     protected void onStart() {
     	super.onStart();
-    	client.bindService();
+    	feedData.bindService();
     }
     
     @Override
     protected void onStop() {
     	super.onStop();
-    	client.unbindService();
+    	feedData.unbindService();
     }
 
     @Override
@@ -96,7 +94,7 @@ public class FeedActivity extends Activity {
 
 	// This is called on "authorize twitter" button press
 	public void authorizeTwitter(View v) {
-        client.doStuff();
+        feedData.update();
 		//twitter.authorize();
 	}
 }

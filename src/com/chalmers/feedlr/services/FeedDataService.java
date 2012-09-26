@@ -9,12 +9,12 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-public class TwitterService extends Service {
+public class FeedDataService extends Service {
 	private final IBinder binder = new TwitterServiceBinder();
 
 	public class TwitterServiceBinder extends Binder {
-		TwitterService getService() {
-			return TwitterService.this;
+		FeedDataService getService() {
+			return FeedDataService.this;
 		}
 	}
 
@@ -23,13 +23,13 @@ public class TwitterService extends Service {
 		return binder;
 	}
 
-	public void doStuff() {
+	public void updateData() {
 		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
 		
 		Intent intent = new Intent();
-		intent.setAction(FeedActivity.BROADCAST_ACTION);
+		intent.setAction(FeedActivity.DATA_UPDATED);
 		lbm.sendBroadcast(intent);
 		
-		Log.wtf(getClass().getName(), "Result callback from unknown intent");
+		Log.i(getClass().getName(), "sent broadcast from updateData()");
 	}
 }
