@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class ItemDatabaseHelper extends SQLiteOpenHelper {
 
@@ -15,6 +16,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	private static final String TABLE_ITEM = "item";
 
 	// Database columns
+	private static final String COLUMN_ID = "_id";
 	private static final String COLUMN_AUTHOR = "author";
 	private static final String COLUMN_BODY = "body";
 	private static final String COLUMN_TIMESTAMP = "timestamp";
@@ -26,7 +28,8 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + COLUMN_AUTHOR
+		Log.d("DO we get here?", "yes we do!");
+		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_AUTHOR
 				+ " TEXT," + COLUMN_BODY + " TEXT," + COLUMN_TIMESTAMP
 				+ " TEXT," + COLUMN_SOURCE + " TEXT" + ")");
 	}
@@ -51,6 +54,24 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 		
 		database.insert(TABLE_ITEM, null, temp);
 		database.close();
+	}
+	public String getRow(int id) {
+	    SQLiteDatabase db = this.getReadableDatabase();
+	 
+	    Cursor cursor = db.query(TABLE_ITEM, new String[] { COLUMN_AUTHOR,
+	            COLUMN_BODY, COLUMN_TIMESTAMP }, COLUMN_ID + "=?",
+	            new String[] { String.valueOf(id) }, null, null, null, null);
+	    if (cursor != null)
+	        cursor.moveToFirst();
+	 
+
+	    // return contact
+	    return cursor.getString(0) + cursor.getString(1) + cursor.getString(2);
+	}
+
+	public void deleteTable(){
+		SQLiteDatabase database = this.getWritableDatabase();
+		database.delete(TABLE_ITEM, null, null);
 	}
 	/*
 	

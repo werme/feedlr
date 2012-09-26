@@ -24,14 +24,19 @@ public class FeedActivity extends Activity {
         twitterStatusTV = (TextView) findViewById(R.id.twitter_status);
         initServiceHelpers();
         
-        //Testing the database:
+        //Testing the database:    
+        this.deleteDatabase("ItemDatabase.db");
         ItemDatabaseHelper database = new ItemDatabaseHelper(this);
 
-        Log.d("Adding ", "Adding ...");
+        
+        
+        Log.d("Adding ", "Adding rows");
+        
         database.addItem("David Göransson", "Hej, David här är din body!", "12:47", "Facebook");
         database.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37", "Twitter");
         
         Log.d("NumberOfItems: ", "" + database.getNumberOfItems());
+        Log.d("String of ID", database.getRow(1));
     }
 
     @Override
