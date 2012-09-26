@@ -28,7 +28,7 @@ public class FeedActivity extends Activity {
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Feed data was updated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Feed data was updated!", Toast.LENGTH_SHORT).show();
             Log.i(getClass().getName(), "Recieved broadcast!");
         }
     };
@@ -38,11 +38,7 @@ public class FeedActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_layout);
         
-        // Register our BroadcastReciever
         lbm = LocalBroadcastManager.getInstance(this);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(DATA_UPDATED);
-        lbm.registerReceiver(receiver, filter);
         
         initServiceHelpers();
         feedData = new FeedDataClient(this);
@@ -62,14 +58,22 @@ public class FeedActivity extends Activity {
     
     @Override
     protected void onStop() {
-    	super.onStop();
     	feedData.unbindService();
+    	super.onStop();
     }
 
     @Override
     protected void onPause() {
         lbm.unregisterReceiver(receiver);
         super.onPause();
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	IntentFilter filter = new IntentFilter();
+        filter.addAction(DATA_UPDATED);
+        lbm.registerReceiver(receiver, filter);
     }
 	
 	@Override
@@ -92,9 +96,11 @@ public class FeedActivity extends Activity {
 		twitter = new TwitterHelper(this);
 	}
 
-	// This is called on "authorize twitter" button press
+	// Methods called on button press. See feed_layout.xml
 	public void authorizeTwitter(View v) {
-        feedData.update();
-		//twitter.authorize();
+		twitter.authorize();
+	}
+	public void updateFeed(View v) {
+		feedData.update();		
 	}
 }

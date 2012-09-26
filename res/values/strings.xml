@@ -6,5 +6,8 @@
     <string name="title_activity_webview">TwitterWebActivity</string>
     
     <string name="authorize_twitter">Authorize Twitter</string>
-	<string name="twitter_status">Twitter not authorized</string>
+    <string name="update_feed">Update feed</string>
+    
+	<string name="twitter_not_authorized">Twitter not authorized</string>
+	<string name="twitter_authorized">Twitter is authorized</string>
 </resources>

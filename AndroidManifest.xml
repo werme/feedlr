@@ -34,7 +34,7 @@
         	</intent-filter>
         </activity>
         <activity
-            android:name="com.chalmers.feedlr.twitter.TwitterWebActivity"
+            android:name=".twitter.TwitterWebActivity"
             android:label="@string/title_activity_webview" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

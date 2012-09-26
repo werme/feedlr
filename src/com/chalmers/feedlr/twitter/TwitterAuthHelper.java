@@ -11,12 +11,14 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 import com.chalmers.feedlr.FeedActivity;
+import com.chalmers.feedlr.R;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.view.View;
 import android.widget.Toast;
 
 public class TwitterAuthHelper {
@@ -49,6 +51,7 @@ public class TwitterAuthHelper {
 		editor.commit();
 		
 		Toast.makeText(context, "Twitter is now authorized", Toast.LENGTH_LONG).show();
+		((Activity)context).findViewById(R.id.twitter_button).setVisibility(View.GONE);
 	}
 	private void saveRequestToken(Token token) { 
     	SharedPreferences.Editor editor = settings.edit();
