@@ -1,9 +1,11 @@
 package com.chalmers.feedlr;
 
+import com.chalmers.database.ItemDatabaseHelper;
 import com.chalmers.twitter.TwitterHelper;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +23,15 @@ public class FeedActivity extends Activity {
         
         twitterStatusTV = (TextView) findViewById(R.id.twitter_status);
         initServiceHelpers();
+        
+        //Testing the database:
+        ItemDatabaseHelper database = new ItemDatabaseHelper(this);
+
+        Log.d("Adding ", "Adding ...");
+        database.addItem("David Göransson", "Hej, David här är din body!", "12:47", "Facebook");
+        database.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37", "Twitter");
+        
+        Log.d("NumberOfItems: ", "" + database.getNumberOfItems());
     }
 
     @Override
