@@ -38,14 +38,10 @@ public class FacebookAuthHelper {
 	}
 
 	public void authorize() {
-		System.out.println("FacebookAuthHelper.authorize");
-		System.out.println(facebook.isSessionValid());
 		// Authorize if access token is expired
 		if (!facebook.isSessionValid()) {
-			
-			System.out.println("Hit måste vi komma");
 			facebook.authorize((Activity) context,
-					new String[] {},
+					new String[] { "read_stream" },
 
 					new DialogListener() {
 						@Override
@@ -80,5 +76,4 @@ public class FacebookAuthHelper {
 	public void extendTokenIfNeeded() {
 		facebook.extendAccessTokenIfNeeded(context, null);
 	}
-
 }

@@ -64,12 +64,12 @@ public class FeedActivity extends Activity {
 	private void initServiceHelpers() {
 		twitter = new TwitterHelper(this);
 		facebookHelper = new FacebookHelper(this);
-
 	}
 
 	// This is called on "authorize twitter" button press
 	public void authorizeTwitter(View v) {
-		twitter.authorize();
+		// twitter.authorize();
+		facebookHelper.startFeed();
 	}
 
 	public void authorizeFacebook(View v) {
