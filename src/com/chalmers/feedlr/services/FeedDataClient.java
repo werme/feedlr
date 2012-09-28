@@ -9,12 +9,15 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 public class FeedDataClient {
+	
 	private Context context;
+	
 	private FeedDataService feedService;
+
 	private boolean isBound;
 
 	public FeedDataClient(Context context) {
-		this.context = context;		
+		this.context = context;
 		isBound = false;		
 	}
 	
@@ -39,17 +42,12 @@ public class FeedDataClient {
 		}
 	}
 	
-	public void initAuthorizedSevices() {
-		
-	}
-	
 	public void update() {
 		if(!isBound) return;
 		feedService.updateData();
 	}
 	
 	private ServiceConnection connection = new ServiceConnection() {
-		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			TwitterServiceBinder binder = (TwitterServiceBinder) service;

@@ -1,7 +1,6 @@
 package com.chalmers.feedlr;
 import com.chalmers.feedlr.services.FeedDataClient;
-import com.chalmers.feedlr.twitter.TwitterHelper;
-import com.chalmers.feedlr.twitter.TwitterRequest;
+import com.chalmers.feedlr.services.ServiceHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -19,8 +18,8 @@ public class FeedActivity extends Activity {
 	
 	public static final int TWITTER_AUTHORIZATION = 1;
 
-	private TwitterHelper twitter;
 	private FeedDataClient feedData;
+	private ServiceHandler serviceHandler;
 
 	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
 
@@ -41,7 +40,8 @@ public class FeedActivity extends Activity {
         
         lbm = LocalBroadcastManager.getInstance(this);
         
-        initServiceHelpers();
+        serviceHandler = new ServiceHandler(this);
+        
         feedData = new FeedDataClient(this);
         feedData.startService();
     }
@@ -57,27 +57,24 @@ public class FeedActivity extends Activity {
     	super.onStart();
     	feedData.bindService();
     }
-    
     @Override
     protected void onStop() {
     	feedData.unbindService();
     	super.onStop();
     }
-
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	IntentFilter filter = new IntentFilter();
+    	filter.addAction(DATA_UPDATED);
+    	lbm.registerReceiver(receiver, filter);
+    }
     @Override
     protected void onPause() {
         lbm.unregisterReceiver(receiver);
         super.onPause();
     }
     
-    @Override
-    protected void onResume() {
-    	super.onResume();
-    	IntentFilter filter = new IntentFilter();
-        filter.addAction(DATA_UPDATED);
-        lbm.registerReceiver(receiver, filter);
-    }
-	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -86,7 +83,7 @@ public class FeedActivity extends Activity {
 			
 			switch (requestCode) {
 				case TWITTER_AUTHORIZATION:
-					twitter.onAuthCallback(data);
+					serviceHandler.onTwitterAuthCallback(data);
 					break;
 				default:
 					Log.wtf(getClass().getName(), "Result callback from unknown intent");
@@ -94,17 +91,11 @@ public class FeedActivity extends Activity {
 		}
 	}
 	
-	private void initServiceHelpers() {
-		twitter = new TwitterHelper(this);
-	}
-
 	// Methods called on button press. See feed_layout.xml
 	public void authorizeTwitter(View v) {
-		twitter.authorize();
-		//twitter.request(TwitterRequest.TIMELINE);
+		serviceHandler.authorizeTwitter();
 	}
 	public void updateFeed(View v) {
-		twitter.request(TwitterRequest.TIMELINE);
 		feedData.update();		
 	}
 }

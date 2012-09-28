@@ -1,16 +1,26 @@
 package com.chalmers.feedlr.services;
 
+import org.scribe.model.Token;
+
 import com.chalmers.feedlr.FeedActivity;
+import com.chalmers.feedlr.listeners.RequestListener;
+import com.chalmers.feedlr.parser.TwitterJSONParser;
+import com.chalmers.feedlr.twitter.Twitter;
+import com.chalmers.feedlr.twitter.TwitterHelper;
+import com.chalmers.feedlr.twitter.TwitterRequest;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 public class FeedDataService extends Service {
 	private final IBinder binder = new TwitterServiceBinder();
+	
+	TwitterRequestListener listener = new TwitterRequestListener();
+	
+	TwitterHelper twitter;
 
 	public class TwitterServiceBinder extends Binder {
 		FeedDataService getService() {
@@ -29,12 +39,25 @@ public class FeedDataService extends Service {
 	}
 
 	public void updateData() {
-		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+		updateTwitter();
+	}
+	
+	private void updateTwitter() {
+		Token accessToken = ServiceDataStore.getTwitterAccessToken(this);
+		new TwitterRequest(Twitter.getInstance(), TwitterRequest.TIMELINE, accessToken, listener);
+	}
 
-		Intent intent = new Intent();
-		intent.setAction(FeedActivity.DATA_UPDATED);
-		lbm.sendBroadcast(intent);
+	private class TwitterRequestListener implements RequestListener {
 
-		Log.i(getClass().getName(), "sent broadcast from updateData()");
+		@Override
+		public void onComplete(String response) {
+			TwitterJSONParser.parse(response);
+			
+			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedDataService.this);
+
+			Intent intent = new Intent();
+			intent.setAction(FeedActivity.DATA_UPDATED);
+			lbm.sendBroadcast(intent);
+		}	
 	}
 }
