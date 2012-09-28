@@ -72,8 +72,6 @@ public class TwitterAuthHelper {
 		
 		return null;
 	}
-
-	
 	
 	private class GetTwitterRequestTokenTask extends AsyncTask<Void, Void, Token> {
         protected Token doInBackground(Void...params) {

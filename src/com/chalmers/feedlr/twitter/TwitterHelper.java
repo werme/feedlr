@@ -43,7 +43,7 @@ public class TwitterHelper {
 	public void authorize() {
 		authHelper.startProcess();
 	}
-	
+	 
 	public void onAuthCallback(Intent data) {
 		authHelper.onCallback(data);
 	}

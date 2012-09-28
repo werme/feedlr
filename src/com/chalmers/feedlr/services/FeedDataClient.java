@@ -39,6 +39,10 @@ public class FeedDataClient {
 		}
 	}
 	
+	public void initAuthorizedSevices() {
+		
+	}
+	
 	public void update() {
 		if(!isBound) return;
 		feedService.updateData();

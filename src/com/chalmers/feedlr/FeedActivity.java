@@ -1,6 +1,7 @@
 package com.chalmers.feedlr;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.twitter.TwitterHelper;
+import com.chalmers.feedlr.twitter.TwitterRequest;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -100,8 +101,10 @@ public class FeedActivity extends Activity {
 	// Methods called on button press. See feed_layout.xml
 	public void authorizeTwitter(View v) {
 		twitter.authorize();
+		//twitter.request(TwitterRequest.TIMELINE);
 	}
 	public void updateFeed(View v) {
+		twitter.request(TwitterRequest.TIMELINE);
 		feedData.update();		
 	}
 }
