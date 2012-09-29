@@ -13,8 +13,7 @@ public class Twitter {
 	
 	private Twitter() {}
 	
-	public static OAuthService getInstance() {
-		
+	public synchronized static OAuthService getInstance() {
 		if(instance != null)
 			return instance;
 		
