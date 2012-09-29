@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.services;
+package com.chalmers.feedlr.util;
 
 import org.scribe.model.Token;
 
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class ServiceDataStore {
+public class ServiceStore {
 	
 	private static final String APP_NAME = "feedlr";
 	
