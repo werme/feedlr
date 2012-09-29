@@ -80,6 +80,7 @@ public class FeedActivity extends Activity {
     		res.getString(R.string.twitter_not_authorized));
     	
     	twitterAuthButton.setEnabled(!isTwitterAuthorized);
+    	updateButton.setEnabled(isTwitterAuthorized);
     	
     	IntentFilter filter = new IntentFilter();
     	filter.addAction(DATA_UPDATED);
@@ -119,6 +120,7 @@ public class FeedActivity extends Activity {
 			Toast.makeText(FeedActivity.this, "Twitter authorization successful", Toast.LENGTH_SHORT).show();
 			twitterAuthButton.setText(res.getString(R.string.twitter_authorized));
 			twitterAuthButton.setEnabled(false);
+			updateButton.setEnabled(true);
 		}
 		@Override
 		public void onAuthorizationFail() {
