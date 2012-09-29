@@ -1,26 +1,49 @@
 package com.chalmers.feedlr;
-
-import com.chalmers.twitter.TwitterHelper;
+import com.chalmers.feedlr.services.FeedDataClient;
+import com.chalmers.feedlr.twitter.TwitterHelper;
+import com.chalmers.feedlr.twitter.TwitterRequest;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class FeedActivity extends Activity {
+	
+	public static final int TWITTER_AUTHORIZATION = 1;
 
 	private TwitterHelper twitter;
-	
-	private TextView twitterStatusTV;
-	
+	private FeedDataClient feedData;
+
+	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
+
+	private LocalBroadcastManager lbm;
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "Feed data was updated", Toast.LENGTH_SHORT).show();
+            Log.i(getClass().getName(), "Recieved broadcast!");
+        }
+    };
+		
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_layout);
         
-        twitterStatusTV = (TextView) findViewById(R.id.twitter_status);
+        lbm = LocalBroadcastManager.getInstance(this);
+        
         initServiceHelpers();
+        feedData = new FeedDataClient(this);
+        feedData.startService();
     }
 
     @Override
@@ -28,34 +51,60 @@ public class FeedActivity extends Activity {
         getMenuInflater().inflate(R.menu.feed_layout, menu);
         return true;
     }
-	@Override
-    protected void onResume() {
-        super.onResume();
-        
-        if (twitter.isAuthorized())
-        	twitterStatusTV.setText("Twitter is authorized!");
-        
-        // Check for different service callbacks here.
-        
-        if (isCallback() && !twitter.isAuthorized()) {  	   	
-        	
-        	if(getIntent().getData().getQueryParameter("oauth_verifier") != null) {
-        		twitterStatusTV.setText("Twitter is authorized!");
-	        	twitter.onAuthCallback(getIntent().getData().getQueryParameter("oauth_verifier"));
-        	}
-        }
+    
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    	feedData.bindService();
+    }
+    
+    @Override
+    protected void onStop() {
+    	feedData.unbindService();
+    	super.onStop();
     }
 
-	private boolean isCallback() {
-		return getIntent().getData() != null;
+    @Override
+    protected void onPause() {
+        lbm.unregisterReceiver(receiver);
+        super.onPause();
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	IntentFilter filter = new IntentFilter();
+        filter.addAction(DATA_UPDATED);
+        lbm.registerReceiver(receiver, filter);
+    }
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == Activity.RESULT_OK) {
+			
+			switch (requestCode) {
+				case TWITTER_AUTHORIZATION:
+					twitter.onAuthCallback(data);
+					break;
+				default:
+					Log.wtf(getClass().getName(), "Result callback from unknown intent");
+			}
+		}
 	}
 	
 	private void initServiceHelpers() {
 		twitter = new TwitterHelper(this);
 	}
 
-	// This is called on "authorize twitter" button press
+	// Methods called on button press. See feed_layout.xml
 	public void authorizeTwitter(View v) {
-        twitter.authorize();
+		twitter.authorize();
+		//twitter.request(TwitterRequest.TIMELINE);
+	}
+	public void updateFeed(View v) {
+		twitter.request(TwitterRequest.TIMELINE);
+		feedData.update();		
 	}
 }

@@ -1,14 +1,25 @@
-package com.chalmers.twitter;
+/**
+ * Class description
+ * 
+ * @author Olle Werme
+ */
+
+package com.chalmers.feedlr.twitter;
 
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.chalmers.feedlr.FeedActivity;
+import com.chalmers.feedlr.R;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.Toast;
 
 public class TwitterAuthHelper {
 	
@@ -28,8 +39,9 @@ public class TwitterAuthHelper {
 	public void startProcess() {
 		new GetTwitterRequestTokenTask().execute();
 	}
-	public void onCallback(String data) {
-		new GetTwitterAccessTokenTask().execute(data);
+	public void onCallback(Intent data) {
+		String verifier = (String) data.getExtras().get("oauth_verifier");
+		new GetTwitterAccessTokenTask().execute(verifier);
 	}
 	
 	private void saveAccessToken(Token token) { 
@@ -37,6 +49,9 @@ public class TwitterAuthHelper {
     	editor.putString("accessToken", token.getToken());
     	editor.putString("accessSecret", token.getSecret());
 		editor.commit();
+		
+		Toast.makeText(context, "Twitter is now authorized", Toast.LENGTH_LONG).show();
+		((Activity)context).findViewById(R.id.twitter_button).setVisibility(View.GONE);
 	}
 	private void saveRequestToken(Token token) { 
     	SharedPreferences.Editor editor = settings.edit();
@@ -48,9 +63,6 @@ public class TwitterAuthHelper {
 		Token at = new Token(settings.getString("requestToken", null), settings.getString("requestSecret", null));
 		return at;
 	}
-	
-	
-	
 	public Token getAccessToken() {
 		String at = settings.getString("accessToken", null);
 		String as = settings.getString("accessSecret", null);
@@ -60,8 +72,6 @@ public class TwitterAuthHelper {
 		
 		return null;
 	}
-
-	
 	
 	private class GetTwitterRequestTokenTask extends AsyncTask<Void, Void, Token> {
         protected Token doInBackground(Void...params) {
@@ -72,13 +82,16 @@ public class TwitterAuthHelper {
         	new GetTwitterAuthUriTask().execute();
         }
     }
-    private class GetTwitterAuthUriTask extends AsyncTask<Void, Void, Uri> {
-        protected Uri doInBackground(Void...params) {
-        	return Uri.parse(twitterService.getAuthorizationUrl(getRequestToken()));
+    private class GetTwitterAuthUriTask extends AsyncTask<Void, Void, String> {
+        protected String doInBackground(Void...params) {
+        	return twitterService.getAuthorizationUrl(getRequestToken());
         }      
-        protected void onPostExecute (Uri authUri) {
-        	Intent intent = new Intent(Intent.ACTION_VIEW, authUri);
-            context.startActivity(intent);
+        protected void onPostExecute (String authURL) {
+        	
+        	// Send to twitter authorization page for user input
+            Intent intent = new Intent(context, TwitterWebActivity.class);
+            intent.putExtra("URL", authURL);
+            ((Activity) context).startActivityForResult(intent, FeedActivity.TWITTER_AUTHORIZATION);
         }
     }
     private class GetTwitterAccessTokenTask extends AsyncTask<String, Void, Token> {
