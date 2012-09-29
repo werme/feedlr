@@ -6,8 +6,9 @@ import com.chalmers.feedlr.FeedActivity;
 import com.chalmers.feedlr.listeners.RequestListener;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.twitter.Twitter;
-import com.chalmers.feedlr.twitter.TwitterHelper;
+import com.chalmers.feedlr.twitter.TwitterAuthHelper;
 import com.chalmers.feedlr.twitter.TwitterRequest;
+import com.chalmers.feedlr.util.ServiceStore;
 
 import android.app.Service;
 import android.content.Intent;
@@ -20,7 +21,7 @@ public class FeedDataService extends Service {
 	
 	TwitterRequestListener listener = new TwitterRequestListener();
 	
-	TwitterHelper twitter;
+	TwitterAuthHelper twitter;
 
 	public class TwitterServiceBinder extends Binder {
 		FeedDataService getService() {
@@ -38,12 +39,14 @@ public class FeedDataService extends Service {
 		return binder;
 	}
 
-	public void updateData() {
+	public void update() {
+		
+		// Have check authorized services here somehow
 		updateTwitter();
 	}
 	
 	private void updateTwitter() {
-		Token accessToken = ServiceDataStore.getTwitterAccessToken(this);
+		Token accessToken = ServiceStore.getTwitterAccessToken(this);
 		new TwitterRequest(Twitter.getInstance(), TwitterRequest.TIMELINE, accessToken, listener);
 	}
 
@@ -51,7 +54,11 @@ public class FeedDataService extends Service {
 
 		@Override
 		public void onComplete(String response) {
+			
+			// TODO make parse async
 			TwitterJSONParser.parse(response);
+			
+			// Put stuff into database here
 			
 			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedDataService.this);
 
