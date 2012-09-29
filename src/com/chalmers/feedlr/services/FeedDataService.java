@@ -1,16 +1,27 @@
 package com.chalmers.feedlr.services;
 
+import org.scribe.model.Token;
+
 import com.chalmers.feedlr.FeedActivity;
+import com.chalmers.feedlr.listeners.RequestListener;
+import com.chalmers.feedlr.parser.TwitterJSONParser;
+import com.chalmers.feedlr.twitter.Twitter;
+import com.chalmers.feedlr.twitter.TwitterAuthHelper;
+import com.chalmers.feedlr.twitter.TwitterRequest;
+import com.chalmers.feedlr.util.ServiceStore;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 public class FeedDataService extends Service {
 	private final IBinder binder = new TwitterServiceBinder();
+	
+	TwitterRequestListener listener = new TwitterRequestListener();
+	
+	TwitterAuthHelper twitter;
 
 	public class TwitterServiceBinder extends Binder {
 		FeedDataService getService() {
@@ -28,13 +39,32 @@ public class FeedDataService extends Service {
 		return binder;
 	}
 
-	public void updateData() {
-		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+	public void update() {
+		
+		// Have check authorized services here somehow
+		updateTwitter();
+	}
+	
+	private void updateTwitter() {
+		Token accessToken = ServiceStore.getTwitterAccessToken(this);
+		new TwitterRequest(Twitter.getInstance(), TwitterRequest.TIMELINE, accessToken, listener);
+	}
 
-		Intent intent = new Intent();
-		intent.setAction(FeedActivity.DATA_UPDATED);
-		lbm.sendBroadcast(intent);
+	private class TwitterRequestListener implements RequestListener {
 
-		Log.i(getClass().getName(), "sent broadcast from updateData()");
+		@Override
+		public void onComplete(String response) {
+			
+			// TODO make parse async
+			TwitterJSONParser.parse(response);
+			
+			// Put stuff into database here
+			
+			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedDataService.this);
+
+			Intent intent = new Intent();
+			intent.setAction(FeedActivity.DATA_UPDATED);
+			lbm.sendBroadcast(intent);
+		}	
 	}
 }

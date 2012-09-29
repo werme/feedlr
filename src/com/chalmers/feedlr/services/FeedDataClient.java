@@ -9,13 +9,25 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 public class FeedDataClient {
+	
 	private Context context;
+	
 	private FeedDataService feedService;
+
 	private boolean isBound;
 
 	public FeedDataClient(Context context) {
-		this.context = context;		
+		this.context = context;
 		isBound = false;		
+	}
+	
+	public void authorize(int twitter) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void update() {
+		feedService.update();
 	}
 	
 	public void startService() {
@@ -26,12 +38,11 @@ public class FeedDataClient {
 		Intent intent = new Intent(context, FeedDataService.class);
 		context.stopService(intent);
 	}
-
+	
 	public void bindService() {
 		Intent intent = new Intent(context, FeedDataService.class);
 		isBound = context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
 	}
-
 	public void unbindService() {
 		if(isBound) {
 			context.unbindService(connection);
@@ -39,24 +50,13 @@ public class FeedDataClient {
 		}
 	}
 	
-	public void initAuthorizedSevices() {
-		
-	}
-	
-	public void update() {
-		if(!isBound) return;
-		feedService.updateData();
-	}
-	
 	private ServiceConnection connection = new ServiceConnection() {
-		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			TwitterServiceBinder binder = (TwitterServiceBinder) service;
 	        feedService = binder.getService();
 	        isBound = true;
 		}
-
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			feedService = null;
