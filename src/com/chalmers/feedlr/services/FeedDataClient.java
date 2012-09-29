@@ -21,6 +21,15 @@ public class FeedDataClient {
 		isBound = false;		
 	}
 	
+	public void authorize(int twitter) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void update() {
+		feedService.update();
+	}
+	
 	public void startService() {
 		Intent intent = new Intent(context, FeedDataService.class);
 		context.startService(intent);
@@ -29,22 +38,16 @@ public class FeedDataClient {
 		Intent intent = new Intent(context, FeedDataService.class);
 		context.stopService(intent);
 	}
-
+	
 	public void bindService() {
 		Intent intent = new Intent(context, FeedDataService.class);
 		isBound = context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
 	}
-
 	public void unbindService() {
 		if(isBound) {
 			context.unbindService(connection);
 			isBound = false;
 		}
-	}
-	
-	public void update() {
-		if(!isBound) return;
-		feedService.updateData();
 	}
 	
 	private ServiceConnection connection = new ServiceConnection() {
@@ -54,7 +57,6 @@ public class FeedDataClient {
 	        feedService = binder.getService();
 	        isBound = true;
 		}
-
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			feedService = null;
