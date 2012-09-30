@@ -4,7 +4,7 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.services;
+package com.chalmers.feedlr.helpers;
 
 import android.content.Context;
 import android.content.Intent;

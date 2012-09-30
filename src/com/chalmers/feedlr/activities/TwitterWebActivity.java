@@ -1,3 +1,9 @@
+/**
+ * Class description
+ * 
+ * @author Olle Werme
+ */
+
 package com.chalmers.feedlr.activities;
 
 import com.chalmers.feedlr.R;

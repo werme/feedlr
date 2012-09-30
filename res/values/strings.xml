@@ -3,11 +3,14 @@
     <string name="app_name">Feedlr</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_feed">FeedActivity</string>
-    <string name="title_activity_webview">TwitterWebActivity</string>
-    
+    <string name="title_activity_webview">TwitterWebActivity</string> 
+     
     <string name="authorize_twitter">Authorize Twitter</string>
-    <string name="update_feed">Update feed</string>
-    
-	<string name="twitter_not_authorized">Twitter not authorized</string>
 	<string name="twitter_authorized">Twitter is authorized</string>
+    
+	<string name="authorize_facebook">Authorize Facebook</string>
+	<string name="facebook_authorized">Facebook is authorized</string>
+
+	<string name="update_feed">Update feed</string>
+
 </resources>

@@ -1,9 +1,10 @@
 package com.chalmers.feedlr.activities;
 
+import com.chalmers.facebook.FacebookHelper;
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
-import com.chalmers.feedlr.services.ServiceHandler;
 import com.chalmers.feedlr.util.Services;
 
 import android.os.Bundle;
@@ -24,12 +25,16 @@ public class FeedActivity extends Activity {
 
 	private FeedDataClient feedData;
 	private ServiceHandler serviceHandler;
+	
+	// TODO implement this into the service handler
+	private FacebookHelper facebookHelper;
 
 	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
 
 	private Resources res;
 	private LocalBroadcastManager lbm;
 
+	private Button facebookAuthButton;
 	private Button twitterAuthButton;
 	private Button updateButton;
 
@@ -46,13 +51,15 @@ public class FeedActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_layout);
         
-        twitterAuthButton = (Button) findViewById(R.id.twitter_button);
-        updateButton = (Button) findViewById(R.id.service_button);
+        facebookAuthButton = (Button) findViewById(R.id.button_facebook);
+        twitterAuthButton = (Button) findViewById(R.id.button_twitter);
+        updateButton = (Button) findViewById(R.id.button_update);
         
         res = getResources();
         lbm = LocalBroadcastManager.getInstance(this);
         
         serviceHandler = new ServiceHandler(this);
+        facebookHelper = new FacebookHelper(this);
         
         feedData = new FeedDataClient(this);
         feedData.startService();
@@ -76,10 +83,19 @@ public class FeedActivity extends Activity {
     protected void onResume() {
     	super.onResume();
     	
+    	boolean isFacebookAuthorized = facebookHelper.isAuthorized();
+    	facebookAuthButton.setText(isFacebookAuthorized ? 
+        		res.getString(R.string.facebook_authorized) : 
+        		res.getString(R.string.authorize_facebook));
+        	
+    	facebookAuthButton.setEnabled(!isFacebookAuthorized);
+    	updateButton.setEnabled(isFacebookAuthorized);
+		
+    	
     	boolean isTwitterAuthorized = serviceHandler.isAuthorized(Services.TWITTER);
     	twitterAuthButton.setText(isTwitterAuthorized ? 
     		res.getString(R.string.twitter_authorized) : 
-    		res.getString(R.string.twitter_not_authorized));
+    		res.getString(R.string.authorize_twitter));
     	
     	twitterAuthButton.setEnabled(!isTwitterAuthorized);
     	updateButton.setEnabled(isTwitterAuthorized);
@@ -87,6 +103,8 @@ public class FeedActivity extends Activity {
     	IntentFilter filter = new IntentFilter();
     	filter.addAction(DATA_UPDATED);
     	lbm.registerReceiver(receiver, filter);
+
+    	facebookHelper.extendTokenIfNeeded(this, null);
     }
     @Override
     protected void onPause() {
@@ -103,13 +121,14 @@ public class FeedActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
+		Log.i("FB", "walla");
 		if (resultCode == Activity.RESULT_OK) {
 			
 			switch (requestCode) {
 				case Services.TWITTER:
-					serviceHandler.onTwitterAuthCallback(data);
-					break;
+					serviceHandler.onTwitterAuthCallback(data); break;
+				case Services.FACEBOOK:
+					facebookHelper.onAuthCallback(requestCode, resultCode, data);
 				default:
 					Log.wtf(getClass().getName(), "Result callback from unknown intent");
 			}
@@ -132,6 +151,10 @@ public class FeedActivity extends Activity {
 	}
 	
 	// Methods called on button press. See feed_layout.xml
+	public void authorizeFacebook(View v) {
+		facebookHelper.init();
+	}
+	
 	public void authorizeTwitter(View v) {
 		serviceHandler.authorize(Services.TWITTER, new TwitterAuthListener());
 	}
