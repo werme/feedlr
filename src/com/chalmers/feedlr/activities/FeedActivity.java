@@ -2,6 +2,7 @@ package com.chalmers.feedlr.activities;
 
 import com.chalmers.facebook.FacebookHelper;
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.database.ItemDatabaseHelper;
 import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
@@ -63,6 +64,8 @@ public class FeedActivity extends Activity {
         
         feedData = new FeedDataClient(this);
         feedData.startService();
+        
+        databaseTest();
     }
     @Override
     protected void onDestroy() {
@@ -148,6 +151,19 @@ public class FeedActivity extends Activity {
 			// TODO Auto-generated method stub
 			
 		}
+	}
+	
+	private void databaseTest() {
+		this.deleteDatabase("ItemDatabase.db");
+        ItemDatabaseHelper database = new ItemDatabaseHelper(this);
+
+        Log.d("Adding ", "Adding rows");
+        
+        database.addItem("David Göransson", "Hej, David här är din body!", "12:47", "Facebook");
+        database.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37", "Twitter");
+        
+        Log.d("NumberOfItems: ", "" + database.getNumberOfItems());
+        Log.d("String of ID", database.getRow(1));
 	}
 	
 	// Methods called on button press. See feed_layout.xml
