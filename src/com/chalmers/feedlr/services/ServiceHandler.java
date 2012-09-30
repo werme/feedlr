@@ -1,3 +1,9 @@
+/**
+ * Class description
+ * 
+ * @author Olle Werme
+ */
+
 package com.chalmers.feedlr.services;
 
 import android.content.Context;

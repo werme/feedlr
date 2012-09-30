@@ -19,7 +19,7 @@
         <service android:name=".services.FeedDataService" />
         
         <activity
-            android:name=".FeedActivity"
+            android:name=".activities.FeedActivity"
             android:label="@string/title_activity_feed" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
         	</intent-filter>
         </activity>
         <activity
-            android:name=".twitter.TwitterWebActivity"
+            android:name=".activities.TwitterWebActivity"
             android:label="@string/title_activity_webview" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

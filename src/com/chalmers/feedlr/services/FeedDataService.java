@@ -1,8 +1,14 @@
+/**
+ * Class description
+ * 
+ * @author Olle Werme
+ */
+
 package com.chalmers.feedlr.services;
 
 import org.scribe.model.Token;
 
-import com.chalmers.feedlr.FeedActivity;
+import com.chalmers.feedlr.activities.FeedActivity;
 import com.chalmers.feedlr.listeners.RequestListener;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.twitter.Twitter;

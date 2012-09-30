@@ -1,4 +1,6 @@
-package com.chalmers.feedlr;
+package com.chalmers.feedlr.activities;
+
+import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.services.ServiceHandler;

@@ -10,6 +10,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import com.chalmers.feedlr.activities.TwitterWebActivity;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.util.ServiceStore;
 import com.chalmers.feedlr.util.Services;

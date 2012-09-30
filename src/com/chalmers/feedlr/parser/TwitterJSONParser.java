@@ -76,9 +76,13 @@ public class TwitterJSONParser {
 
 			TwitterItem o = null;
 			while (jParser.nextToken() != null) {	
-				if ("text".equals(jParser.getCurrentName())) {
+				if ("created_at".equals(jParser.getCurrentName())) {
 					jParser.nextToken();
 					o = new TwitterItem();
+					o.setTimestamp(jParser.getText());
+				}
+				if ("text".equals(jParser.getCurrentName())) {
+					jParser.nextToken();
 					o.setText(jParser.getText());
 				}
 				if ("name".equals(jParser.getCurrentName())) {

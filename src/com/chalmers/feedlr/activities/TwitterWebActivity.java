@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.twitter;
+package com.chalmers.feedlr.activities;
 
 import com.chalmers.feedlr.R;
 

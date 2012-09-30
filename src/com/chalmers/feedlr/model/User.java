@@ -15,7 +15,6 @@ public class User {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
 	@JsonProperty("profile_image_url")
 	public void setProfileImageURL(String profileImageURL) {
 		this.profileImageURL = profileImageURL;
