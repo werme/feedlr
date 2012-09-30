@@ -26,8 +26,8 @@ public class TwitterItem implements Item {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 	@JsonProperty("created_at")
-	@Override
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
@@ -40,7 +40,6 @@ public class TwitterItem implements Item {
 	public String getText() { 
     	return text;
     }
-	@Override
 	public String getTimestamp() {
 		return timestamp;
 	}

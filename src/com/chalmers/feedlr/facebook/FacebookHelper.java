@@ -39,6 +39,9 @@ public class FacebookHelper {
 
 	public void init() {
 		authHelper.setAccessToken();
+	}
+	
+	public void authorize() {		
 		authHelper.authorize();
 	}
 

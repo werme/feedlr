@@ -61,6 +61,7 @@ public class FeedActivity extends Activity {
         
         serviceHandler = new ServiceHandler(this);
         facebookHelper = new FacebookHelper(this);
+        facebookHelper.init();
         
         feedData = new FeedDataClient(this);
         feedData.startService();
@@ -86,15 +87,14 @@ public class FeedActivity extends Activity {
     protected void onResume() {
     	super.onResume();
     	
+    	Log.i("sd", " " + facebookHelper.isAuthorized());
     	boolean isFacebookAuthorized = facebookHelper.isAuthorized();
     	facebookAuthButton.setText(isFacebookAuthorized ? 
         		res.getString(R.string.facebook_authorized) : 
         		res.getString(R.string.authorize_facebook));
         	
     	facebookAuthButton.setEnabled(!isFacebookAuthorized);
-    	updateButton.setEnabled(isFacebookAuthorized);
 		
-    	
     	boolean isTwitterAuthorized = serviceHandler.isAuthorized(Services.TWITTER);
     	twitterAuthButton.setText(isTwitterAuthorized ? 
     		res.getString(R.string.twitter_authorized) : 
@@ -168,7 +168,7 @@ public class FeedActivity extends Activity {
 	
 	// Methods called on button press. See feed_layout.xml
 	public void authorizeFacebook(View v) {
-		facebookHelper.init();
+		facebookHelper.authorize();
 	}
 	
 	public void authorizeTwitter(View v) {
