@@ -1,8 +1,8 @@
 package com.chalmers.feedlr.activities;
 
-import com.chalmers.facebook.FacebookHelper;
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.ItemDatabaseHelper;
+import com.chalmers.feedlr.facebook.FacebookHelper;
 import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;

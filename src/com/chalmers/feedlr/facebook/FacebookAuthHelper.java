@@ -4,7 +4,7 @@
  * @author Daniel Larsson
  */
 
-package com.chalmers.facebook;
+package com.chalmers.feedlr.facebook;
 
 import com.chalmers.feedlr.util.Services;
 import com.facebook.android.DialogError;
