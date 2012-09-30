@@ -124,14 +124,14 @@ public class FeedActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Log.i("FB", "walla");
+		
 		if (resultCode == Activity.RESULT_OK) {
 			
 			switch (requestCode) {
 				case Services.TWITTER:
 					serviceHandler.onTwitterAuthCallback(data); break;
 				case Services.FACEBOOK:
-					facebookHelper.onAuthCallback(requestCode, resultCode, data);
+					facebookHelper.onAuthCallback(requestCode, resultCode, data); break;
 				default:
 					Log.wtf(getClass().getName(), "Result callback from unknown intent");
 			}
