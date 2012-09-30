@@ -40,5 +40,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chalmers.feedlr.FeedActivity" />
         </activity>
+        <activity 
+            android:name="com.chalmers.feedlr.gui.DisplayItems"></activity>
     </application>
 </manifest>
