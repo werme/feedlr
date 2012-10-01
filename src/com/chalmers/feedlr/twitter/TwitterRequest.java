@@ -22,7 +22,7 @@ public class TwitterRequest extends AsyncTask<String, Void, String> {
 		
 	public static final String VERIFY_CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
 	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";
-	
+	 
 	private OAuthService service;
 	private Token accessToken;
 

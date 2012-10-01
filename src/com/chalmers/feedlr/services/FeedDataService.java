@@ -10,11 +10,11 @@ import org.scribe.model.Token;
 
 import com.chalmers.feedlr.activities.FeedActivity;
 import com.chalmers.feedlr.listeners.RequestListener;
-import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.twitter.Twitter;
 import com.chalmers.feedlr.twitter.TwitterAuthHelper;
 import com.chalmers.feedlr.twitter.TwitterRequest;
 import com.chalmers.feedlr.util.ServiceStore;
+import com.chalmers.feedlr.util.TwitterJSONParser;
 
 import android.app.Service;
 import android.content.Intent;

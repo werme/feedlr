@@ -4,7 +4,7 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.parser;
+package com.chalmers.feedlr.util;
 
 import java.io.IOException;
 import java.util.ArrayList;

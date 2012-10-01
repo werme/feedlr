@@ -4,7 +4,7 @@
  * @author Daniel Larsson
  */
 
-package com.chalmers.feedlr.parser;
+package com.chalmers.feedlr.util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
