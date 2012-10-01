@@ -14,13 +14,13 @@ import android.util.Log;
 
 public class FacebookJSONParser {
 
-	JSONObject jsonObject;
-	JSONArray jArray;
+	static JSONObject jsonObject;
+	static JSONArray jArray;
 
 	/*
 	 * Parses string and prints prints it in the log.
 	 */
-	public void parseAndPrint(String response) {
+	public static void parseAndPrint(String response) {
 
 		try {
 			jsonObject = new JSONObject(response);

@@ -10,14 +10,14 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
 import org.scribe.oauth.OAuthService;
 
-public class Twitter {
+public class TwitterService {
 	private static final String CONSUMER_KEY = "jvphpats1Hq3xEiZREoZw";
 	private static final String CONSUMER_SECRET = "ERXqbK72CCGgZ4hR96PkSoe6ZciSd14VwQ2vsDdEtM";
 	private static final String CALLBACK_URL = "feedlr://twitter";
 	
 	private static OAuthService instance;
 	
-	private Twitter() {}
+	private TwitterService() {}
 	
 	public synchronized static OAuthService getInstance() {
 		if(instance != null)

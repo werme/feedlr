@@ -28,7 +28,7 @@ public class TwitterAuthHelper {
 		
 	public TwitterAuthHelper(Context context) {
 		this.context = context;
-		twitter = Twitter.getInstance();
+		twitter = TwitterService.getInstance();
 	}
 	
 	public void authorize(AuthListener listener) {
