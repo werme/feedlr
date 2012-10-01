@@ -197,12 +197,15 @@ public class FeedActivity extends Activity {
 
 	private void databaseTest() {
 		this.deleteDatabase("ItemDatabase.db");
-		ItemDatabaseHelper database = new ItemDatabaseHelper(this);
-
-		Log.d("Adding ", "Adding rows");
+		ItemDatabaseHelper database = new ItemDatabaseHelper(this);		
+		
+		/*
+		 * ### Simple test for addListOfItems
+		 * 
+		
 		List<Item> itemList = new ArrayList<Item>();
 		
-		for (int i = 0; i == 10; i++){
+		for (int i = 0; i <= 10; i++){
 			TwitterItem t = new TwitterItem();
 			t.setText("Post " + i);
 			User u = new User();
@@ -210,12 +213,15 @@ public class FeedActivity extends Activity {
 			t.setUser(u);
 			itemList.add(t);
 		}
-				
+		database.addListOfItems(itemList);
+		*/
+		
+		/*
 		database.addItem("David Göransson", "Hej, David här är din body!", "12:47", "Facebook");
 		database.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37", "Twitter");
-		database.addListOfItems(itemList);
+		 */
 
-		Log.d("NumberOfItems: ", "" + database.getNumberOfItems());
+		Log.d("Database Size: ", "" + database.getNumberOfItems());
 		//Log.d("String of ID", database.getRow(1));
 	}
 

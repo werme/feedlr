@@ -57,7 +57,6 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	public void addListOfItems(List<Item> itemList){
 		for (Item o: itemList) {
 			addItem(o.getUser().getUserName(), o.getText(), "Timestamp", "Twitter");
-			Log.d("test", "Iteration");
 		}
 	}
 	
