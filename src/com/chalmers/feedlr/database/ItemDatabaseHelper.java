@@ -14,6 +14,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -28,7 +29,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	// Database columns
 	private static final String COLUMN_ID = "_id";
 	private static final String COLUMN_AUTHOR = "author";
-	private static final String COLUMN_TEXT = "text";
+	private static final String COLUMN_BODY = "body";
 	private static final String COLUMN_TIMESTAMP = "timestamp";
 	private static final String COLUMN_SOURCE = "source";
 
@@ -40,7 +41,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase database) {
 		Log.d("DO we get here?", "yes we do!");
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_AUTHOR
-				+ " TEXT," + COLUMN_TEXT + " TEXT," + COLUMN_TIMESTAMP
+				+ " TEXT," + COLUMN_BODY + " TEXT," + COLUMN_TIMESTAMP
 				+ " TEXT," + COLUMN_SOURCE + " TEXT" + ")");
 	}
 
@@ -53,19 +54,75 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	//Add a single item to the database.
+	// 200 insertion method 4.7 seconds
+	 	/*public void addListOfItems(List<Item> itemList){
+	 		SQLiteDatabase database = this.getWritableDatabase();
+			for (Item o: itemList) {
+				
+				ContentValues temp = new ContentValues();
+				temp.put(COLUMN_AUTHOR, o.getUser().getUserName());
+				temp.put(COLUMN_BODY, o.getText());
+				temp.put(COLUMN_TIMESTAMP, "timestamp");
+				temp.put(COLUMN_SOURCE, "Twitter");
+				
+				database.insert(TABLE_ITEM, null, temp);
+				
+			}
+			database.close();
+		}*/
 	
+	 	public void addListOfItems(List<Item> itemList){
+	 		SQLiteDatabase database = this.getWritableDatabase();
+	 		database.beginTransaction();
+	 		for (Item o: itemList) {
+				
+				ContentValues temp = new ContentValues();
+				temp.put(COLUMN_AUTHOR, o.getUser().getUserName());
+				temp.put(COLUMN_BODY, o.getText());
+				temp.put(COLUMN_TIMESTAMP, "timestamp");
+				temp.put(COLUMN_SOURCE, "Twitter");
+				
+				database.insert(TABLE_ITEM, null, temp);
+				
+			}
+			database.setTransactionSuccessful();
+			database.endTransaction();
+			database.close();
+		}
+	/*
+	// 200 insertions 5.1 seconds
 	public void addListOfItems(List<Item> itemList){
-		for (Item o: itemList) {
-			addItem(o.getUser().getUserName(), o.getText(), "Timestamp", "Twitter");
+		
+		SQLiteDatabase database = this.getWritableDatabase();
+		InsertHelper ih = new InsertHelper(database, "item");
+		
+		final int authorIH = ih.getColumnIndex(COLUMN_AUTHOR);
+        final int bodyIH = ih.getColumnIndex(COLUMN_BODY);
+        final int timestampIH = ih.getColumnIndex(COLUMN_TIMESTAMP);
+        final int sourceIH = ih.getColumnIndex(COLUMN_SOURCE);
+        
+		try {
+			for (Item o: itemList) {
+			ih.prepareForInsert();
+			ih.bind(authorIH, o.getUser().getUserName());
+			ih.bind(bodyIH, o.getText());
+			ih.bind(timestampIH, "Timestamp");
+			ih.bind(sourceIH, "Twitter");
+			ih.execute();
+			}
+		}
+		finally {
+			ih.close();
 		}
 	}
+	*/
 	
-	public void addItem(String author, String text, String timestamp, String source){
+	public void addItem(String author, String body, String timestamp, String source){
 		SQLiteDatabase database = this.getWritableDatabase();
 		
 		ContentValues temp = new ContentValues();
 		temp.put(COLUMN_AUTHOR, author);
-		temp.put(COLUMN_TEXT, text);
+		temp.put(COLUMN_BODY, body);
 		temp.put(COLUMN_TIMESTAMP, timestamp);
 		temp.put(COLUMN_SOURCE, source);
 		
@@ -76,7 +133,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	    SQLiteDatabase database = this.getReadableDatabase();
 	 
 	    Cursor cursor = database.query(TABLE_ITEM, new String[] { COLUMN_AUTHOR,
-	            COLUMN_TEXT, COLUMN_TIMESTAMP }, COLUMN_ID + "=?",
+	            COLUMN_BODY, COLUMN_TIMESTAMP }, COLUMN_ID + "=?",
 	            new String[] { String.valueOf(id) }, null, null, null, null);
 	    if (cursor != null)
 	        cursor.moveToFirst();

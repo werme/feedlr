@@ -14,6 +14,7 @@ import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.util.Services;
+import com.chalmers.feedlr.util.TwitterJSONParser;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -199,13 +200,14 @@ public class FeedActivity extends Activity {
 		this.deleteDatabase("ItemDatabase.db");
 		ItemDatabaseHelper database = new ItemDatabaseHelper(this);		
 		
-		/*
-		 * ### Simple test for addListOfItems
-		 * 
+		long time = System.currentTimeMillis();
+		
+		// * ### Simple test for addListOfItems
+		// * 
 		
 		List<Item> itemList = new ArrayList<Item>();
 		
-		for (int i = 0; i <= 10; i++){
+		for (int i = 0; i < 200; i++){
 			TwitterItem t = new TwitterItem();
 			t.setText("Post " + i);
 			User u = new User();
@@ -214,14 +216,18 @@ public class FeedActivity extends Activity {
 			itemList.add(t);
 		}
 		database.addListOfItems(itemList);
-		*/
+		
+		Log.i("Database tests", "Adding data to DB");
+		Log.i("Database tests", "Items: " + itemList.size());
+		Log.i("Database tests", "Time in millis: " + (System.currentTimeMillis() - time));
+		
 		
 		/*
 		database.addItem("David Göransson", "Hej, David här är din body!", "12:47", "Facebook");
 		database.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37", "Twitter");
 		 */
 
-		Log.d("Database Size: ", "" + database.getNumberOfItems());
+		Log.d("Database Size: ", "" + database.getSize());
 		//Log.d("String of ID", database.getRow(1));
 	}
 
