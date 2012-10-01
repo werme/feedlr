@@ -28,7 +28,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	// Database columns
 	private static final String COLUMN_ID = "_id";
 	private static final String COLUMN_AUTHOR = "author";
-	private static final String COLUMN_BODY = "body";
+	private static final String COLUMN_TEXT = "text";
 	private static final String COLUMN_TIMESTAMP = "timestamp";
 	private static final String COLUMN_SOURCE = "source";
 
@@ -40,7 +40,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase database) {
 		Log.d("DO we get here?", "yes we do!");
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_AUTHOR
-				+ " TEXT," + COLUMN_BODY + " TEXT," + COLUMN_TIMESTAMP
+				+ " TEXT," + COLUMN_TEXT + " TEXT," + COLUMN_TIMESTAMP
 				+ " TEXT," + COLUMN_SOURCE + " TEXT" + ")");
 	}
 
@@ -60,12 +60,12 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
-	public void addItem(String author, String body, String timestamp, String source){
+	public void addItem(String author, String text, String timestamp, String source){
 		SQLiteDatabase database = this.getWritableDatabase();
 		
 		ContentValues temp = new ContentValues();
 		temp.put(COLUMN_AUTHOR, author);
-		temp.put(COLUMN_BODY, body);
+		temp.put(COLUMN_TEXT, text);
 		temp.put(COLUMN_TIMESTAMP, timestamp);
 		temp.put(COLUMN_SOURCE, source);
 		
@@ -76,7 +76,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	    SQLiteDatabase database = this.getReadableDatabase();
 	 
 	    Cursor cursor = database.query(TABLE_ITEM, new String[] { COLUMN_AUTHOR,
-	            COLUMN_BODY, COLUMN_TIMESTAMP }, COLUMN_ID + "=?",
+	            COLUMN_TEXT, COLUMN_TIMESTAMP }, COLUMN_ID + "=?",
 	            new String[] { String.valueOf(id) }, null, null, null, null);
 	    if (cursor != null)
 	        cursor.moveToFirst();
@@ -116,7 +116,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 		return ;
 	}
 	
-	public long getNumberOfItems(){
+	public long getSize(){
 		SQLiteDatabase database = this.getReadableDatabase();
 		long l = DatabaseUtils.queryNumEntries(database ,TABLE_ITEM);
 		database.close();
