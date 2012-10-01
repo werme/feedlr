@@ -67,7 +67,7 @@ public class FeedActivity extends Activity {
         feedData = new FeedDataClient(this);
         feedData.startService();
         
-        databaseTest();
+//        databaseTest();
     }
     @Override
     protected void onDestroy() {

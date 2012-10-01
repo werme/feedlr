@@ -49,7 +49,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	//Add a single item to the database.
-	public void addItem(String author, String body, String timestamp, String source){
+	public long addItem(String author, String body, String timestamp, String source){
 		SQLiteDatabase database = this.getWritableDatabase();
 		
 		ContentValues temp = new ContentValues();
@@ -57,9 +57,9 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 		temp.put(COLUMN_BODY, body);
 		temp.put(COLUMN_TIMESTAMP, timestamp);
 		temp.put(COLUMN_SOURCE, source);
-		
-		database.insert(TABLE_ITEM, null, temp);
+		long tmp = 	database.insert(TABLE_ITEM, null, temp);
 		database.close();
+		return tmp;
 	}
 	public String getRow(int id) {
 	    SQLiteDatabase db = this.getReadableDatabase();
