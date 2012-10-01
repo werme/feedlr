@@ -1,11 +1,17 @@
 package com.chalmers.feedlr.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.ItemDatabaseHelper;
 import com.chalmers.feedlr.facebook.FacebookHelper;
 import com.chalmers.feedlr.gui.DisplayItems;
 import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
+import com.chalmers.feedlr.model.Item;
+import com.chalmers.feedlr.model.TwitterItem;
+import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.util.Services;
 
@@ -194,12 +200,23 @@ public class FeedActivity extends Activity {
 		ItemDatabaseHelper database = new ItemDatabaseHelper(this);
 
 		Log.d("Adding ", "Adding rows");
-
+		List<Item> itemList = new ArrayList<Item>();
+		
+		for (int i = 0; i == 10; i++){
+			TwitterItem t = new TwitterItem();
+			t.setText("Post " + i);
+			User u = new User();
+			u.setUserName("User " + i);
+			t.setUser(u);
+			itemList.add(t);
+		}
+				
 		database.addItem("David Göransson", "Hej, David här är din body!", "12:47", "Facebook");
 		database.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37", "Twitter");
+		database.addListOfItems(itemList);
 
 		Log.d("NumberOfItems: ", "" + database.getNumberOfItems());
-		Log.d("String of ID", database.getRow(1));
+		//Log.d("String of ID", database.getRow(1));
 	}
 
 	// Methods called on button press. See feed_layout.xml

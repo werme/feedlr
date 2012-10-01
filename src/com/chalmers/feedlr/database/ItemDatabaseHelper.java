@@ -6,6 +6,10 @@
 
 package com.chalmers.feedlr.database;
 
+import java.util.List;
+
+import com.chalmers.feedlr.model.Item;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -49,6 +53,14 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	//Add a single item to the database.
+	
+	public void addListOfItems(List<Item> itemList){
+		for (Item o: itemList) {
+			addItem(o.getUser().getUserName(), o.getText(), "Timestamp", "Twitter");
+			Log.d("test", "Iteration");
+		}
+	}
+	
 	public void addItem(String author, String body, String timestamp, String source){
 		SQLiteDatabase database = this.getWritableDatabase();
 		
@@ -62,22 +74,26 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	public String getRow(int id) {
-	    SQLiteDatabase db = this.getReadableDatabase();
+	    SQLiteDatabase database = this.getReadableDatabase();
 	 
-	    Cursor cursor = db.query(TABLE_ITEM, new String[] { COLUMN_AUTHOR,
+	    Cursor cursor = database.query(TABLE_ITEM, new String[] { COLUMN_AUTHOR,
 	            COLUMN_BODY, COLUMN_TIMESTAMP }, COLUMN_ID + "=?",
 	            new String[] { String.valueOf(id) }, null, null, null, null);
 	    if (cursor != null)
 	        cursor.moveToFirst();
 	 
 
-	    // return contact
-	    return cursor.getString(0) + cursor.getString(1) + cursor.getString(2);
+	    // return contact /test
+	    String i = cursor.getString(0) + cursor.getString(1) + cursor.getString(2);
+	    cursor.close();
+	    database.close();
+	    return i;
 	}
 
 	public void deleteTable(){
 		SQLiteDatabase database = this.getWritableDatabase();
 		database.delete(TABLE_ITEM, null, null);
+		database.close();
 	}
 	/*
 	
@@ -103,6 +119,9 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 	
 	public long getNumberOfItems(){
 		SQLiteDatabase database = this.getReadableDatabase();
-		return DatabaseUtils.queryNumEntries(database ,TABLE_ITEM);		
+		long l = DatabaseUtils.queryNumEntries(database ,TABLE_ITEM);
+		database.close();
+		return l;
+		
 	}
 }
