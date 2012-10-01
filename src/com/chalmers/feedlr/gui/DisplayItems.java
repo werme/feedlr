@@ -34,20 +34,19 @@ public class DisplayItems extends ListActivity {
 	}
 
 	/**
-	 * A function to statically add items from the database to the feed.
-	 * Currently relying on that addItem returns the ID the post was added to.
+	 * A method to statically add items from the database to the feed.
 	 */
 	public void fillFeed() {
 		db = new ItemDatabaseHelper(this.getApplicationContext());
-		db.deleteTable();
-		long tmp1 = 0;
-		tmp1 = db.addItem("David Göransson", "Hej, David här är din body!",
+
+		db.addItem("David Göransson", "Hej, David här är din body!",
 				"12:47", "Facebook");
-		long tmp2 = 0;
-		tmp2 = db.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37",
+		db.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37",
 				"Twitter");
-		list.add(db.getRow((int) tmp1));
-		list.add(db.getRow((int) tmp2));
+		list.add(db.getRow(1));
+		list.add(db.getRow(2));
+		list.add(db.getRow(3));
+		list.add(db.getRow(4));
 	}
 
 }
