@@ -12,6 +12,9 @@
 	<string name="facebook_authorized">Facebook is authorized</string>
 
 	<string name="update_feed">Update feed</string>
-
 	<string name="button_list_view">Display Items</string>
+	
+	<string name="button_slide_left">Slide left!</string>
+	<string name="button_slide_right">Slide right!</string>
+	
 </resources>
