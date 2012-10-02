@@ -23,13 +23,13 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
 public class FeedDataService extends Service {
-	private final IBinder binder = new TwitterServiceBinder();
+	private final IBinder binder = new FeedServiceBinder();
 	
 	TwitterRequestListener listener = new TwitterRequestListener();
 	
 	TwitterAuthHelper twitter;
 
-	public class TwitterServiceBinder extends Binder {
+	public class FeedServiceBinder extends Binder {
 		FeedDataService getService() {
 			return FeedDataService.this;
 		}
@@ -65,7 +65,6 @@ public class FeedDataService extends Service {
 			TwitterJSONParser.parse(response);
 			
 			// Put stuff into database here
-			
 			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedDataService.this);
 
 			Intent intent = new Intent();

@@ -6,7 +6,7 @@
 
 package com.chalmers.feedlr.services;
 
-import com.chalmers.feedlr.services.FeedDataService.TwitterServiceBinder;
+import com.chalmers.feedlr.services.FeedDataService.FeedServiceBinder;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -59,7 +59,7 @@ public class FeedDataClient {
 	private ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			TwitterServiceBinder binder = (TwitterServiceBinder) service;
+			FeedServiceBinder binder = (FeedServiceBinder) service;
 	        feedService = binder.getService();
 	        isBound = true;
 		}
