@@ -1,29 +1,29 @@
 /**
  * Class description
  * 
- * @author Olle Werme
+ * @author Daniel Larsson
  */
 
 package com.chalmers.feedlr.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TwitterItem implements Item {
+public class FacebookItem implements Item {
 
-	private String text;
+	private String message;
 	private User user;
 	private String timestamp;
+	private String type;
 
-	public TwitterItem() {
+	public FacebookItem() {
 		user = new User();
 	}
 
 	@Override
-	public void setText(String text) {
-		this.text = text;
+	public void setText(String message) {
+		this.message = message;
 	}
 
-	@Override
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -40,10 +40,18 @@ public class TwitterItem implements Item {
 
 	@Override
 	public String getText() {
-		return text;
+		return message;
 	}
 
 	public String getTimestamp() {
 		return timestamp;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getType() {
+		return type;
 	}
 }

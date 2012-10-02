@@ -1,3 +1,9 @@
+/**
+ * Class description
+ * 
+ * @author Daniel Larsson
+ */
+
 package com.chalmers.feedlr.facebook;
 
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
