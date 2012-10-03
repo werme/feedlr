@@ -1,12 +1,16 @@
 package com.chalmers.feedlr.activities;
 
+import java.util.ArrayList;
+
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.adapters.UsersAdapter;
 import com.chalmers.feedlr.facebook.FacebookHelper;
 import com.chalmers.feedlr.gui.DisplayItems;
 import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.util.Services;
+import com.chalmers.feedlr.model.User;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -17,6 +21,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
@@ -25,7 +30,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -68,6 +72,7 @@ public class FeedActivity extends Activity {
 			Log.i(getClass().getName(), "Recieved broadcast!");
 		}
 	};
+	private LayoutInflater inflater;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,7 @@ public class FeedActivity extends Activity {
 
 		res = getResources();
 		lbm = LocalBroadcastManager.getInstance(this);
+		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		serviceHandler = new ServiceHandler(this);
 		facebookHelper = new FacebookHelper(this);
@@ -102,40 +108,9 @@ public class FeedActivity extends Activity {
 		flipper = (ViewFlipper) findViewById(R.id.flipper);
 
 		createFeedView = (ViewAnimator) findViewById(R.id.feed_view);
-		
-		createFeedButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				LinearLayout ll = new LinearLayout(FeedActivity.this);
-				ListView lv = new ListView(FeedActivity.this);
-				lv.setAdapter(new ArrayAdapter<String>(FeedActivity.this,
-						R.layout.feed_list_layout, new String[] { "Facebook",
-								"Twitter" }));
-				ll.addView(lv);
-				createFeedView.addView(ll);
+		createFeedView.setInAnimation(slideInRight);
+		createFeedView.setOutAnimation(slideOutLeft);
 
-				createFeedView.setInAnimation(slideInRight);
-				createFeedView.setOutAnimation(slideOutLeft);
-				createFeedView.showNext();
-				
-				lv.setOnItemClickListener(new OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-							long arg3) {
-						LinearLayout ll = new LinearLayout(FeedActivity.this);
-						ListView lv = new ListView(FeedActivity.this);
-						lv.setAdapter(new ArrayAdapter<String>(FeedActivity.this,
-								R.layout.feed_list_layout, new String[] { "asdasdsa",
-										"asdasdasd", "adasdsa" }));
-						ll.addView(lv);
-						createFeedView.addView(ll);
-
-						createFeedView.setInAnimation(slideInRight);
-						createFeedView.setOutAnimation(slideOutLeft);
-						createFeedView.showNext();
-					}
-				});
-			}
-		});
 		slideLeftButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				flipper.setInAnimation(slideInLeft);
@@ -245,7 +220,35 @@ public class FeedActivity extends Activity {
 		}
 	}
 
-	// Methods called on button press. See feed_layout.xml
+	// Methods called on button press. See xml files.
+	public void initCreateFeedView(View v) {
+		ListView lv = new ListView(this);
+		lv.setAdapter(new ArrayAdapter<String>(this, R.layout.feed_list_layout,
+				Services.getServices()));
+
+		lv.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				ListView lv = (ListView) inflater.inflate(
+						R.layout.user_list_view, null);
+
+				ArrayList<User> users = new ArrayList<User>();
+				users.add(new User("Yeah Buddy"));
+				users.add(new User("Bacon"));
+
+				lv.setAdapter(new UsersAdapter(FeedActivity.this,
+						R.layout.list_item, users));
+
+				createFeedView.addView(lv);
+				createFeedView.showNext();
+			}
+		});
+
+		createFeedView.addView(lv);
+		createFeedView.showNext();
+	}
+
 	public void authorizeFacebook(View v) {
 		facebookHelper.authorize();
 	}

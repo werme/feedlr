@@ -47,6 +47,7 @@
                 android:id="@+id/button_create_feed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="initCreateFeedView"
                 android:text="@string/button_create_feed" />
 
             <Button
