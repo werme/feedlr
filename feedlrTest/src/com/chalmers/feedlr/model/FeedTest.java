@@ -4,16 +4,39 @@
 
 package com.chalmers.feedlr.model;
 
+import java.util.List;
 import android.test.AndroidTestCase;
 
 public class FeedTest extends AndroidTestCase {
-
+	
+	private Feed feed;
+	private List<User> twitterUsers;
+	private List<User> fbUsers;
+	private User user1;
+	private User user2;
+	private User user3;
+	
 	/**
 	 * This is called before each test.
 	 */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		
+		user1.setUserName("User 1");
+		user2.setUserName("User 2");
+		user3.setUserName("User 3");
+		
+		twitterUsers.add(user1);
+		twitterUsers.add(user2);
+		
+		fbUsers.add(user1);
+		fbUsers.add(user3);
+		
+		feed = new Feed();
+		feed.setFacebookUsers(fbUsers);
+		feed.setTwitterUsers(twitterUsers);
+		
 	}
 
 	/**
@@ -21,7 +44,10 @@ public class FeedTest extends AndroidTestCase {
 	 * The various objects should have been created with suitable values.
 	 */
 	public void testPreconditions() {
-
+		assertTrue(feed != null);
+		assertTrue(feed.getFacebookUsers() == fbUsers);
+		assertTrue(feed.getTwitterUsers() == twitterUsers);
+		assertTrue(feed.getTitle() == "Yeah buddy"); 
 	}
 
 	/**
