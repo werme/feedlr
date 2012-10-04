@@ -14,8 +14,6 @@ public class CreateFeedView extends ViewAnimator {
 
 	public CreateFeedView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
-		setBackgroundColor(Color.DKGRAY);
 	}
 
 	@Override

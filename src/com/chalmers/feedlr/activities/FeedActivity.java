@@ -39,10 +39,7 @@ import android.widget.ViewAnimator;
 import android.widget.ViewFlipper;
 
 public class FeedActivity extends FragmentActivity {
-	
-	private ViewPager viewPager;
-	private FeedAdapter adapter;
-	
+
 	private FeedDataClient feedData;
 	private ServiceHandler serviceHandler;
 
@@ -53,14 +50,17 @@ public class FeedActivity extends FragmentActivity {
 
 	private Resources res;
 	private LocalBroadcastManager lbm;
+	private LayoutInflater inflater;
 
-	private ViewFlipper flipper;
+	private ViewFlipper mainViewFlipper;
+	private ViewPager feedViewSwiper;
+	private ViewAnimator createFeedView;
+
+	private FeedAdapter adapter;
 
 	private Button facebookAuthButton;
 	private Button twitterAuthButton;
 	private Button updateButton;
-
-	private ViewAnimator createFeedView;
 
 	private Animation slideOutLeft;
 	private Animation slideOutRight;
@@ -75,33 +75,39 @@ public class FeedActivity extends FragmentActivity {
 			Log.i(getClass().getName(), "Recieved broadcast!");
 		}
 	};
-	private LayoutInflater inflater;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flipper);
 
+		// get helpers from android system
+		res = getResources();
+		lbm = LocalBroadcastManager.getInstance(this);
+		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		// find views inflated from xml
+		mainViewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
+		createFeedView = (ViewAnimator) findViewById(R.id.feed_view);
+
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
 		updateButton = (Button) findViewById(R.id.button_update);
 
-		res = getResources();
-		lbm = LocalBroadcastManager.getInstance(this);
-		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-		viewPager = (ViewPager) findViewById(R.id.feed_view_pager);
-
+		// set adapters
 		adapter = new FeedAdapter(getSupportFragmentManager(), this);
-		viewPager.setAdapter(adapter);
+		feedViewSwiper.setAdapter(adapter);
 
+		// Instanciate client and service helpers
 		serviceHandler = new ServiceHandler(this);
 		facebookHelper = new FacebookHelper(this);
 		facebookHelper.init();
 
 		feedData = new FeedDataClient(this);
 		feedData.startService();
-		
+
+		// load animations from res/anim
 		slideOutLeft = AnimationUtils
 				.loadAnimation(this, R.anim.slide_out_left);
 		slideOutRight = AnimationUtils.loadAnimation(this,
@@ -109,11 +115,8 @@ public class FeedActivity extends FragmentActivity {
 		slideInLeft = AnimationUtils.loadAnimation(this, R.anim.slide_in_left);
 		slideInRight = AnimationUtils
 				.loadAnimation(this, R.anim.slide_in_right);
-		
 
-		flipper = (ViewFlipper) findViewById(R.id.flipper);
-
-		createFeedView = (ViewAnimator) findViewById(R.id.feed_view);
+		// misc
 		createFeedView.setInAnimation(slideInRight);
 		createFeedView.setOutAnimation(slideOutLeft);
 	}
@@ -239,16 +242,16 @@ public class FeedActivity extends FragmentActivity {
 		createFeedView.addView(lv);
 		createFeedView.showNext();
 	}
-	
+
 	public void toggleSettingsView(View v) {
-		if(flipper.getCurrentView().getId() == R.id.first) {
-				flipper.setInAnimation(slideInLeft);
-				flipper.setOutAnimation(slideOutRight);
-				flipper.showNext();
+		if (mainViewFlipper.getCurrentView().getId() == R.id.first) {
+			mainViewFlipper.setInAnimation(slideInLeft);
+			mainViewFlipper.setOutAnimation(slideOutRight);
+			mainViewFlipper.showNext();
 		} else {
-				flipper.setInAnimation(slideInRight);
-				flipper.setOutAnimation(slideOutLeft);
-				flipper.showPrevious();
+			mainViewFlipper.setInAnimation(slideInRight);
+			mainViewFlipper.setOutAnimation(slideOutLeft);
+			mainViewFlipper.showPrevious();
 		}
 	}
 
@@ -263,6 +266,7 @@ public class FeedActivity extends FragmentActivity {
 	public void updateFeed(View v) {
 		feedData.update();
 	}
+
 	public void addFeed(View v) {
 		Feed feed = new Feed("Yeah Buddy");
 		adapter.addFeed(feed);
