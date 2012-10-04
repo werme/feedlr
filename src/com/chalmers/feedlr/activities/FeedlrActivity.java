@@ -3,13 +3,14 @@ package com.chalmers.feedlr.activities;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.adapters.FeedAdapter;
 import com.chalmers.feedlr.adapters.UsersAdapter;
 import com.chalmers.feedlr.facebook.FacebookHelper;
-import com.chalmers.feedlr.gui.DisplayItems;
 import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.util.Services;
+import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.User;
 
 import android.os.Bundle;
@@ -19,7 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,8 +38,11 @@ import android.widget.Toast;
 import android.widget.ViewAnimator;
 import android.widget.ViewFlipper;
 
-public class FeedActivity extends Activity {
-
+public class FeedlrActivity extends FragmentActivity {
+	
+	private ViewPager viewPager;
+	private FeedAdapter adapter;
+	
 	private FeedDataClient feedData;
 	private ServiceHandler serviceHandler;
 
@@ -53,8 +59,8 @@ public class FeedActivity extends Activity {
 	private Button facebookAuthButton;
 	private Button twitterAuthButton;
 	private Button updateButton;
-	private Button slideLeftButton;
-	private Button slideRightButton;
+	private Button settingsButton;
+	private Button mainButton;
 	private Button createFeedButton;
 
 	private ViewAnimator createFeedView;
@@ -82,13 +88,18 @@ public class FeedActivity extends Activity {
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
 		updateButton = (Button) findViewById(R.id.button_update);
-		slideLeftButton = (Button) findViewById(R.id.button_slide_left);
-		slideRightButton = (Button) findViewById(R.id.button_slide_right);
+		settingsButton = (Button) findViewById(R.id.button_settings);
+		mainButton = (Button) findViewById(R.id.button_main);
 		createFeedButton = (Button) findViewById(R.id.button_create_feed);
 
 		res = getResources();
 		lbm = LocalBroadcastManager.getInstance(this);
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
+		viewPager = (ViewPager) findViewById(R.id.feed_view_pager);
+
+		adapter = new FeedAdapter(getSupportFragmentManager(), this);
+		viewPager.setAdapter(adapter);
 
 		serviceHandler = new ServiceHandler(this);
 		facebookHelper = new FacebookHelper(this);
@@ -111,14 +122,14 @@ public class FeedActivity extends Activity {
 		createFeedView.setInAnimation(slideInRight);
 		createFeedView.setOutAnimation(slideOutLeft);
 
-		slideLeftButton.setOnClickListener(new View.OnClickListener() {
+		settingsButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				flipper.setInAnimation(slideInLeft);
 				flipper.setOutAnimation(slideOutRight);
 				flipper.showNext();
 			}
 		});
-		slideRightButton.setOnClickListener(new View.OnClickListener() {
+		mainButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view) {
 				flipper.setInAnimation(slideInRight);
 				flipper.setOutAnimation(slideOutLeft);
@@ -206,7 +217,7 @@ public class FeedActivity extends Activity {
 
 	private class TwitterAuthListener implements AuthListener {
 		public void onAuthorizationComplete() {
-			Toast.makeText(FeedActivity.this,
+			Toast.makeText(FeedlrActivity.this,
 					"Twitter authorization successful", Toast.LENGTH_SHORT)
 					.show();
 			twitterAuthButton.setText(res
@@ -223,7 +234,7 @@ public class FeedActivity extends Activity {
 	// Methods called on button press. See xml files.
 	public void initCreateFeedView(View v) {
 		ListView lv = new ListView(this);
-		lv.setAdapter(new ArrayAdapter<String>(this, R.layout.feed_list_layout,
+		lv.setAdapter(new ArrayAdapter<String>(this, R.layout.client_list_item,
 				Services.getServices()));
 
 		lv.setOnItemClickListener(new OnItemClickListener() {
@@ -231,13 +242,13 @@ public class FeedActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				ListView lv = (ListView) inflater.inflate(
-						R.layout.user_list_view, null);
+						R.layout.user_list_layout, null);
 
 				ArrayList<User> users = new ArrayList<User>();
 				users.add(new User("Yeah Buddy"));
 				users.add(new User("Bacon"));
 
-				lv.setAdapter(new UsersAdapter(FeedActivity.this,
+				lv.setAdapter(new UsersAdapter(FeedlrActivity.this,
 						R.layout.list_item, users));
 
 				createFeedView.addView(lv);
@@ -260,9 +271,8 @@ public class FeedActivity extends Activity {
 	public void updateFeed(View v) {
 		feedData.update();
 	}
-
-	public void displayItems(View v) {
-		Intent intent = new Intent(this, DisplayItems.class);
-		startActivity(intent);
+	public void addFeed(View v) {
+		Feed feed = new Feed("Yeah Buddy");
+		adapter.addFeed(feed);
 	}
 }

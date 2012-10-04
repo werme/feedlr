@@ -19,7 +19,7 @@
         <service android:name=".services.FeedDataService" />
         
         <activity
-            android:name=".activities.FeedActivity"
+            android:name=".activities.FeedlrActivity"
             android:label="@string/title_activity_feed" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

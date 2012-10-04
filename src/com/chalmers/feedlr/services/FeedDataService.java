@@ -8,7 +8,7 @@ package com.chalmers.feedlr.services;
 
 import org.scribe.model.Token;
 
-import com.chalmers.feedlr.activities.FeedActivity;
+import com.chalmers.feedlr.activities.FeedlrActivity;
 import com.chalmers.feedlr.listeners.RequestListener;
 import com.chalmers.feedlr.twitter.Twitter;
 import com.chalmers.feedlr.twitter.TwitterAuthHelper;
@@ -68,7 +68,7 @@ public class FeedDataService extends Service {
 			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedDataService.this);
 
 			Intent intent = new Intent();
-			intent.setAction(FeedActivity.DATA_UPDATED);
+			intent.setAction(FeedlrActivity.DATA_UPDATED);
 			lbm.sendBroadcast(intent);
 		}	
 	}
