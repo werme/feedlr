@@ -38,7 +38,7 @@ import android.widget.Toast;
 import android.widget.ViewAnimator;
 import android.widget.ViewFlipper;
 
-public class FeedlrActivity extends FragmentActivity {
+public class FeedActivity extends FragmentActivity {
 	
 	private ViewPager viewPager;
 	private FeedAdapter adapter;
@@ -59,9 +59,6 @@ public class FeedlrActivity extends FragmentActivity {
 	private Button facebookAuthButton;
 	private Button twitterAuthButton;
 	private Button updateButton;
-	private Button settingsButton;
-	private Button mainButton;
-	private Button createFeedButton;
 
 	private ViewAnimator createFeedView;
 
@@ -88,9 +85,6 @@ public class FeedlrActivity extends FragmentActivity {
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
 		updateButton = (Button) findViewById(R.id.button_update);
-		settingsButton = (Button) findViewById(R.id.button_settings);
-		mainButton = (Button) findViewById(R.id.button_main);
-		createFeedButton = (Button) findViewById(R.id.button_create_feed);
 
 		res = getResources();
 		lbm = LocalBroadcastManager.getInstance(this);
@@ -107,7 +101,7 @@ public class FeedlrActivity extends FragmentActivity {
 
 		feedData = new FeedDataClient(this);
 		feedData.startService();
-
+		
 		slideOutLeft = AnimationUtils
 				.loadAnimation(this, R.anim.slide_out_left);
 		slideOutRight = AnimationUtils.loadAnimation(this,
@@ -115,27 +109,13 @@ public class FeedlrActivity extends FragmentActivity {
 		slideInLeft = AnimationUtils.loadAnimation(this, R.anim.slide_in_left);
 		slideInRight = AnimationUtils
 				.loadAnimation(this, R.anim.slide_in_right);
+		
 
 		flipper = (ViewFlipper) findViewById(R.id.flipper);
 
 		createFeedView = (ViewAnimator) findViewById(R.id.feed_view);
 		createFeedView.setInAnimation(slideInRight);
 		createFeedView.setOutAnimation(slideOutLeft);
-
-		settingsButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				flipper.setInAnimation(slideInLeft);
-				flipper.setOutAnimation(slideOutRight);
-				flipper.showNext();
-			}
-		});
-		mainButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				flipper.setInAnimation(slideInRight);
-				flipper.setOutAnimation(slideOutLeft);
-				flipper.showPrevious();
-			}
-		});
 	}
 
 	@Override
@@ -217,7 +197,7 @@ public class FeedlrActivity extends FragmentActivity {
 
 	private class TwitterAuthListener implements AuthListener {
 		public void onAuthorizationComplete() {
-			Toast.makeText(FeedlrActivity.this,
+			Toast.makeText(FeedActivity.this,
 					"Twitter authorization successful", Toast.LENGTH_SHORT)
 					.show();
 			twitterAuthButton.setText(res
@@ -248,7 +228,7 @@ public class FeedlrActivity extends FragmentActivity {
 				users.add(new User("Yeah Buddy"));
 				users.add(new User("Bacon"));
 
-				lv.setAdapter(new UsersAdapter(FeedlrActivity.this,
+				lv.setAdapter(new UsersAdapter(FeedActivity.this,
 						R.layout.user_list_item, users));
 
 				createFeedView.addView(lv);
@@ -258,6 +238,18 @@ public class FeedlrActivity extends FragmentActivity {
 
 		createFeedView.addView(lv);
 		createFeedView.showNext();
+	}
+	
+	public void toggleSettingsView(View v) {
+		if(flipper.getCurrentView().getId() == R.id.first) {
+				flipper.setInAnimation(slideInLeft);
+				flipper.setOutAnimation(slideOutRight);
+				flipper.showNext();
+		} else {
+				flipper.setInAnimation(slideInRight);
+				flipper.setOutAnimation(slideOutLeft);
+				flipper.showPrevious();
+		}
 	}
 
 	public void authorizeFacebook(View v) {

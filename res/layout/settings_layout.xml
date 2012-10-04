@@ -54,6 +54,7 @@
                 android:id="@+id/button_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="toggleSettingsView"
                 android:text="@string/button_main" />
         </LinearLayout>
         
