@@ -4,35 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/buttonlayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#2B60DE"
-        android:gravity="left|top"
-        android:height="32dp"
-        android:orientation="horizontal"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp" >
+    <include layout="@layout/feed_action_bar" />
 
-        <TextView
-            android:id="@+id/txtTest"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center_vertical"
-            android:paddingLeft="5dp"
-            android:text="Feedlr"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold" >
-        </TextView>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/button_slide_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_slide_left" />
+    <include layout="@layout/feed_view_pager" />
 
 </LinearLayout>

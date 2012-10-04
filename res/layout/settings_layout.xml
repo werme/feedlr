@@ -51,10 +51,10 @@
                 android:text="@string/button_create_feed" />
 
             <Button
-                android:id="@+id/button_slide_right"
+                android:id="@+id/button_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/button_slide_right" />
+                android:text="@string/button_main" />
         </LinearLayout>
         
     </com.chalmers.feedlr.view.CreateFeedView>
