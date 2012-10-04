@@ -30,7 +30,7 @@ public class UsersAdapter extends ArrayAdapter<User> {
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.list_item, null);
+			v = vi.inflate(R.layout.user_list_item, null);
 		}
 
 		User user = users.get(position);

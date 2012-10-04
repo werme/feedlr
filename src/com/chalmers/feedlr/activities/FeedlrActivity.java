@@ -249,7 +249,7 @@ public class FeedlrActivity extends FragmentActivity {
 				users.add(new User("Bacon"));
 
 				lv.setAdapter(new UsersAdapter(FeedlrActivity.this,
-						R.layout.list_item, users));
+						R.layout.user_list_item, users));
 
 				createFeedView.addView(lv);
 				createFeedView.showNext();
