@@ -43,10 +43,9 @@ public class DisplayItems extends ListActivity {
 				"12:47", "Facebook");
 		db.addItem("Olle Werme", "Hej, Olle här är din body!", "13:37",
 				"Twitter");
-		list.add(db.getRow(1));
-		list.add(db.getRow(2));
-		list.add(db.getRow(3));
-		list.add(db.getRow(4));
+		list.add("HEJ!");
+//		list.add(db.getRow(1));
+//		list.add(db.getRow(2));
 	}
 
 }
