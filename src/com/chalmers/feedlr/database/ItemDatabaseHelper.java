@@ -57,7 +57,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 		temp.put(COLUMN_BODY, body);
 		temp.put(COLUMN_TIMESTAMP, timestamp);
 		temp.put(COLUMN_SOURCE, source);
-		
+	
 		database.insert(TABLE_ITEM, null, temp);
 		database.close();
 	}

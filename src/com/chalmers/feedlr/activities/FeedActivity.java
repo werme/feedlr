@@ -3,6 +3,7 @@ package com.chalmers.feedlr.activities;
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.ItemDatabaseHelper;
 import com.chalmers.feedlr.facebook.FacebookHelper;
+import com.chalmers.feedlr.gui.DisplayItems;
 import com.chalmers.feedlr.helpers.ServiceHandler;
 import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
@@ -66,7 +67,7 @@ public class FeedActivity extends Activity {
         feedData = new FeedDataClient(this);
         feedData.startService();
         
-        databaseTest();
+//        databaseTest();
     }
     @Override
     protected void onDestroy() {
@@ -139,14 +140,13 @@ public class FeedActivity extends Activity {
 	}
 	
 	private class TwitterAuthListener implements AuthListener {
-		@Override
 		public void onAuthorizationComplete() {
 			Toast.makeText(FeedActivity.this, "Twitter authorization successful", Toast.LENGTH_SHORT).show();
 			twitterAuthButton.setText(res.getString(R.string.twitter_authorized));
 			twitterAuthButton.setEnabled(false);
 			updateButton.setEnabled(true);
 		}
-		@Override
+		
 		public void onAuthorizationFail() {
 			// TODO Auto-generated method stub
 			
@@ -176,5 +176,10 @@ public class FeedActivity extends Activity {
 	}
 	public void updateFeed(View v) {
 		feedData.update();		
+	}
+	
+	public void displayItems(View v){
+		Intent intent = new Intent(this, DisplayItems.class);
+		startActivity(intent);
 	}
 }
