@@ -34,6 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 import android.widget.ViewFlipper;
@@ -75,11 +76,12 @@ public class FeedActivity extends FragmentActivity {
 			Log.i(getClass().getName(), "Recieved broadcast!");
 		}
 	};
+	private TextView feedTitleTextView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.flipper);
+		setContentView(R.layout.main_view_flipper);
 
 		// get helpers from android system
 		res = getResources();
@@ -87,7 +89,7 @@ public class FeedActivity extends FragmentActivity {
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		// find views inflated from xml
-		mainViewFlipper = (ViewFlipper) findViewById(R.id.flipper);
+		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
 		createFeedView = (ViewAnimator) findViewById(R.id.feed_view);
 
@@ -95,9 +97,32 @@ public class FeedActivity extends FragmentActivity {
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
 		updateButton = (Button) findViewById(R.id.button_update);
 
+		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
+
 		// set adapters
 		adapter = new FeedAdapter(getSupportFragmentManager(), this);
 		feedViewSwiper.setAdapter(adapter);
+		feedViewSwiper
+				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+					@Override
+					public void onPageSelected(int feedIndex) {
+						// String feedTitle = getFeedTitle(index);
+						feedTitleTextView.setText("Feed: " + feedIndex);
+					}
+
+					@Override
+					public void onPageScrolled(int arg0, float arg1, int arg2) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onPageScrollStateChanged(int arg0) {
+						// TODO Auto-generated method stub
+
+					}
+				});
 
 		// Instanciate client and service helpers
 		serviceHandler = new ServiceHandler(this);
@@ -179,6 +204,15 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	@Override
+	public void onBackPressed() {
+		if(mainViewFlipper.getCurrentView().getId() == R.id.settings_layout) {
+			toggleSettingsView(null);
+		} else {
+			super.onBackPressed();
+		}
+	}
+
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
@@ -244,7 +278,7 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void toggleSettingsView(View v) {
-		if (mainViewFlipper.getCurrentView().getId() == R.id.first) {
+		if (mainViewFlipper.getCurrentView().getId() == R.id.main_layout) {
 			mainViewFlipper.setInAnimation(slideInLeft);
 			mainViewFlipper.setOutAnimation(slideOutRight);
 			mainViewFlipper.showNext();
@@ -270,5 +304,6 @@ public class FeedActivity extends FragmentActivity {
 	public void addFeed(View v) {
 		Feed feed = new Feed("Yeah Buddy");
 		adapter.addFeed(feed);
+		feedViewSwiper.setCurrentItem(adapter.getCount());
 	}
 }

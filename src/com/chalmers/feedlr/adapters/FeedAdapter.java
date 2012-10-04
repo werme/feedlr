@@ -28,11 +28,6 @@ public class FeedAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int index) {
-		return getFeed(index);
-	}
-
-	private Fragment getFeed(int index) {
-
 		ArrayList<HashMap<String, String>> feedData = getFeedData(index);
 
 		ListFragment f = FeedFragment.newInstance("My Message " + index);
@@ -46,7 +41,7 @@ public class FeedAdapter extends FragmentPagerAdapter {
 		return f;
 	}
 	
-	// For testing purposes only!
+	// For testing purposes only! OMG this is ugly :O
 	private ArrayList<HashMap<String, String>> getFeedData(int index) {
 		ArrayList<HashMap<String, String>> feedData = new ArrayList<HashMap<String, String>>();
 		
