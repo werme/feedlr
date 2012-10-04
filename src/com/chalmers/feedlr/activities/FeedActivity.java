@@ -52,16 +52,22 @@ public class FeedActivity extends FragmentActivity {
 	private FacebookHelper facebookHelper;
 
 	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
-
+	
+	// Android system helpers
 	private Resources res;
 	private LocalBroadcastManager lbm;
 	private LayoutInflater inflater;
 
+	// Adapters
+	private FeedAdapter adapter;
+	private UsersAdapter userAdapter;
+
+	// Views
 	private ViewFlipper mainViewFlipper;
 	private ViewPager feedViewSwiper;
 	private ViewAnimator createFeedView;
-
-	private FeedAdapter adapter;
+	private ListView userListView;
+	private LinearLayout userListLayout;
 
 	private Button facebookAuthButton;
 	private Button twitterAuthButton;
@@ -69,6 +75,7 @@ public class FeedActivity extends FragmentActivity {
 
 	private TextView feedTitleTextView;
 
+	// Animations
 	private Animation slideOutLeft;
 	private Animation slideOutRight;
 	private Animation slideInLeft;
@@ -81,9 +88,6 @@ public class FeedActivity extends FragmentActivity {
 					.show();
 		}
 	};
-	private ListView userListView;
-	private UsersAdapter userAdapter;
-	private LinearLayout userListLayout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +119,7 @@ public class FeedActivity extends FragmentActivity {
 					@Override
 					public void onPageSelected(int feedIndex) {
 						// String feedTitle = getFeedTitle(index);
-						feedTitleTextView.setText(adapter.getItem(feedIndex).getFeed());
+						feedTitleTextView.setText("Feed: " + (feedIndex + 1));
 					}
 
 					@Override
@@ -238,14 +242,17 @@ public class FeedActivity extends FragmentActivity {
 		}
 	}
 
-	// Methods called on button press. See xml files.
+	// Methods called on button press below. See xml files.
+
 	public void initCreateFeedView(View v) {
 		userListLayout = (LinearLayout) inflater.inflate(
 				R.layout.user_list_layout, null);
-
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
+		// get users from database here
+
+		// Stupid example
 		ArrayList<User> users = new ArrayList<User>();
 		users.add(new User("Yeah Buddy"));
 		users.add(new User("Arne"));
@@ -261,7 +268,9 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void toggleSettingsView(View v) {
-		if (mainViewFlipper.getCurrentView().getId() == R.id.main_layout) {
+		int currentView = mainViewFlipper.getCurrentView().getId();
+
+		if (currentView == R.id.main_layout) {
 			mainViewFlipper.setInAnimation(slideInLeft);
 			mainViewFlipper.setOutAnimation(slideOutRight);
 			mainViewFlipper.showNext();
@@ -270,18 +279,6 @@ public class FeedActivity extends FragmentActivity {
 			mainViewFlipper.setOutAnimation(slideOutLeft);
 			mainViewFlipper.showPrevious();
 		}
-	}
-
-	public void authorizeFacebook(View v) {
-		facebookHelper.authorize();
-	}
-
-	public void authorizeTwitter(View v) {
-		serviceHandler.authorize(Services.TWITTER, new TwitterAuthListener());
-	}
-
-	public void updateFeed(View v) {
-		feedData.update();
 	}
 
 	public void createFeed(View v) {
@@ -308,20 +305,33 @@ public class FeedActivity extends FragmentActivity {
 				Toast.LENGTH_SHORT).show();
 	}
 
-	private class TwitterAuthListener implements AuthListener {
-		public void onAuthorizationComplete() {
-			Toast.makeText(FeedActivity.this,
-					"Twitter authorization successful", Toast.LENGTH_SHORT)
-					.show();
-			twitterAuthButton.setText(res
-					.getString(R.string.twitter_authorized));
-			twitterAuthButton.setEnabled(false);
-			updateButton.setEnabled(true);
-		}
+	public void authorizeTwitter(View v) {
+		serviceHandler.authorize(Services.TWITTER, new AuthListener() {
+			@Override
+			public void onAuthorizationComplete() {
+				Toast.makeText(FeedActivity.this,
+						"Twitter authorization successful", Toast.LENGTH_SHORT)
+						.show();
+				twitterAuthButton.setText(res
+						.getString(R.string.twitter_authorized));
+				twitterAuthButton.setEnabled(false);
+				updateButton.setEnabled(true);
+			}
 
-		public void onAuthorizationFail() {
-			Toast.makeText(FeedActivity.this, "Twitter authorization failed",
-					Toast.LENGTH_SHORT).show();
-		}
+			@Override
+			public void onAuthorizationFail() {
+				Toast.makeText(FeedActivity.this,
+						"Twitter authorization failed", Toast.LENGTH_SHORT)
+						.show();
+			}
+		});
+	}
+	
+	public void authorizeFacebook(View v) {
+		facebookHelper.authorize();
+	}
+
+	public void updateFeed(View v) {
+		feedData.update();
 	}
 }
