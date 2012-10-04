@@ -39,13 +39,6 @@
                 android:text="@string/update_feed" />
 
             <Button
-                android:id="@+id/button_list_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="displayItems"
-                android:text="@string/button_list_view" />
-
-            <Button
                 android:id="@+id/button_create_feed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

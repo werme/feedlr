@@ -11,6 +11,7 @@ import com.chalmers.feedlr.listeners.AuthListener;
 import com.chalmers.feedlr.services.FeedDataClient;
 import com.chalmers.feedlr.util.Services;
 import com.chalmers.feedlr.model.Feed;
+import com.chalmers.feedlr.model.FeedHandler;
 import com.chalmers.feedlr.model.User;
 
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -33,6 +35,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +67,8 @@ public class FeedActivity extends FragmentActivity {
 	private Button twitterAuthButton;
 	private Button updateButton;
 
+	private TextView feedTitleTextView;
+
 	private Animation slideOutLeft;
 	private Animation slideOutRight;
 	private Animation slideInLeft;
@@ -73,10 +79,11 @@ public class FeedActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			Toast.makeText(context, "Feed data was updated", Toast.LENGTH_SHORT)
 					.show();
-			Log.i(getClass().getName(), "Recieved broadcast!");
 		}
 	};
-	private TextView feedTitleTextView;
+	private ListView userListView;
+	private UsersAdapter userAdapter;
+	private LinearLayout userListLayout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +115,7 @@ public class FeedActivity extends FragmentActivity {
 					@Override
 					public void onPageSelected(int feedIndex) {
 						// String feedTitle = getFeedTitle(index);
-						feedTitleTextView.setText("Feed: " + feedIndex);
+						feedTitleTextView.setText(adapter.getItem(feedIndex).getFeed());
 					}
 
 					@Override
@@ -205,11 +212,10 @@ public class FeedActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		if(mainViewFlipper.getCurrentView().getId() == R.id.settings_layout) {
+		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
 			toggleSettingsView(null);
-		} else {
+		else
 			super.onBackPressed();
-		}
 	}
 
 	@Override
@@ -232,48 +238,25 @@ public class FeedActivity extends FragmentActivity {
 		}
 	}
 
-	private class TwitterAuthListener implements AuthListener {
-		public void onAuthorizationComplete() {
-			Toast.makeText(FeedActivity.this,
-					"Twitter authorization successful", Toast.LENGTH_SHORT)
-					.show();
-			twitterAuthButton.setText(res
-					.getString(R.string.twitter_authorized));
-			twitterAuthButton.setEnabled(false);
-			updateButton.setEnabled(true);
-		}
-
-		public void onAuthorizationFail() {
-			// TODO Auto-generated method stub
-		}
-	}
-
 	// Methods called on button press. See xml files.
 	public void initCreateFeedView(View v) {
-		ListView lv = new ListView(this);
-		lv.setAdapter(new ArrayAdapter<String>(this, R.layout.client_list_item,
-				Services.getServices()));
+		userListLayout = (LinearLayout) inflater.inflate(
+				R.layout.user_list_layout, null);
 
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				ListView lv = (ListView) inflater.inflate(
-						R.layout.user_list_layout, null);
+		userListView = (ListView) userListLayout
+				.findViewById(R.id.user_list_view);
 
-				ArrayList<User> users = new ArrayList<User>();
-				users.add(new User("Yeah Buddy"));
-				users.add(new User("Bacon"));
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(new User("Yeah Buddy"));
+		users.add(new User("Arne"));
+		users.add(new User("Holger"));
+		users.add(new User("Gottfrid"));
+		users.add(new User("Obama"));
 
-				lv.setAdapter(new UsersAdapter(FeedActivity.this,
-						R.layout.user_list_item, users));
+		userAdapter = new UsersAdapter(this, R.layout.user_list_item, users);
+		userListView.setAdapter(userAdapter);
 
-				createFeedView.addView(lv);
-				createFeedView.showNext();
-			}
-		});
-
-		createFeedView.addView(lv);
+		createFeedView.addView(userListLayout);
 		createFeedView.showNext();
 	}
 
@@ -301,9 +284,44 @@ public class FeedActivity extends FragmentActivity {
 		feedData.update();
 	}
 
-	public void addFeed(View v) {
-		Feed feed = new Feed("Yeah Buddy");
+	public void createFeed(View v) {
+		toggleSettingsView(null);
+
+		SparseBooleanArray checked = userListView.getCheckedItemPositions();
+		EditText titleEditText = (EditText) userListLayout
+				.findViewById(R.id.create_feed_action_bar_title);
+		String feedTitle = titleEditText.getText().toString();
+
+		Feed feed = new Feed(feedTitle);
+		ArrayList<User> users = new ArrayList<User>();
+
+		for (int i = 0; i < userListView.getCount(); i++)
+			if (checked.get(i))
+				users.add(userAdapter.getItem(i));
+
+		// save user list as a feed in database here
+
 		adapter.addFeed(feed);
 		feedViewSwiper.setCurrentItem(adapter.getCount());
+
+		Toast.makeText(FeedActivity.this, "Feed created: " + feed.getTitle(),
+				Toast.LENGTH_SHORT).show();
+	}
+
+	private class TwitterAuthListener implements AuthListener {
+		public void onAuthorizationComplete() {
+			Toast.makeText(FeedActivity.this,
+					"Twitter authorization successful", Toast.LENGTH_SHORT)
+					.show();
+			twitterAuthButton.setText(res
+					.getString(R.string.twitter_authorized));
+			twitterAuthButton.setEnabled(false);
+			updateButton.setEnabled(true);
+		}
+
+		public void onAuthorizationFail() {
+			Toast.makeText(FeedActivity.this, "Twitter authorization failed",
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 }

@@ -35,9 +35,8 @@ public class FeedItemAdapter extends SimpleAdapter {
 		TextView text = (TextView) convertView
 				.findViewById(R.id.feed_item_text);
 		//text.setText(data.get(position).getText());
-		text.setText("data: " + data.get(position).get("text") + " / position: " + position);
+		text.setText("data: " + data.get(position).get("text"));
 
 		return (feedItem);
 	}
-
 }

@@ -4,9 +4,7 @@
     android:id="@+id/checked_text_view"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:textAppearance="?android:attr/textAppearanceLarge"
     android:gravity="center_vertical"
-    android:paddingLeft="6dip"
-    android:paddingRight="6dip"
+    android:padding="10sp"
+    android:textSize="18sp"
     android:checkMark="?android:attr/listChoiceIndicatorMultiple" />

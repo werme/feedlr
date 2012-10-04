@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/feed_action_bar"
+    android:id="@+id/create_feed_action_bar"
     android:layout_width="fill_parent"
     android:layout_height="60sp"
-    android:layout_gravity="center_vertical"
     android:background="#333333"
     android:padding="5sp" >
 
-    <TextView
-        android:id="@+id/feed_action_bar_title"
+    <EditText
+        android:id="@+id/create_feed_action_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center"
+        android:hint="@string/default_feed_name"
+        android:inputType="text"
         android:padding="5sp"
-        android:text="@string/app_name"
         android:textColor="#FFFFFF"
-        android:textSize="22sp" >
-    </TextView>
+        android:textSize="18sp" >
+    </EditText>
 
     <Button
-        android:id="@+id/button_settings"
+        android:id="@+id/button_create_feed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:onClick="toggleSettingsView"
-        android:text="@string/button_settings" />
+        android:gravity="center"
+        android:onClick="createFeed"
+        android:text="@string/button_create_feed" />
 
 </RelativeLayout>

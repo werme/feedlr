@@ -24,6 +24,8 @@ public class FeedAdapter extends FragmentPagerAdapter {
 	public FeedAdapter(FragmentManager fm, Context context) {
 		super(fm);
 		this.context = context;
+		
+		// set number of feed to number of feeds in database
 	}
 
 	@Override
