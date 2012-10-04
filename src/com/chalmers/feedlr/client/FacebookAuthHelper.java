@@ -4,9 +4,8 @@
  * @author Daniel Larsson
  */
 
-package com.chalmers.feedlr.facebook;
+package com.chalmers.feedlr.client;
 
-import com.chalmers.feedlr.util.Services;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
@@ -49,7 +48,7 @@ public class FacebookAuthHelper {
 		if (!facebook.isSessionValid()) {
 			facebook.authorize((Activity) context,
 					new String[] { "read_stream" },
-					Services.FACEBOOK,
+					Clients.FACEBOOK,
 
 					new DialogListener() {
 						@Override

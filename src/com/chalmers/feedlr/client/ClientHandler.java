@@ -4,21 +4,19 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.helpers;
+package com.chalmers.feedlr.client;
 
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.chalmers.feedlr.listeners.AuthListener;
-import com.chalmers.feedlr.twitter.TwitterAuthHelper;
-import com.chalmers.feedlr.util.Services;
+import com.chalmers.feedlr.listener.AuthListener;
 
-public class ServiceHandler {
+public class ClientHandler {
 	
 	private TwitterAuthHelper twitterAuthHelper;
 
-	public ServiceHandler(Context context) {
+	public ClientHandler(Context context) {
 		
 		twitterAuthHelper = new TwitterAuthHelper(context);	
 		// For every service...
@@ -26,7 +24,7 @@ public class ServiceHandler {
 	
 	public void authorize(int service, AuthListener listener) {
 		switch (service) {
-			case Services.TWITTER: 
+			case Clients.TWITTER: 
 				twitterAuthHelper.authorize(listener); break;
 	//		case Service.FACEBOOK:
 	//			facebookAuthHelper.authorize(); break;
@@ -37,7 +35,7 @@ public class ServiceHandler {
 	
 	public boolean isAuthorized(int service) {
 		switch (service) {
-			case Services.TWITTER: 
+			case Clients.TWITTER: 
 				return twitterAuthHelper.isAuthorized();
 //			case Service.FACEBOOK:
 //				return facebookAuthHelper.isAuthorized();

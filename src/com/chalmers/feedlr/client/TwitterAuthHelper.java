@@ -4,16 +4,15 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.twitter;
+package com.chalmers.feedlr.client;
 
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import com.chalmers.feedlr.activities.TwitterWebActivity;
-import com.chalmers.feedlr.listeners.AuthListener;
-import com.chalmers.feedlr.util.ServiceStore;
-import com.chalmers.feedlr.util.Services;
+import com.chalmers.feedlr.activity.TwitterWebActivity;
+import com.chalmers.feedlr.listener.AuthListener;
+import com.chalmers.feedlr.util.ClientStore;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +27,7 @@ public class TwitterAuthHelper {
 
 	public TwitterAuthHelper(Context context) {
 		this.context = context;
-		twitter = Twitter.getInstance();
+		twitter = Clients.getTwitter();
 	}
 
 	public void authorize(AuthListener listener) {
@@ -37,7 +36,7 @@ public class TwitterAuthHelper {
 	}
 
 	public boolean isAuthorized() {
-		Token accessToken = ServiceStore.getTwitterAccessToken(context);
+		Token accessToken = ClientStore.getTwitterAccessToken(context);
 		return (accessToken.getToken() != null && accessToken.getSecret() != null);
 	}
 
@@ -53,14 +52,14 @@ public class TwitterAuthHelper {
 		}
 
 		protected void onPostExecute(Token requestToken) {
-			ServiceStore.saveTwitterRequestToken(requestToken, context);
+			ClientStore.saveTwitterRequestToken(requestToken, context);
 			new GetTwitterAuthUriTask().execute();
 		}
 	}
 
 	private class GetTwitterAuthUriTask extends AsyncTask<Void, Void, String> {
 		protected String doInBackground(Void... params) {
-			Token requestToken = ServiceStore.getTwitterRequestToken(context);
+			Token requestToken = ClientStore.getTwitterRequestToken(context);
 			return twitter.getAuthorizationUrl(requestToken);
 		}
 
@@ -69,21 +68,21 @@ public class TwitterAuthHelper {
 			Intent intent = new Intent(context, TwitterWebActivity.class);
 			intent.putExtra("URL", authURL);
 			((Activity) context).startActivityForResult(intent,
-					Services.TWITTER);
+					Clients.TWITTER);
 		}
 	}
 
 	private class GetTwitterAccessTokenTask extends
 			AsyncTask<String, Void, Token> {
 		protected Token doInBackground(String... verifier) {
-			Token requestToken = ServiceStore.getTwitterRequestToken(context);
+			Token requestToken = ClientStore.getTwitterRequestToken(context);
 			Token result = twitter.getAccessToken(requestToken, new Verifier(
 					verifier[0]));
 			return result;
 		}
 
 		protected void onPostExecute(Token accessToken) {
-			ServiceStore.saveTwitterAccessToken(accessToken, context);
+			ClientStore.saveTwitterAccessToken(accessToken, context);
 			authListener.onAuthorizationComplete();
 		}
 	}

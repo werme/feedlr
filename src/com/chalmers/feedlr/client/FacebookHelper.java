@@ -4,7 +4,7 @@
  * @author Daniel Larsson
  */
 
-package com.chalmers.feedlr.facebook;
+package com.chalmers.feedlr.client;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.adapters;
+package com.chalmers.feedlr.adapter;
 
 import java.util.HashMap;
 import java.util.List;

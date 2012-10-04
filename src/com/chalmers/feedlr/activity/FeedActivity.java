@@ -1,15 +1,15 @@
-package com.chalmers.feedlr.activities;
+package com.chalmers.feedlr.activity;
 
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
-import com.chalmers.feedlr.adapters.FeedAdapter;
-import com.chalmers.feedlr.adapters.UsersAdapter;
-import com.chalmers.feedlr.facebook.FacebookHelper;
-import com.chalmers.feedlr.helpers.ServiceHandler;
-import com.chalmers.feedlr.listeners.AuthListener;
-import com.chalmers.feedlr.services.FeedDataClient;
-import com.chalmers.feedlr.util.Services;
+import com.chalmers.feedlr.adapter.FeedAdapter;
+import com.chalmers.feedlr.adapter.UsersAdapter;
+import com.chalmers.feedlr.client.Clients;
+import com.chalmers.feedlr.client.FacebookHelper;
+import com.chalmers.feedlr.client.ClientHandler;
+import com.chalmers.feedlr.service.FeedServiceHelper;
+import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.FeedHandler;
 import com.chalmers.feedlr.model.User;
@@ -45,14 +45,14 @@ import android.widget.ViewFlipper;
 
 public class FeedActivity extends FragmentActivity {
 
-	private FeedDataClient feedData;
-	private ServiceHandler serviceHandler;
+	private FeedServiceHelper feedService;
+	private ClientHandler clientHandler;
 
 	// TODO implement this into the service handler
 	private FacebookHelper facebookHelper;
 
 	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
-	
+
 	// Android system helpers
 	private Resources res;
 	private LocalBroadcastManager lbm;
@@ -136,12 +136,12 @@ public class FeedActivity extends FragmentActivity {
 				});
 
 		// Instanciate client and service helpers
-		serviceHandler = new ServiceHandler(this);
+		clientHandler = new ClientHandler(this);
 		facebookHelper = new FacebookHelper(this);
 		facebookHelper.init();
 
-		feedData = new FeedDataClient(this);
-		feedData.startService();
+		feedService = new FeedServiceHelper(this);
+		feedService.startService();
 
 		// load animations from res/anim
 		slideOutLeft = AnimationUtils
@@ -159,19 +159,19 @@ public class FeedActivity extends FragmentActivity {
 
 	@Override
 	protected void onDestroy() {
-		feedData.stopService();
+		feedService.stopService();
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		feedData.bindService();
+		feedService.bindService();
 	}
 
 	@Override
 	protected void onStop() {
-		feedData.unbindService();
+		feedService.unbindService();
 		super.onStop();
 	}
 
@@ -186,8 +186,8 @@ public class FeedActivity extends FragmentActivity {
 
 		facebookAuthButton.setEnabled(!isFacebookAuthorized);
 
-		boolean isTwitterAuthorized = serviceHandler
-				.isAuthorized(Services.TWITTER);
+		boolean isTwitterAuthorized = clientHandler
+				.isAuthorized(Clients.TWITTER);
 		twitterAuthButton.setText(isTwitterAuthorized ? res
 				.getString(R.string.twitter_authorized) : res
 				.getString(R.string.authorize_twitter));
@@ -229,10 +229,10 @@ public class FeedActivity extends FragmentActivity {
 		if (resultCode == Activity.RESULT_OK) {
 
 			switch (requestCode) {
-			case Services.TWITTER:
-				serviceHandler.onTwitterAuthCallback(data);
+			case Clients.TWITTER:
+				clientHandler.onTwitterAuthCallback(data);
 				break;
-			case Services.FACEBOOK:
+			case Clients.FACEBOOK:
 				facebookHelper.onAuthCallback(requestCode, resultCode, data);
 				break;
 			default:
@@ -306,7 +306,7 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void authorizeTwitter(View v) {
-		serviceHandler.authorize(Services.TWITTER, new AuthListener() {
+		clientHandler.authorize(Clients.TWITTER, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
 				Toast.makeText(FeedActivity.this,
@@ -326,12 +326,12 @@ public class FeedActivity extends FragmentActivity {
 			}
 		});
 	}
-	
+
 	public void authorizeFacebook(View v) {
 		facebookHelper.authorize();
 	}
 
 	public void updateFeed(View v) {
-		feedData.update();
+		feedService.update();
 	}
 }

@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.fragments;
+package com.chalmers.feedlr.ui;
 
 import com.chalmers.feedlr.R;
 

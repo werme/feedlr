@@ -1,7 +1,8 @@
-package com.chalmers.feedlr.adapters;
+package com.chalmers.feedlr.adapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -10,8 +11,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
 
 import com.chalmers.feedlr.R;
-import com.chalmers.feedlr.fragments.FeedFragment;
 import com.chalmers.feedlr.model.Feed;
+import com.chalmers.feedlr.ui.FeedFragment;
 
 public class FeedAdapter extends FragmentPagerAdapter {
 

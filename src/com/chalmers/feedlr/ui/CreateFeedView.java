@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.view;
+package com.chalmers.feedlr.ui;
 
 import android.content.Context;
 import android.graphics.Color;

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class ServiceStore {
+public class ClientStore {
 
 	private static final String APP_NAME = "feedlr";
 

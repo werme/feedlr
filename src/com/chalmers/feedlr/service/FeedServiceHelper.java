@@ -4,9 +4,9 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.services;
+package com.chalmers.feedlr.service;
 
-import com.chalmers.feedlr.services.FeedDataService.FeedServiceBinder;
+import com.chalmers.feedlr.service.FeedService.FeedServiceBinder;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,15 +14,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-public class FeedDataClient {
+public class FeedServiceHelper {
 	
 	private Context context;
 	
-	private FeedDataService feedService;
+	private FeedService feedService;
 
 	private boolean isBound;
 
-	public FeedDataClient(Context context) {
+	public FeedServiceHelper(Context context) {
 		this.context = context;
 		isBound = false;		
 	}
@@ -37,16 +37,16 @@ public class FeedDataClient {
 	}
 	
 	public void startService() {
-		Intent intent = new Intent(context, FeedDataService.class);
+		Intent intent = new Intent(context, FeedService.class);
 		context.startService(intent);
 	}
 	public void stopService() {
-		Intent intent = new Intent(context, FeedDataService.class);
+		Intent intent = new Intent(context, FeedService.class);
 		context.stopService(intent);
 	}
 	
 	public void bindService() {
-		Intent intent = new Intent(context, FeedDataService.class);
+		Intent intent = new Intent(context, FeedService.class);
 		isBound = context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
 	}
 	public void unbindService() {

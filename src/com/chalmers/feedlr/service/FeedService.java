@@ -4,16 +4,16 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.services;
+package com.chalmers.feedlr.service;
 
 import org.scribe.model.Token;
 
-import com.chalmers.feedlr.activities.FeedActivity;
-import com.chalmers.feedlr.listeners.RequestListener;
-import com.chalmers.feedlr.twitter.Twitter;
-import com.chalmers.feedlr.twitter.TwitterAuthHelper;
-import com.chalmers.feedlr.twitter.TwitterRequest;
-import com.chalmers.feedlr.util.ServiceStore;
+import com.chalmers.feedlr.activity.FeedActivity;
+import com.chalmers.feedlr.client.Clients;
+import com.chalmers.feedlr.client.TwitterAuthHelper;
+import com.chalmers.feedlr.client.TwitterRequest;
+import com.chalmers.feedlr.listener.RequestListener;
+import com.chalmers.feedlr.util.ClientStore;
 import com.chalmers.feedlr.util.TwitterJSONParser;
 
 import android.app.Service;
@@ -22,7 +22,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
-public class FeedDataService extends Service {
+public class FeedService extends Service {
 	private final IBinder binder = new FeedServiceBinder();
 	
 	TwitterRequestListener listener = new TwitterRequestListener();
@@ -30,8 +30,8 @@ public class FeedDataService extends Service {
 	TwitterAuthHelper twitter;
 
 	public class FeedServiceBinder extends Binder {
-		FeedDataService getService() {
-			return FeedDataService.this;
+		FeedService getService() {
+			return FeedService.this;
 		}
 	}
 
@@ -52,8 +52,8 @@ public class FeedDataService extends Service {
 	}
 	
 	private void updateTwitter() {
-		Token accessToken = ServiceStore.getTwitterAccessToken(this);
-		new TwitterRequest(Twitter.getInstance(), TwitterRequest.TIMELINE, accessToken, listener);
+		Token accessToken = ClientStore.getTwitterAccessToken(this);
+		new TwitterRequest(Clients.getTwitter(), TwitterRequest.TIMELINE, accessToken, listener);
 	}
 
 	private class TwitterRequestListener implements RequestListener {
@@ -65,7 +65,7 @@ public class FeedDataService extends Service {
 			TwitterJSONParser.parse(response);
 			
 			// Put stuff into database here
-			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedDataService.this);
+			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedService.this);
 
 			Intent intent = new Intent();
 			intent.setAction(FeedActivity.DATA_UPDATED);

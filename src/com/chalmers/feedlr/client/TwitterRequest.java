@@ -4,7 +4,7 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.twitter;
+package com.chalmers.feedlr.client;
 
 import org.scribe.exceptions.OAuthException;
 import org.scribe.model.OAuthRequest;
@@ -13,7 +13,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
-import com.chalmers.feedlr.listeners.RequestListener;
+import com.chalmers.feedlr.listener.RequestListener;
 
 import android.os.AsyncTask;
 import android.util.Log;
