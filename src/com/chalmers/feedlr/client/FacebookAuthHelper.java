@@ -8,7 +8,7 @@ package com.chalmers.feedlr.client;
 
 import com.chalmers.feedlr.facebook.FacebookService;
 import com.chalmers.feedlr.listener.AuthListener;
-import com.chalmers.feedlr.util.ServiceStore;
+import com.chalmers.feedlr.util.ClientStore;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
@@ -32,11 +32,11 @@ public class FacebookAuthHelper {
 
 	// Get access token if there is one
 	public void setAccessToken() {
-		ServiceStore.getFacebookAccessToken(context);
+		ClientStore.getFacebookAccessToken(context);
 
-		String accessToken = ServiceStore.getFacebookAccessToken(context);
+		String accessToken = ClientStore.getFacebookAccessToken(context);
 		System.out.println("accessToken: " + accessToken);
-		Long accessTokenExpires = ServiceStore
+		Long accessTokenExpires = ClientStore
 				.getFacebookAccessTokenExpires(context);
 		if (accessToken != null) {
 			facebook.setAccessToken(accessToken);
@@ -52,15 +52,14 @@ public class FacebookAuthHelper {
 
 		if (!isAuthorized()) {
 			facebook.authorize((Activity) context,
-					new String[] { "read_stream" },
-					Clients.FACEBOOK,
+					new String[] { "read_stream" }, Clients.FACEBOOK,
 
 					new DialogListener() {
 						@Override
 						public void onComplete(Bundle values) {
-							ServiceStore.saveFacebookAccessToken(facebook,
+							ClientStore.saveFacebookAccessToken(facebook,
 									context);
-							ServiceStore.saveFacebookAccessTokenExpires(
+							ClientStore.saveFacebookAccessTokenExpires(
 									facebook, context);
 						}
 
@@ -90,8 +89,8 @@ public class FacebookAuthHelper {
 
 	public void extendTokenIfNeeded() {
 		facebook.extendAccessTokenIfNeeded(context, null);
-		ServiceStore.saveFacebookAccessToken(facebook, context);
-		ServiceStore.saveFacebookAccessTokenExpires(facebook, context);
+		ClientStore.saveFacebookAccessToken(facebook, context);
+		ClientStore.saveFacebookAccessTokenExpires(facebook, context);
 	}
 
 	public void onAuthCallback(int requestCode, int resultCode, Intent data) {

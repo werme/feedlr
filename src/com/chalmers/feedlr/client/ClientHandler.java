@@ -14,52 +14,51 @@ import com.chalmers.feedlr.listener.AuthListener;
 
 public class ClientHandler {
 
-	public class ClientHandler {
+	private TwitterAuthHelper twitterAuthHelper;
+	private FacebookAuthHelper facebookAuthHelper;
 
-		private TwitterAuthHelper twitterAuthHelper;
-		private FacebookAuthHelper facebookAuthHelper;
+	public ClientHandler(Context context) {
 
-		public ClientHandler(Context context) {
+		twitterAuthHelper = new TwitterAuthHelper(context);
+		facebookAuthHelper = new FacebookAuthHelper(context);
+		// For every service...
+	}
 
-			twitterAuthHelper = new TwitterAuthHelper(context);
-			// For every service...
+	public void authorize(int service, AuthListener listener) {
+		switch (service) {
+		case Clients.TWITTER:
+			twitterAuthHelper.authorize(listener);
+			break;
+		case Clients.FACEBOOK:
+			facebookAuthHelper.authorize(listener);
+			break;
+		default:
+			Log.w(getClass().getName(), "Unknown service");
 		}
+	}
 
-		public void authorize(int service, AuthListener listener) {
-			switch (service) {
-			case Clients.TWITTER:
-				twitterAuthHelper.authorize(listener);
-				break;
-			// case Service.FACEBOOK:
-			// facebookAuthHelper.authorize(); break;
-			default:
-				Log.w(getClass().getName(), "Unknown service");
-			}
+	public boolean isAuthorized(int service) {
+		switch (service) {
+		case Clients.TWITTER:
+			return twitterAuthHelper.isAuthorized();
+		case Clients.FACEBOOK:
+			return facebookAuthHelper.isAuthorized();
+		default:
+			Log.w(getClass().getName(), "Unknown service");
 		}
+		return false;
+	}
 
-		public boolean isAuthorized(int service) {
-			switch (service) {
-			case Clients.TWITTER:
-				return twitterAuthHelper.isAuthorized();
-				// case Service.FACEBOOK:
-				// return facebookAuthHelper.isAuthorized();
-			default:
-				Log.w(getClass().getName(), "Unknown service");
-			}
-			return false;
-		}
+	public void onTwitterAuthCallback(Intent data) {
+		twitterAuthHelper.onAuthCallback(data);
+	}
 
-		public void onTwitterAuthCallback(Intent data) {
-			twitterAuthHelper.onAuthCallback(data);
-		}
+	public void onFacebookAuthCallback(int requestCode, int resultCode,
+			Intent data) {
+		facebookAuthHelper.onAuthCallback(requestCode, resultCode, data);
+	}
 
-		public void onFacebookAuthCallback(int requestCode, int resultCode,
-				Intent data) {
-			facebookAuthHelper.onAuthCallback(requestCode, resultCode, data);
-		}
-
-		public void extendFacebookAccessTokenIfNeeded() {
-			facebookAuthHelper.extendTokenIfNeeded();
-		}
+	public void extendFacebookAccessTokenIfNeeded() {
+		facebookAuthHelper.extendTokenIfNeeded();
 	}
 }

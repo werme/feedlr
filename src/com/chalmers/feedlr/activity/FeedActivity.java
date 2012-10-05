@@ -6,7 +6,6 @@ import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.adapter.UsersAdapter;
 import com.chalmers.feedlr.client.Clients;
-import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.ClientHandler;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
@@ -43,9 +42,6 @@ public class FeedActivity extends FragmentActivity {
 
 	private DataServiceHelper feedService;
 	private ClientHandler clientHandler;
-
-	// TODO implement this into the service handler
-	private FacebookHelper facebookHelper;
 
 	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
 	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
@@ -154,8 +150,6 @@ public class FeedActivity extends FragmentActivity {
 
 		// Instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
-		facebookHelper = new FacebookHelper(this);
-		facebookHelper.init();
 
 		feedService = new DataServiceHelper(this);
 		feedService.startService();
@@ -196,7 +190,8 @@ public class FeedActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 
-		boolean isFacebookAuthorized = facebookHelper.isAuthorized();
+		boolean isFacebookAuthorized = clientHandler
+				.isAuthorized(Clients.FACEBOOK);
 		facebookAuthButton.setText(isFacebookAuthorized ? res
 				.getString(R.string.facebook_authorized) : res
 				.getString(R.string.authorize_facebook));
@@ -219,7 +214,7 @@ public class FeedActivity extends FragmentActivity {
 		filter.addAction(FEED_UPDATED);
 		lbm.registerReceiver(receiver, filter);
 
-		facebookHelper.extendTokenIfNeeded(this, null);
+		clientHandler.extendFacebookAccessTokenIfNeeded();
 	}
 
 	@Override
@@ -256,7 +251,8 @@ public class FeedActivity extends FragmentActivity {
 				clientHandler.onTwitterAuthCallback(data);
 				break;
 			case Clients.FACEBOOK:
-				facebookHelper.onAuthCallback(requestCode, resultCode, data);
+				clientHandler.onFacebookAuthCallback(requestCode, resultCode,
+						data);
 				break;
 			default:
 				Log.wtf(getClass().getName(),
@@ -354,7 +350,25 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void authorizeFacebook(View v) {
-		facebookHelper.authorize();
+		clientHandler.authorize(Clients.FACEBOOK, new AuthListener() {
+			@Override
+			public void onAuthorizationComplete() {
+				Toast.makeText(FeedActivity.this,
+						"Facebook authorization successful", Toast.LENGTH_LONG)
+						.show();
+				facebookAuthButton.setText(res
+						.getString(R.string.facebook_authorized));
+				facebookAuthButton.setEnabled(false);
+				updateButton.setEnabled(true);
+			}
+
+			@Override
+			public void onAuthorizationFail() {
+				Toast.makeText(FeedActivity.this,
+						"Facebook authorization failed", Toast.LENGTH_SHORT)
+						.show();
+			}
+		});
 	}
 
 	public void updateFeed(View v) {
