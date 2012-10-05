@@ -14,23 +14,41 @@ public class FacebookItem implements Item {
 	private User user;
 	private String timestamp;
 	private String type;
+	private String name;
+	private String userId;
 
 	public FacebookItem() {
 		user = new User();
 	}
 
 	@Override
+	@JsonProperty("message")
 	public void setText(String message) {
 		this.message = message;
+		System.out.println("Set message: " + message);
 	}
 
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	@JsonProperty("created_at")
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+		System.out.println("Set name: " + name);
+	}
+
+	@JsonProperty("created_time")
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public void setFrom(String[] from) {
+		setName(from[0]);
+		setUserId(from[1]);
 	}
 
 	@Override

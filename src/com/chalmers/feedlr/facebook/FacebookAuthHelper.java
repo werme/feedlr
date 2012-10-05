@@ -35,6 +35,7 @@ public class FacebookAuthHelper {
 		ServiceStore.getFacebookAccessToken(context);
 
 		String accessToken = ServiceStore.getFacebookAccessToken(context);
+		System.out.println("accessToken: " + accessToken);
 		Long accessTokenExpires = ServiceStore
 				.getFacebookAccessTokenExpires(context);
 		if (accessToken != null) {

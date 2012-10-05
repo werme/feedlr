@@ -9,12 +9,14 @@ package com.chalmers.feedlr.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.chalmers.feedlr.model.FacebookItem;
+import com.chalmers.feedlr.model.TwitterItem;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -39,30 +41,45 @@ public class FacebookJSONParser {
 	static JSONArray jArray;
 
 	public static void parse(String json) {
-		System.out.println(json);
-		streamingParse(json);
+		// System.out.println(json);
+		System.out.println("Begins with: " + json.substring(0, 100));
+		System.out.println("Ends with " + json.substring(json.length() - 100));
+		// streamingParse(json);
+		dataBindingParse(json);
+		// androidJsonParse(json);
+		// anotherStreamingParse(json);
 	}
 
-	/*
-	 * 
-	 * long time = System.currentTimeMillis();
-	 * 
-	 * if (mapper == null) { mapper = new ObjectMapper();
-	 * mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-	 * false); reader = mapper.reader(new TypeReference<List<FacebookItem>>() {
-	 * }); }
-	 * 
-	 * List<FacebookItem> list = null;
-	 * 
-	 * try { list = reader.readValue(json); } catch (JsonParseException e) {
-	 * e.printStackTrace(); } catch (JsonMappingException e) {
-	 * e.printStackTrace(); } catch (IOException e) { e.printStackTrace(); }
-	 * 
-	 * Log.i(FacebookJSONParser.class.getName(), "Data binding parse");
-	 * Log.i(FacebookJSONParser.class.getName(), "Items: " + list.size());
-	 * Log.i(FacebookJSONParser.class.getName(), "Time in millis: " +
-	 * (System.currentTimeMillis() - time)); }
-	 */
+	private static void dataBindingParse(String json) {
+		long time = System.currentTimeMillis();
+
+		String data = json.substring(8);
+
+		if (mapper == null) {
+			mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+					false);
+			reader = mapper.reader(new TypeReference<List<FacebookItem>>() {
+			});
+		}
+
+		List<FacebookItem> list = null;
+
+		try {
+			list = reader.readValue(data);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Log.i(FacebookJSONParser.class.getName(), "Data binding parse");
+		Log.i(FacebookJSONParser.class.getName(), "Items: " + list.size());
+		Log.i(FacebookJSONParser.class.getName(),
+				"Time in millis: " + (System.currentTimeMillis() - time));
+	}
 
 	private static void streamingParse(String json) {
 		long time = System.currentTimeMillis();
@@ -81,22 +98,28 @@ public class FacebookJSONParser {
 					jParser.nextToken();
 					o = new FacebookItem();
 					o.setType(jParser.getText());
+					System.out.println("Found type:   " + jParser.getText());
 				}
 				if ("from".equals(jParser.getCurrentName())) {
+					System.out.println("Found from");
 					while (!"name".equals(jParser.getCurrentName())) {
 						jParser.nextToken();
 					}
 					jParser.nextToken();
 
 					o.getUser().setUserName(jParser.getText());
+					System.out.println("Found name:   " + jParser.getText());
 				}
 				if ("message".equals(jParser.getCurrentName())) {
 					jParser.nextToken();
 					o.setText(jParser.getText());
+					System.out.println("Found message:   " + jParser.getText());
 				}
 				if ("created_time".equals(jParser.getCurrentName())) {
 					jParser.nextToken();
 					o.setTimestamp(jParser.getText());
+					System.out.println("Found created_time:   "
+							+ jParser.getText());
 					list.add(o);
 				}
 			}
@@ -114,6 +137,69 @@ public class FacebookJSONParser {
 		Log.i(FacebookJSONParser.class.getName(), "Items: " + list.size());
 		Log.i(FacebookJSONParser.class.getName(),
 				"Time in millis: " + (System.currentTimeMillis() - time));
+	}
+
+	private static void androidJsonParse(String json) {
+
+		try {
+
+			JSONArray data;
+			data = new JSONArray(json);
+
+			int itemCount = data.length();
+			List<FacebookItem> list = new ArrayList<FacebookItem>(itemCount);
+
+			for (int i = 0; i < itemCount; i++) {
+				JSONObject item = data.getJSONObject(i);
+
+				String type = item.getString("type");
+				String message = item.optString("message");
+
+				FacebookItem o = new FacebookItem();
+				o.setText(message);
+				o.setType(type);
+				list.add(o);
+			}
+			System.out.println("Place 0" + list.get(0));
+			System.out.println("Place 1" + list.get(1));
+			System.out.println("Place 2" + list.get(2));
+			System.out.println("Place 3" + list.get(3));
+			System.out.println("Place 4" + list.get(4));
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void anotherStreamingParse(String json) {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+				false);
+		// ItemContainer itemContainer = mapper.readValue(json,
+		// ItemContainer.class);
+
+		try {
+			List<FacebookItem> list = mapper.readValue(json, List.class);
+
+			System.out.println("Place 0" + list.get(0));
+			System.out.println("Place 1" + list.get(1));
+			System.out.println("Place 2" + list.get(2));
+			System.out.println("Place 3" + list.get(3));
+			System.out.println("Place 4" + list.get(4));
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/*
