@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.chalmers.feedlr.activity.FeedActivity;
+import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.listener.RequestListener;
+import com.chalmers.feedlr.model.FacebookItem;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
+import com.chalmers.feedlr.parser.FacebookJSONParser;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.util.ClientStore;
 
@@ -32,6 +35,7 @@ public class DataService extends Service {
 	private LocalBroadcastManager lbm;
 
 	private TwitterHelper twitter;
+	private FacebookHelper facebook;
 
 	public class FeedServiceBinder extends Binder {
 		DataService getService() {
@@ -44,6 +48,7 @@ public class DataService extends Service {
 		lbm = LocalBroadcastManager.getInstance(DataService.this);
 
 		twitter = new TwitterHelper(ClientStore.getTwitterAccessToken(this));
+		facebook = new FacebookHelper(ClientStore.getFacebookAccessToken(this));
 		return START_STICKY;
 	}
 
@@ -71,7 +76,7 @@ public class DataService extends Service {
 			public void run() {
 				long time = System.currentTimeMillis();
 
-				List<TwitterItem> timeline = twitter.getTimeline();
+				List<TwitterItem> twitterTimeline = twitter.getTimeline();
 
 				// save to database
 
@@ -85,6 +90,26 @@ public class DataService extends Service {
 								+ (System.currentTimeMillis() - time));
 			}
 		});
+	}
+
+	// No need to start a new thread, since facebook makes the request Async
+	// automatically when using AsyncFacebookRunner
+	public void updateFacebookTimeline() {
+		long time = System.currentTimeMillis();
+
+		// List<FacebookItem> facebookTimeline = facebook.getTimeline();
+
+		// Save to database
+
+		// Broadcast update to activity
+		Intent intent = new Intent();
+		intent.setAction(FeedActivity.FACEBOOK_TIMELINE_UPDATED);
+		lbm.sendBroadcast(intent);
+
+		Log.i(FacebookJSONParser.class.getName(),
+				"Time in millis for complete Facebook timeline request: "
+						+ (System.currentTimeMillis() - time));
+
 	}
 
 	public void updateTwitterUsers() {
@@ -104,6 +129,28 @@ public class DataService extends Service {
 
 				Log.i(TwitterJSONParser.class.getName(),
 						"Time in millis for complete Twitter following request: "
+								+ (System.currentTimeMillis() - time));
+			}
+		});
+	}
+
+	public void updateFacebookUsers() {
+		runAsync(new Runnable() {
+			@Override
+			public void run() {
+				long time = System.currentTimeMillis();
+
+				// List<User> users = facebook.getFriends();
+
+				// save to database
+
+				// Broadcast update to activity
+				Intent intent = new Intent();
+				intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
+				lbm.sendBroadcast(intent);
+
+				Log.i(FacebookJSONParser.class.getName(),
+						"Time in millis for complete Facebook friends request: "
 								+ (System.currentTimeMillis() - time));
 			}
 		});
@@ -153,7 +200,7 @@ public class DataService extends Service {
 								if (response != null)
 									twitterItemsforUsers
 											.addAll((List<TwitterItem>) response);
-								
+
 								responses++;
 								if (responses == twitterUsersInFeed.size())
 									onAllComplete();

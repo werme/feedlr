@@ -6,7 +6,6 @@
 
 package com.chalmers.feedlr.client;
 
-import com.chalmers.feedlr.facebook.FacebookService;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.util.ClientStore;
 import com.facebook.android.DialogError;
@@ -27,7 +26,7 @@ public class FacebookAuthHelper {
 
 	public FacebookAuthHelper(Context context) {
 		this.context = context;
-		facebook = FacebookService.getInstance();
+		facebook = Clients.getFacebook();
 	}
 
 	// Get access token if there is one

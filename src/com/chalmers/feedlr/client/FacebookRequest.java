@@ -4,7 +4,7 @@
  * @author Daniel Larsson
  */
 
-package com.chalmers.feedlr.facebook;
+package com.chalmers.feedlr.client;
 
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 
@@ -28,7 +28,6 @@ public class FacebookRequest {
 		Bundle params = new Bundle();
 		params.putString("fields",
 				"type, link, from, message, picture, name, description, created_time");
-		FacebookService.getAsyncFacebookRunner()
-				.request(FEED, params, listener);
+		Clients.getAsyncFacebookRunner().request(FEED, params, listener);
 	}
 }

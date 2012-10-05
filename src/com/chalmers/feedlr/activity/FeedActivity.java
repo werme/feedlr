@@ -48,6 +48,10 @@ public class FeedActivity extends FragmentActivity {
 	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
 	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
 
+	public static final String FACEBOOK_TIMELINE_UPDATED = "com.chalmers.feedlr.FACEBOOK_TIMELINE_UPDATED";
+	public static final String FACEBOOK_USERS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USERS_UPDATED";
+	public static final String FACEBOOK_USER_NEWS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USER_NEWS_UPDATED";
+
 	// Android system helpers
 	private Resources res;
 	private LocalBroadcastManager lbm;
@@ -90,6 +94,13 @@ public class FeedActivity extends FragmentActivity {
 				dialog = "Twitter users updated!";
 			else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
 				dialog = "Tweets for Twitter user with ID: "
+						+ b.getInt("userID") + " updated!";
+			else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED))
+				dialog = "Facebook timeline updated!";
+			else if (broadcast.equals(FACEBOOK_USERS_UPDATED))
+				dialog = "Facebook users updated!";
+			else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED))
+				dialog = "News for Facebook user with ID: "
 						+ b.getInt("userID") + " updated!";
 			else if (broadcast.equals(FEED_UPDATED))
 				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
@@ -205,12 +216,15 @@ public class FeedActivity extends FragmentActivity {
 				.getString(R.string.authorize_twitter));
 
 		twitterAuthButton.setEnabled(!isTwitterAuthorized);
-		updateButton.setEnabled(isTwitterAuthorized);
+		updateButton.setEnabled(isTwitterAuthorized || isFacebookAuthorized);
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TWITTER_TIMELINE_UPDATED);
 		filter.addAction(TWITTER_USERS_UPDATED);
 		filter.addAction(TWITTER_USER_TWEETS_UPDATED);
+		filter.addAction(FACEBOOK_TIMELINE_UPDATED);
+		filter.addAction(FACEBOOK_USERS_UPDATED);
+		filter.addAction(FACEBOOK_USER_NEWS_UPDATED);
 		filter.addAction(FEED_UPDATED);
 		lbm.registerReceiver(receiver, filter);
 
