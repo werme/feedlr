@@ -6,10 +6,13 @@
 
 package com.chalmers.feedlr.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.client.TwitterHelper;
+import com.chalmers.feedlr.listener.RequestListener;
+import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
@@ -106,7 +109,7 @@ public class DataService extends Service {
 		});
 	}
 
-	public void updateTwitterUserTweets(final int userID) {
+	public void updateTweetsByUser(final int userID) {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
@@ -127,6 +130,55 @@ public class DataService extends Service {
 				Log.i(TwitterJSONParser.class.getName(),
 						"Time in millis for complete Twitter user tweets request: "
 								+ (System.currentTimeMillis() - time));
+			}
+		});
+	}
+
+	public void updateFeed(final Feed feed) {
+		runAsync(new Runnable() {
+			@Override
+			public void run() {
+				final long time = System.currentTimeMillis();
+
+				final List<User> twitterUsersInFeed = feed.getTwitterUsers();
+				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
+
+				twitter.getTweetsForUsers(twitterUsersInFeed,
+						new RequestListener() {
+							private int responses = 0;
+
+							@SuppressWarnings("unchecked")
+							@Override
+							public void onComplete(Object response) {
+								if (response != null)
+									twitterItemsforUsers
+											.addAll((List<TwitterItem>) response);
+								
+								responses++;
+								if (responses == twitterUsersInFeed.size())
+									onAllComplete();
+							}
+
+							private void onAllComplete() {
+
+								// save to database
+
+								// Broadcast update to activity
+
+								Intent intent = new Intent();
+								intent.setAction(FeedActivity.FEED_UPDATED);
+								Bundle b = new Bundle();
+								b.putString("feedTitle", feed.getTitle());
+								intent.putExtras(b);
+								lbm.sendBroadcast(intent);
+
+								Log.i(TwitterJSONParser.class.getName(),
+										"Time in millis for complete update of feed \""
+												+ feed.getTitle()
+												+ "\" request: "
+												+ (System.currentTimeMillis() - time));
+							}
+						});
 			}
 		});
 	}

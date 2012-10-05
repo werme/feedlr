@@ -10,6 +10,7 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
 
+import com.chalmers.feedlr.listener.RequestListener;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
@@ -34,39 +35,39 @@ public class TwitterHelper {
 
 	public List<TwitterItem> getTimeline() {
 		long time = System.currentTimeMillis();
-		
+
 		String response = request(TIMELINE);
-		
+
 		Log.i(TwitterJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-		
+
 		return TwitterJSONParser.parseTweets(response);
 	}
 
 	public List<TwitterItem> getUserTweets(int userID) {
 		long time = System.currentTimeMillis();
-		
+
 		StringBuilder url = new StringBuilder();
 		url.append(USER_TWEETS).append(userID);
-		
+
 		String response = request(url.toString());
-		
+
 		Log.i(TwitterJSONParser.class.getName(),
 				"User tweets request time in millis: "
 						+ (System.currentTimeMillis() - time));
-		
+
 		return TwitterJSONParser.parseTweets(response);
 	}
 
 	public List<User> getFollowing() {
 		long time = System.currentTimeMillis();
-		
+
 		String response = request(USER_IDS);
 
 		Log.i(TwitterJSONParser.class.getName(), "ID request time in millis: "
 				+ (System.currentTimeMillis() - time));
-		
+
 		String[] ids = TwitterJSONParser.parseUserIDs(response);
 		return getTwitterUserNamesFromID(ids);
 	}
@@ -93,6 +94,31 @@ public class TwitterHelper {
 		users.addAll(TwitterJSONParser.parseUserNames(response));
 
 		return users;
+	}
+
+	public void getTweetsForUsers(List<User> twitterUsersInFeed,
+			final RequestListener listener) {
+		
+		for (final User user : twitterUsersInFeed) {
+
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						new Runnable() {
+							@Override
+							public void run() {
+								List<TwitterItem> tweets = getUserTweets(user
+										.getId());
+								listener.onComplete(tweets);
+							}
+						};
+					} finally {
+
+					}
+				}
+			}.start();
+		}
 	}
 
 	private String request(String requestURL) {

@@ -11,7 +11,6 @@ import com.chalmers.feedlr.client.ClientHandler;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.model.Feed;
-import com.chalmers.feedlr.model.FeedHandler;
 import com.chalmers.feedlr.model.User;
 
 import android.os.Bundle;
@@ -31,9 +30,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -54,6 +50,7 @@ public class FeedActivity extends FragmentActivity {
 	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
 	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
 	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
+	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
 
 	// Android system helpers
 	private Resources res;
@@ -88,17 +85,20 @@ public class FeedActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			String broadcast = intent.getAction();
 			Bundle b = intent.getExtras();
-			
+
 			String dialog;
 
 			if (broadcast.equals(TWITTER_TIMELINE_UPDATED))
 				dialog = "Twitter timeline updated!";
 			else if (broadcast.equals(TWITTER_USERS_UPDATED))
-				dialog = "Twitter users updated";
+				dialog = "Twitter users updated!";
 			else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
-				dialog = "Tweets for Twitter user with ID: " + b.getInt("userID") + " updated";
+				dialog = "Tweets for Twitter user with ID: "
+						+ b.getInt("userID") + " updated!";
+			else if (broadcast.equals(FEED_UPDATED))
+				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
 			else
-				dialog = "broadcast from unknown intent recieved";
+				dialog = "broadcast from unknown intent recieved!";
 
 			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
 		}
@@ -128,7 +128,7 @@ public class FeedActivity extends FragmentActivity {
 		// set adapters
 		adapter = new FeedAdapter(getSupportFragmentManager(), this);
 		feedViewSwiper.setAdapter(adapter);
-		
+
 		// Swipe testing, this is just a stub
 		feedViewSwiper
 				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -216,6 +216,7 @@ public class FeedActivity extends FragmentActivity {
 		filter.addAction(TWITTER_TIMELINE_UPDATED);
 		filter.addAction(TWITTER_USERS_UPDATED);
 		filter.addAction(TWITTER_USER_TWEETS_UPDATED);
+		filter.addAction(FEED_UPDATED);
 		lbm.registerReceiver(receiver, filter);
 
 		facebookHelper.extendTokenIfNeeded(this, null);
@@ -236,7 +237,7 @@ public class FeedActivity extends FragmentActivity {
 	@Override
 	public void onBackPressed() {
 		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
-			if(settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
+			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
 				settingsViewFlipper.showPrevious();
 			else
 				toggleSettingsView(null);
@@ -294,7 +295,7 @@ public class FeedActivity extends FragmentActivity {
 		int currentSettingView = settingsViewFlipper.getCurrentView().getId();
 
 		if (currentView == R.id.main_layout) {
-			if(currentSettingView == R.id.user_list_layout)
+			if (currentSettingView == R.id.user_list_layout)
 				settingsViewFlipper.showPrevious();
 			mainViewFlipper.setInAnimation(slideInLeft);
 			mainViewFlipper.setOutAnimation(slideOutRight);
@@ -357,8 +358,7 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void updateFeed(View v) {
-//		feedService.updateAll();
-//		feedService.updateUsers();
-		feedService.updateTwitterUser(7588892);
+		// feedService.updateAll();
+		feedService.updateUsers();
 	}
 }

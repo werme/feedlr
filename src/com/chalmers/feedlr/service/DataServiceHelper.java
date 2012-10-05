@@ -6,6 +6,7 @@
 
 package com.chalmers.feedlr.service;
 
+import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.service.DataService.FeedServiceBinder;
 
 import android.content.ComponentName;
@@ -18,7 +19,7 @@ public class DataServiceHelper {
 	
 	private Context context;
 	
-	private DataService feedService;
+	private DataService dataService;
 
 	private boolean isBound;
 
@@ -28,17 +29,17 @@ public class DataServiceHelper {
 	}
 	
 	public void updateAll() {
-		feedService.updateTwitterTimeline();
+		dataService.updateTwitterTimeline();
 //		feedService.updateFacebooklbasldbasd();
 	}
 	
 	public void updateUsers() {
-		feedService.updateTwitterUsers();
+		dataService.updateTwitterUsers();
 //		feedService.updateFacebookUsers();
 	}
 	
-	public void updateTwitterUser(int userID) {
-		feedService.updateTwitterUserTweets(userID);
+	public void updateFeed(Feed feed) {
+		dataService.updateFeed(feed);
 	}
 	
 	public void startService() {
@@ -65,12 +66,12 @@ public class DataServiceHelper {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			FeedServiceBinder binder = (FeedServiceBinder) service;
-	        feedService = binder.getService();
+	        dataService = binder.getService();
 	        isBound = true;
 		}
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			feedService = null;
+			dataService = null;
 		}
 	};
 }
