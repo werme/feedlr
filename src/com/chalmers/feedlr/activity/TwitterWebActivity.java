@@ -4,7 +4,7 @@
  * @author Olle Werme
  */
 
-package com.chalmers.feedlr.activities;
+package com.chalmers.feedlr.activity;
 
 import com.chalmers.feedlr.R;
 

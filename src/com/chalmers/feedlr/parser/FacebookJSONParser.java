@@ -4,7 +4,7 @@
  * @author Daniel Larsson
  */
 
-package com.chalmers.feedlr.util;
+package com.chalmers.feedlr.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;

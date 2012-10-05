@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.listeners;
+package com.chalmers.feedlr.listener;
 
 public interface AuthListener {
 	
