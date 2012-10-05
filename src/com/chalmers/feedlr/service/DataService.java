@@ -12,8 +12,8 @@ import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
+import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.util.ClientStore;
-import com.chalmers.feedlr.util.TwitterJSONParser;
 
 import android.app.Service;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-public class FeedService extends Service {
+public class DataService extends Service {
 	private final IBinder binder = new FeedServiceBinder();
 
 	private LocalBroadcastManager lbm;
@@ -31,14 +31,14 @@ public class FeedService extends Service {
 	private TwitterHelper twitter;
 
 	public class FeedServiceBinder extends Binder {
-		FeedService getService() {
-			return FeedService.this;
+		DataService getService() {
+			return DataService.this;
 		}
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		lbm = LocalBroadcastManager.getInstance(FeedService.this);
+		lbm = LocalBroadcastManager.getInstance(DataService.this);
 
 		twitter = new TwitterHelper(ClientStore.getTwitterAccessToken(this));
 		return START_STICKY;
