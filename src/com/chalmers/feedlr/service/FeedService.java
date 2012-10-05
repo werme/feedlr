@@ -6,28 +6,29 @@
 
 package com.chalmers.feedlr.service;
 
-import org.scribe.model.Token;
+import java.util.List;
 
 import com.chalmers.feedlr.activity.FeedActivity;
-import com.chalmers.feedlr.client.Clients;
-import com.chalmers.feedlr.client.TwitterAuthHelper;
-import com.chalmers.feedlr.client.TwitterRequest;
-import com.chalmers.feedlr.listener.RequestListener;
+import com.chalmers.feedlr.client.TwitterHelper;
+import com.chalmers.feedlr.model.TwitterItem;
+import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.util.ClientStore;
 import com.chalmers.feedlr.util.TwitterJSONParser;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 public class FeedService extends Service {
 	private final IBinder binder = new FeedServiceBinder();
-	
-	TwitterRequestListener listener = new TwitterRequestListener();
-	
-	TwitterAuthHelper twitter;
+
+	private LocalBroadcastManager lbm;
+
+	private TwitterHelper twitter;
 
 	public class FeedServiceBinder extends Binder {
 		FeedService getService() {
@@ -37,6 +38,9 @@ public class FeedService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		lbm = LocalBroadcastManager.getInstance(FeedService.this);
+
+		twitter = new TwitterHelper(ClientStore.getTwitterAccessToken(this));
 		return START_STICKY;
 	}
 
@@ -45,31 +49,85 @@ public class FeedService extends Service {
 		return binder;
 	}
 
-	public void update() {
-		
-		// Have check authorized services here somehow
-		updateTwitter();
+	private void runAsync(final Runnable runnable) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					runnable.run();
+				} finally {
+
+				}
+			}
+		}.start();
 	}
-	
-	private void updateTwitter() {
-		Token accessToken = ClientStore.getTwitterAccessToken(this);
-		new TwitterRequest(Clients.getTwitter(), TwitterRequest.TIMELINE, accessToken, listener);
+
+	public void updateTwitterTimeline() {
+		runAsync(new Runnable() {
+			@Override
+			public void run() {
+				long time = System.currentTimeMillis();
+
+				List<TwitterItem> timeline = twitter.getTimeline();
+
+				// save to database
+
+				// Broadcast update to activity
+				Intent intent = new Intent();
+				intent.setAction(FeedActivity.TWITTER_TIMELINE_UPDATED);
+				lbm.sendBroadcast(intent);
+
+				Log.i(TwitterJSONParser.class.getName(),
+						"Time in millis for complete Twitter timeline request: "
+								+ (System.currentTimeMillis() - time));
+			}
+		});
 	}
 
-	private class TwitterRequestListener implements RequestListener {
+	public void updateTwitterUsers() {
+		runAsync(new Runnable() {
+			@Override
+			public void run() {
+				long time = System.currentTimeMillis();
 
-		@Override
-		public void onComplete(String response) {
-			
-			// TODO make parse async
-			TwitterJSONParser.parse(response);
-			
-			// Put stuff into database here
-			LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(FeedService.this);
+				List<User> users = twitter.getFollowing();
 
-			Intent intent = new Intent();
-			intent.setAction(FeedActivity.DATA_UPDATED);
-			lbm.sendBroadcast(intent);
-		}	
+				// save to database
+
+				// Broadcast update to activity
+				Intent intent = new Intent();
+				intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
+				lbm.sendBroadcast(intent);
+
+				Log.i(TwitterJSONParser.class.getName(),
+						"Time in millis for complete Twitter following request: "
+								+ (System.currentTimeMillis() - time));
+			}
+		});
+	}
+
+	public void updateTwitterUserTweets(final int userID) {
+		runAsync(new Runnable() {
+			@Override
+			public void run() {
+				long time = System.currentTimeMillis();
+
+				List<TwitterItem> userTweets = twitter.getUserTweets(userID);
+
+				// save to database
+
+				// Broadcast update to activity
+				Intent intent = new Intent();
+				intent.setAction(FeedActivity.TWITTER_USER_TWEETS_UPDATED);
+				Bundle b = new Bundle();
+				b.putInt("userID", userID);
+				intent.putExtras(b);
+				lbm.sendBroadcast(intent);
+
+				Log.i(TwitterJSONParser.class.getName(),
+						"Time in millis for complete Twitter user tweets request: "
+								+ (System.currentTimeMillis() - time));
+			}
+		});
 	}
 }

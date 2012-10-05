@@ -16,10 +16,10 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo.NoActionBar" >
         
-        <service android:name=".services.FeedService" />
+        <service android:name=".service.FeedService" />
         
         <activity
-            android:name=".activities.FeedActivity"
+            android:name=".activity.FeedActivity"
             android:label="@string/title_activity_feed" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,13 +34,11 @@
         	</intent-filter>
         </activity>
         <activity
-            android:name=".activities.TwitterWebActivity"
+            android:name=".activity.TwitterWebActivity"
             android:label="@string/title_activity_webview" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chalmers.feedlr.FeedActivity" />
         </activity>
-        <activity 
-            android:name="com.chalmers.feedlr.gui.DisplayItems"></activity>
     </application>
 </manifest>

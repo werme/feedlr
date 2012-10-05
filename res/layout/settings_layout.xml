@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.chalmers.feedlr.view.CreateFeedView
-        android:id="@+id/feed_view"
+    <com.chalmers.feedlr.ui.CreateFeedView
+        android:id="@+id/settings_view_flipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent" 
         android:background="#222222">
@@ -53,6 +53,6 @@
                 android:text="@string/button_main" />
         </LinearLayout>
         
-    </com.chalmers.feedlr.view.CreateFeedView>
+    </com.chalmers.feedlr.ui.CreateFeedView>
 
 </LinearLayout>

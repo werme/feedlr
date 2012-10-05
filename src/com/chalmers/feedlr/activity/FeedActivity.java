@@ -51,7 +51,9 @@ public class FeedActivity extends FragmentActivity {
 	// TODO implement this into the service handler
 	private FacebookHelper facebookHelper;
 
-	public static final String DATA_UPDATED = "com.chalmers.feedlr.DATA_UPDATED";
+	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
+	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
+	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
 
 	// Android system helpers
 	private Resources res;
@@ -65,7 +67,7 @@ public class FeedActivity extends FragmentActivity {
 	// Views
 	private ViewFlipper mainViewFlipper;
 	private ViewPager feedViewSwiper;
-	private ViewAnimator createFeedView;
+	private ViewAnimator settingsViewFlipper;
 	private ListView userListView;
 	private LinearLayout userListLayout;
 
@@ -84,8 +86,21 @@ public class FeedActivity extends FragmentActivity {
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Toast.makeText(context, "Feed data was updated", Toast.LENGTH_SHORT)
-					.show();
+			String broadcast = intent.getAction();
+			Bundle b = intent.getExtras();
+			
+			String dialog;
+
+			if (broadcast.equals(TWITTER_TIMELINE_UPDATED))
+				dialog = "Twitter timeline updated!";
+			else if (broadcast.equals(TWITTER_USERS_UPDATED))
+				dialog = "Twitter users updated";
+			else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
+				dialog = "Tweets for Twitter user with ID: " + b.getInt("userID") + " updated";
+			else
+				dialog = "broadcast from unknown intent recieved";
+
+			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
 		}
 	};
 
@@ -102,7 +117,7 @@ public class FeedActivity extends FragmentActivity {
 		// find views inflated from xml
 		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
-		createFeedView = (ViewAnimator) findViewById(R.id.feed_view);
+		settingsViewFlipper = (ViewAnimator) findViewById(R.id.settings_view_flipper);
 
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
@@ -113,6 +128,8 @@ public class FeedActivity extends FragmentActivity {
 		// set adapters
 		adapter = new FeedAdapter(getSupportFragmentManager(), this);
 		feedViewSwiper.setAdapter(adapter);
+		
+		// Swipe testing, this is just a stub
 		feedViewSwiper
 				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -153,8 +170,8 @@ public class FeedActivity extends FragmentActivity {
 				.loadAnimation(this, R.anim.slide_in_right);
 
 		// misc
-		createFeedView.setInAnimation(slideInRight);
-		createFeedView.setOutAnimation(slideOutLeft);
+		settingsViewFlipper.setInAnimation(slideInRight);
+		settingsViewFlipper.setOutAnimation(slideOutLeft);
 	}
 
 	@Override
@@ -196,7 +213,9 @@ public class FeedActivity extends FragmentActivity {
 		updateButton.setEnabled(isTwitterAuthorized);
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(DATA_UPDATED);
+		filter.addAction(TWITTER_TIMELINE_UPDATED);
+		filter.addAction(TWITTER_USERS_UPDATED);
+		filter.addAction(TWITTER_USER_TWEETS_UPDATED);
 		lbm.registerReceiver(receiver, filter);
 
 		facebookHelper.extendTokenIfNeeded(this, null);
@@ -217,7 +236,10 @@ public class FeedActivity extends FragmentActivity {
 	@Override
 	public void onBackPressed() {
 		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
-			toggleSettingsView(null);
+			if(settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
+				settingsViewFlipper.showPrevious();
+			else
+				toggleSettingsView(null);
 		else
 			super.onBackPressed();
 	}
@@ -263,14 +285,17 @@ public class FeedActivity extends FragmentActivity {
 		userAdapter = new UsersAdapter(this, R.layout.user_list_item, users);
 		userListView.setAdapter(userAdapter);
 
-		createFeedView.addView(userListLayout);
-		createFeedView.showNext();
+		settingsViewFlipper.addView(userListLayout);
+		settingsViewFlipper.showNext();
 	}
 
 	public void toggleSettingsView(View v) {
 		int currentView = mainViewFlipper.getCurrentView().getId();
+		int currentSettingView = settingsViewFlipper.getCurrentView().getId();
 
 		if (currentView == R.id.main_layout) {
+			if(currentSettingView == R.id.user_list_layout)
+				settingsViewFlipper.showPrevious();
 			mainViewFlipper.setInAnimation(slideInLeft);
 			mainViewFlipper.setOutAnimation(slideOutRight);
 			mainViewFlipper.showNext();
@@ -332,6 +357,8 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void updateFeed(View v) {
-		feedService.update();
+//		feedService.updateAll();
+//		feedService.updateUsers();
+		feedService.updateTwitterUser(7588892);
 	}
 }

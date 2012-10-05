@@ -27,13 +27,18 @@ public class FeedServiceHelper {
 		isBound = false;		
 	}
 	
-	public void authorize(int twitter) {
-		// TODO Auto-generated method stub
-		
+	public void updateAll() {
+		feedService.updateTwitterTimeline();
+//		feedService.updateFacebooklbasldbasd();
 	}
 	
-	public void update() {
-		feedService.update();
+	public void updateUsers() {
+		feedService.updateTwitterUsers();
+//		feedService.updateFacebookUsers();
+	}
+	
+	public void updateTwitterUser(int userID) {
+		feedService.updateTwitterUserTweets(userID);
 	}
 	
 	public void startService() {
