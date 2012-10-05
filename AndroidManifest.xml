@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Holo.NoActionBar" >
         
-        <service android:name=".service.FeedService" />
+        <service android:name=".service.DataService" />
         
         <activity
             android:name=".activity.FeedActivity"

@@ -8,7 +8,7 @@ import com.chalmers.feedlr.adapter.UsersAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.ClientHandler;
-import com.chalmers.feedlr.service.FeedServiceHelper;
+import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.FeedHandler;
@@ -45,7 +45,7 @@ import android.widget.ViewFlipper;
 
 public class FeedActivity extends FragmentActivity {
 
-	private FeedServiceHelper feedService;
+	private DataServiceHelper feedService;
 	private ClientHandler clientHandler;
 
 	// TODO implement this into the service handler
@@ -157,7 +157,7 @@ public class FeedActivity extends FragmentActivity {
 		facebookHelper = new FacebookHelper(this);
 		facebookHelper.init();
 
-		feedService = new FeedServiceHelper(this);
+		feedService = new DataServiceHelper(this);
 		feedService.startService();
 
 		// load animations from res/anim

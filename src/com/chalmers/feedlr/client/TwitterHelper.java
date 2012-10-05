@@ -12,7 +12,7 @@ import org.scribe.oauth.OAuthService;
 
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
-import com.chalmers.feedlr.util.TwitterJSONParser;
+import com.chalmers.feedlr.parser.TwitterJSONParser;
 
 import android.util.Log;
 
