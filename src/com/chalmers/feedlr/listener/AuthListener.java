@@ -16,6 +16,12 @@
 
 package com.chalmers.feedlr.listener;
 
+/*
+ * Class description
+ * 
+ * Interface that represents an Authorize listener.
+ */
+
 public interface AuthListener {
 	
 	public void onAuthorizationComplete();

@@ -34,31 +34,58 @@ public class TwitterItem implements Item {
 		user = new User();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#setText(java.lang.String)
+	 */
 	@Override
 	public void setText(String text) {
 		this.text = text;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chalmers.feedlr.model.Item#setUser(com.chalmers.feedlr.model.User)
+	 */
 	@Override
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	/*
+	 * @param timestamp the time the Twitter item was created
+	 */
 	@JsonProperty("created_at")
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#getUser()
+	 */
 	@Override
 	public User getUser() {
 		return user;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#getText()
+	 */
 	@Override
 	public String getText() {
 		return text;
 	}
 
+	/*
+	 * @return timestamp the time the Twitter item was created
+	 */
 	public String getTimestamp() {
 		return timestamp;
 	}

@@ -36,6 +36,10 @@ public class ClientStore {
 	private static final String FACEBOOK_ACCESS_TOKEN = "access_token";
 	private static final String FACEBOOK_ACCESS_TOKEN_EXPIRES = "access_expires";
 
+	/*
+	 * Save the Twitter access token and secret to shared preferences.
+	 */
+
 	public static boolean saveTwitterAccessToken(Token token, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE).edit();
@@ -43,6 +47,10 @@ public class ClientStore {
 		editor.putString(TWITTER_ACCESS_SECRET, token.getSecret());
 		return editor.commit();
 	}
+
+	/*
+	 * Save the Twitter request token and secret to shared preferences.
+	 */
 
 	public static boolean saveTwitterRequestToken(Token token, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
@@ -52,6 +60,11 @@ public class ClientStore {
 		return editor.commit();
 	}
 
+	/*
+	 * Get Twitter access token from shared preferences.
+	 * 
+	 * @return copy of access token
+	 */
 	public static Token getTwitterAccessToken(Context context) {
 		SharedPreferences settings = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE);
@@ -60,6 +73,11 @@ public class ClientStore {
 		return new Token(accessToken, accessSecret);
 	}
 
+	/*
+	 * Get Twitter request token from shared preferences.
+	 * 
+	 * @return copy of request token
+	 */
 	public static Token getTwitterRequestToken(Context context) {
 		SharedPreferences settings = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE);
@@ -67,6 +85,10 @@ public class ClientStore {
 		String requestSecret = settings.getString(TWITTER_REQUEST_SECRET, null);
 		return new Token(requestToken, requestSecret);
 	}
+
+	/*
+	 * Save the Facebook OAuth 2.0 access token to shared preferences.
+	 */
 
 	public static boolean saveFacebookAccessToken(Facebook facebook,
 			Context context) {
@@ -76,6 +98,10 @@ public class ClientStore {
 		return editor.commit();
 	}
 
+	/*
+	 * Save the Facebook OAuth 2.0 access expiration token to shared
+	 * preferences.
+	 */
 	public static boolean saveFacebookAccessTokenExpires(Facebook facebook,
 			Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
@@ -85,6 +111,11 @@ public class ClientStore {
 		return editor.commit();
 	}
 
+	/*
+	 * Get Facebook OAuth 2.0 access token from shared preferences.
+	 * 
+	 * @return access token
+	 */
 	public static String getFacebookAccessToken(Context context) {
 		SharedPreferences settings = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE);
@@ -92,6 +123,12 @@ public class ClientStore {
 		return accessToken;
 	}
 
+	/*
+	 * Get Facebook OAuth 2.0 access token expiration time from shared
+	 * preferences. Time expressed in milliseconds
+	 * 
+	 * @return session expiration time
+	 */
 	public static Long getFacebookAccessTokenExpires(Context context) {
 		SharedPreferences settings = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE);

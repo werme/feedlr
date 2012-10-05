@@ -22,6 +22,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Class description
  * 
  * @author Daniel Larsson
+ * 
+ *         Represents a Facebook item in a feed. Contains all the attributes
+ *         that are relevant for the feed.
+ * 
  */
 
 public class FacebookItem implements Item {
@@ -37,6 +41,11 @@ public class FacebookItem implements Item {
 		user = new User();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#setText(java.lang.String)
+	 */
 	@Override
 	@JsonProperty("message")
 	public void setText(String message) {
@@ -44,47 +53,88 @@ public class FacebookItem implements Item {
 		System.out.println("Set message: " + message);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chalmers.feedlr.model.Item#setUser(com.chalmers.feedlr.model.User)
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	/*
+	 * @param userId the user id of a user
+	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
+	/*
+	 * @param name the name of the user
+	 */
 	public void setName(String name) {
 		this.name = name;
 		System.out.println("Set name: " + name);
 	}
 
+	/*
+	 * @param timestamp the time the Facebook item was created
+	 */
 	@JsonProperty("created_time")
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
+	/*
+	 * Sets the users name and user ID
+	 * 
+	 * @see setName, setUserId
+	 * 
+	 * @param from an array of strings containing the name and user id
+	 */
 	public void setFrom(String[] from) {
 		setName(from[0]);
 		setUserId(from[1]);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#getUser()
+	 */
 	@Override
 	public User getUser() {
 		return user;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#getText()
+	 */
 	@Override
 	public String getText() {
 		return message;
 	}
 
+	/*
+	 * @return timestamp the time the Facebook item was created
+	 */
 	public String getTimestamp() {
 		return timestamp;
 	}
 
+	/*
+	 * @param type the type of Facebook Item
+	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
+	/*
+	 * @return type the type of Facebook Item
+	 */
 	public String getType() {
 		return type;
 	}

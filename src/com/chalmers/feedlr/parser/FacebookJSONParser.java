@@ -43,6 +43,9 @@ import android.util.Log;
  * Class description
  * 
  * @author Daniel Larsson
+ * 
+ *         A parser for Facebook responses. The parsing is done with the Jackson
+ *         JSON Processor.
  */
 
 public class FacebookJSONParser {

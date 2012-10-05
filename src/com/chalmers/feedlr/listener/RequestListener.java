@@ -16,6 +16,12 @@
 
 package com.chalmers.feedlr.listener;
 
+/*
+ * Class description
+ * 
+ * Interface that represents a Request listener. 
+ */
+
 public interface RequestListener {
     public void onComplete(Object response);
 }

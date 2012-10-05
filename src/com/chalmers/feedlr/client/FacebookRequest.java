@@ -26,8 +26,6 @@ import android.os.Bundle;
  * @author Daniel Larsson
  */
 
-
-
 public class FacebookRequest {
 
 	public static final String FEED = "me/home";

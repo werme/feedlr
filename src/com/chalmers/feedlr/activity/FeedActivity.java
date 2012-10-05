@@ -59,14 +59,17 @@ public class FeedActivity extends FragmentActivity {
 	private DataServiceHelper feedService;
 	private ClientHandler clientHandler;
 
+	// Twitter strings
 	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
 	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
 	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
-	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
 
+	// Facebook strings
 	public static final String FACEBOOK_TIMELINE_UPDATED = "com.chalmers.feedlr.FACEBOOK_TIMELINE_UPDATED";
 	public static final String FACEBOOK_USERS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USERS_UPDATED";
 	public static final String FACEBOOK_USER_NEWS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USER_NEWS_UPDATED";
+
+	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
 
 	// Android system helpers
 	private Resources res;
