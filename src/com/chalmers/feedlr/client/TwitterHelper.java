@@ -18,6 +18,12 @@ import android.util.Log;
 
 public class TwitterHelper {
 
+	public static final String VERIFY_CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
+	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";
+	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?screen_name=blueliine";
+	public static final String USER_NAMES = "https://api.twitter.com/1.1/users/lookup.json?include_entities=false&user_id=";
+	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
+
 	private OAuthService twitter;
 	private Token accessToken;
 
@@ -28,32 +34,39 @@ public class TwitterHelper {
 
 	public List<TwitterItem> getTimeline() {
 		long time = System.currentTimeMillis();
-		String response = request(TwitterRequest.TIMELINE);
+		
+		String response = request(TIMELINE);
+		
 		Log.i(TwitterJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-		List<TwitterItem> timeline = TwitterJSONParser.parseTweets(response);
-		return timeline;
+		
+		return TwitterJSONParser.parseTweets(response);
 	}
 
 	public List<TwitterItem> getUserTweets(int userID) {
 		long time = System.currentTimeMillis();
+		
 		StringBuilder url = new StringBuilder();
-		url.append(TwitterRequest.USER_TWEETS).append(userID);
+		url.append(USER_TWEETS).append(userID);
+		
 		String response = request(url.toString());
+		
 		Log.i(TwitterJSONParser.class.getName(),
 				"User tweets request time in millis: "
 						+ (System.currentTimeMillis() - time));
-		List<TwitterItem> userTweets = TwitterJSONParser.parseTweets(response);
-		return userTweets;
+		
+		return TwitterJSONParser.parseTweets(response);
 	}
 
 	public List<User> getFollowing() {
 		long time = System.currentTimeMillis();
-		String response = request(TwitterRequest.USER_IDS);
+		
+		String response = request(USER_IDS);
 
 		Log.i(TwitterJSONParser.class.getName(), "ID request time in millis: "
 				+ (System.currentTimeMillis() - time));
+		
 		String[] ids = TwitterJSONParser.parseUserIDs(response);
 		return getTwitterUserNamesFromID(ids);
 	}
@@ -62,7 +75,7 @@ public class TwitterHelper {
 		final List<User> users = new ArrayList<User>();
 		StringBuilder url = new StringBuilder();
 
-		url.append(TwitterRequest.USER_NAMES);
+		url.append(USER_NAMES);
 		url.append(ids[0]);
 
 		for (int i = 1; i < ids.length; i++) {
@@ -70,7 +83,7 @@ public class TwitterHelper {
 				String response = request(url.toString());
 				users.addAll(TwitterJSONParser.parseUserNames(response));
 				url = new StringBuilder();
-				url.append(TwitterRequest.USER_NAMES);
+				url.append(USER_NAMES);
 				url.append(ids[i]);
 			} else {
 				url.append(",").append(ids[i]);
