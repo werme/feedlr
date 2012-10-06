@@ -96,17 +96,18 @@ public class databaseHelper extends SQLiteOpenHelper {
 
 	public void addFeed(Feed feed) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		
+
 		ContentValues temp = new ContentValues();
-		
+
 		temp.put(FEED_COLUMN_NAME, feed.getTitle());
-		try{
-		db.insertOrThrow(TABLE_FEED, null, temp);
-		} catch (SQLiteConstraintException e){
+		try {
+			db.insertOrThrow(TABLE_FEED, null, temp);
+		} catch (SQLiteConstraintException e) {
 			Log.d("ERROR", "Inserted feed is not UNIQUE!");
-			//TODO Apply listener to notify the user that the feed name already exists!
+			// TODO Apply listener to notify the user that the feed name already
+			// exists!
 		}
-		
+
 		db.close();
 	}
 
@@ -127,4 +128,39 @@ public class databaseHelper extends SQLiteOpenHelper {
 		}
 		return feeds;
 	}
+	
+	public long getFeedID(String feedTitle){
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.query(TABLE_FEED, new String[] {FEED_COLUMN_ID}, FEED_COLUMN_NAME + "=?", new String[] {feedTitle}, null, null, null);
+		c.moveToNext();
+		Long l = Long.parseLong(c.getString(0));
+		c.close();
+		db.close();
+		return l;
+	}
+	
+	public ArrayList<String> listUsers() {
+		final ArrayList<String> users = new ArrayList<String>();
+
+		SQLiteDatabase DB = this.getWritableDatabase();
+		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_FEED, null);
+		while (c.moveToNext()) {
+			String s = c.getString(1);
+			users.add(s);
+		}
+		return users;
+	}
+	
+	public void addUserToFeed(User user, Feed feed){
+	}
+	
+	public void removeUserFromFeed(){
+	}
+	
+	public void updateUser(){
+	}
+	
+	public void addFeedUserBridge(){	
+	}
+
 }

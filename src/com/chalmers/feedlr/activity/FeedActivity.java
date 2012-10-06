@@ -185,6 +185,7 @@ public class FeedActivity extends FragmentActivity {
 		//db.addFeed(testFeed);
 		db.addFeed(testFeed);
 		Log.d("Feeds:", "" + db.listFeeds());
+		Log.d("FeedID:", "" + db.getFeedID("testfeed"));
 		db.removeFeed(testFeed.getTitle());
 		Log.d("Feed removed:", testFeed.getTitle());
 		Log.d("Feeds:", "" + db.listFeeds());
