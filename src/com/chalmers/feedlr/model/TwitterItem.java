@@ -7,6 +7,7 @@
 package com.chalmers.feedlr.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.AnnotationIntrospector.ReferenceProperty.Type;
 
 public class TwitterItem implements Item {
 	
@@ -42,5 +43,20 @@ public class TwitterItem implements Item {
     }
 	public String getTimestamp() {
 		return timestamp;
+	}
+
+	@Override
+	public String getType() {
+		return "STATUS";
+	}
+
+	@Override
+	public String getURL() {
+		return null;
+	}
+
+	@Override
+	public String getIMGURL() {
+		return null;
 	}
 }

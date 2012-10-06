@@ -52,6 +52,8 @@ public class databaseHelper extends SQLiteOpenHelper {
 	private static final String ITEM_COLUMN_TEXT = "text";
 	private static final String ITEM_COLUMN_TIMESTAMP = "timestamp";
 	private static final String ITEM_COLUMN_TYPE = "type";
+	private static final String ITEM_COLUMN_URL = "URL";
+	private static final String ITEM_COLUMN_IMGURL = "imgURL";
 	private static final String ITEM_COLUMN_USER_ID = "user_ID";
 
 	public databaseHelper(Context context) {
@@ -59,11 +61,11 @@ public class databaseHelper extends SQLiteOpenHelper {
 	}
 
 	public void onCreate(SQLiteDatabase database) {
-
+		// @formatter:off
 		// Creating feed table
-		database.execSQL("CREATE TABLE " + TABLE_FEED + "(" + FEED_COLUMN_ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + FEED_COLUMN_NAME
-				+ " TEXT UNIQUE" + ")");
+		database.execSQL("CREATE TABLE " + TABLE_FEED + "(" 
+				+ FEED_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+				+ FEED_COLUMN_NAME + " TEXT UNIQUE" + ")");
 
 		// Creating feed-user bridge table
 		database.execSQL("CREATE TABLE " + TABLE_FEEDUSER + "("
@@ -71,19 +73,24 @@ public class databaseHelper extends SQLiteOpenHelper {
 				+ FEEDUSER_COLUMN_USER_ID + " INT NOT NULL" + ")");
 
 		// Creating user table
-		// TODO Should username be the unique idenifyer of a user?!
-		database.execSQL("CREATE TABLE " + TABLE_USER + "(" + USER_COLUMN_ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_COLUMN_USERNAME
-				+ " TEXT," + USER_COLUMN_USERID + " TEXT UNIQUE,"
-				+ USER_COLUMN_IMGURL + " TEXT," + USER_COLUMN_SOURCE + " TEXT"
-				+ ")");
+		// TODO Should username be the unique idenifier of a user?!
+		database.execSQL("CREATE TABLE " + TABLE_USER + "(" 
+				+ USER_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+				+ USER_COLUMN_USERNAME + " TEXT NOT NULL," 
+				+ USER_COLUMN_USERID + " TEXT UNIQUE,"
+				+ USER_COLUMN_IMGURL + " TEXT," 
+				+ USER_COLUMN_SOURCE + " TEXT NOT NULL" + ")");
 
 		// Creating item table
-		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_TEXT
-				+ " TEXT," + ITEM_COLUMN_TIMESTAMP + " TEXT,"
-				+ ITEM_COLUMN_TYPE + " TEXT," + ITEM_COLUMN_USER_ID
-				+ " INT NOT NULL" + ")");
+		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + 
+				ITEM_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+				+ ITEM_COLUMN_TEXT + " TEXT," 
+				+ ITEM_COLUMN_TIMESTAMP + " TEXT,"
+				+ ITEM_COLUMN_TYPE + " TEXT," 
+				+ ITEM_COLUMN_URL + " TEXT,"
+				+ ITEM_COLUMN_IMGURL + " TEXT," 
+				+ ITEM_COLUMN_USER_ID + " INT NOT NULL" + ")");
+		// @formatter:on
 	}
 
 	@Override
@@ -116,11 +123,11 @@ public class databaseHelper extends SQLiteOpenHelper {
 	public void removeFeed(Feed feed) {
 		String title = feed.getTitle();
 		long id = getFeedID(feed);
-		
+
 		removeFeedBridge(id);
 
 		SQLiteDatabase db = this.getWritableDatabase();
-		
+
 		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
 		db.close();
 	}
@@ -257,11 +264,41 @@ public class databaseHelper extends SQLiteOpenHelper {
 
 	private void removeFeedBridge(Long id) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?", new String[] { id + "" });
+		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?",
+				new String[] { id + "" });
 		db.close();
 	}
 
 	public void updateUser(long userID) {
-		//TODO implement this method
+		// TODO implement this method
+	}
+
+	public void addListOfItems(List<Item> itemList) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.beginTransaction();
+		for (Item i : itemList) {
+
+			ContentValues temp = new ContentValues();
+			temp.put(ITEM_COLUMN_TEXT, i.getText());
+			temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
+			temp.put(ITEM_COLUMN_TYPE, i.getText());
+			temp.put(ITEM_COLUMN_URL, i.getURL());
+			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
+			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getID());
+			db.insert(TABLE_ITEM, null, temp);
+
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+		db.close();
+	}
+
+	public Cursor getAllItems() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_TEXT,
+				ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE, ITEM_COLUMN_URL,
+				ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID }, null, null, null, null, null);
+		db.close();
+		return c;
 	}
 }
