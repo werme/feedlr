@@ -19,6 +19,7 @@ package com.chalmers.feedlr.client;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import android.os.Bundle;
@@ -79,6 +80,23 @@ public class FacebookHelper {
 	private void request(String requestURL, Bundle params,
 			RequestListener listener) {
 		asyncFacebookRunner.request(requestURL, params, listener);
+	}
+
+	// Gets small version of profile picture. Add ?type=large for big version
+	public URL getProfileImageURL(String userId) {
+		long time = System.currentTimeMillis();
+
+		URL url = null;
+		try {
+			url = new URL("http://graph.facebook.com/" + userId + "/picture");
+			Log.i(FacebookJSONParser.class.getName(),
+					"Profile image URL request time in millis: "
+							+ (System.currentTimeMillis() - time));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return url;
+
 	}
 
 	private class FacebookRequestListener implements

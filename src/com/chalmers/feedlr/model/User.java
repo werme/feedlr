@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public class User {
-	private int id;
+	private long id;
 	private String userName, profileImageURL;
 
 	public User() {
@@ -44,7 +44,7 @@ public class User {
 	 * @param id
 	 *            the user id to set
 	 */
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -85,7 +85,7 @@ public class User {
 	/**
 	 * @return the user id
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 }
