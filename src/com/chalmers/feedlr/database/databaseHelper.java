@@ -113,8 +113,14 @@ public class databaseHelper extends SQLiteOpenHelper {
 		db.close();
 	}
 
-	public void removeFeed(String title) {
+	public void removeFeed(Feed feed) {
+		String title = feed.getTitle();
+		long id = getFeedID(feed);
+		
+		removeFeedBridge(id);
+
 		SQLiteDatabase db = this.getWritableDatabase();
+		
 		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
 		db.close();
 	}
@@ -122,12 +128,14 @@ public class databaseHelper extends SQLiteOpenHelper {
 	public ArrayList<String> listFeeds() {
 		final ArrayList<String> feeds = new ArrayList<String>();
 
-		SQLiteDatabase DB = this.getWritableDatabase();
-		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_FEED, null);
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_FEED, null);
 		while (c.moveToNext()) {
 			String s = c.getString(1);
 			feeds.add(s);
 		}
+		c.close();
+		db.close();
 		return feeds;
 	}
 
@@ -160,14 +168,15 @@ public class databaseHelper extends SQLiteOpenHelper {
 	public ArrayList<String> listUsers() {
 		final ArrayList<String> users = new ArrayList<String>();
 
-		SQLiteDatabase DB = this.getWritableDatabase();
+		SQLiteDatabase db = this.getWritableDatabase();
 
-		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_USER, null);
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
 
 		while (c.moveToNext()) {
 			String s = c.getString(1);
 			users.add(s);
 		}
+		db.close();
 		return users;
 	}
 
@@ -236,20 +245,23 @@ public class databaseHelper extends SQLiteOpenHelper {
 	public ArrayList<String> listFeedUser() {
 		final ArrayList<String> feeduser = new ArrayList<String>();
 
-		SQLiteDatabase DB = this.getWritableDatabase();
-		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_FEEDUSER, null);
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_FEEDUSER, null);
 		while (c.moveToNext()) {
 			feeduser.add(c.getString(0) + " " + c.getString(1));
 		}
+		c.close();
+		db.close();
 		return feeduser;
 	}
 
-	public void removeFeedBridge(Feed feed) {
-
+	private void removeFeedBridge(Long id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?", new String[] { id + "" });
+		db.close();
 	}
 
 	public void updateUser(long userID) {
-
+		//TODO implement this method
 	}
-
 }

@@ -211,7 +211,7 @@ public class FeedActivity extends FragmentActivity {
 		Log.d("Users:", "" + db.listUsers());
 		Log.d("UserID:", "" + db.getUserID(testUser));
 		Log.d("ListFeedUser:", "" + db.listFeedUser());
-		db.removeUserFromFeed(testFeed, testUser);
+		db.removeFeed(testFeed);
 		Log.d("User:", "" + db.listUsers());
 		Log.d("ListFeedUser:", "" + db.listFeedUser());
 	}
