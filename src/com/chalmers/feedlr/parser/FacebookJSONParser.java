@@ -19,14 +19,13 @@ package com.chalmers.feedlr.parser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.chalmers.feedlr.model.FacebookItem;
-import com.chalmers.feedlr.model.TwitterItem;
+import com.chalmers.feedlr.model.User;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -59,6 +58,11 @@ public class FacebookJSONParser {
 	static JSONObject jsonObject;
 	static JSONArray jArray;
 
+	public static List<User> parseItems(String json) {
+		return dataBindingParse(json);
+		// streamingParse(json);
+	}
+
 	public static void parse(String json) {
 		// System.out.println(json);
 		System.out.println("Begins with: " + json.substring(0, 100));
@@ -69,7 +73,7 @@ public class FacebookJSONParser {
 		// anotherStreamingParse(json);
 	}
 
-	private static void dataBindingParse(String json) {
+	private static List<User> dataBindingParse(String json) {
 		long time = System.currentTimeMillis();
 
 		String data = json.substring(8);
@@ -82,7 +86,7 @@ public class FacebookJSONParser {
 			});
 		}
 
-		List<FacebookItem> list = null;
+		List<User> list = null;
 
 		try {
 			list = reader.readValue(data);
@@ -98,6 +102,8 @@ public class FacebookJSONParser {
 		Log.i(FacebookJSONParser.class.getName(), "Items: " + list.size());
 		Log.i(FacebookJSONParser.class.getName(),
 				"Time in millis: " + (System.currentTimeMillis() - time));
+
+		return list;
 	}
 
 	private static void streamingParse(String json) {
@@ -249,4 +255,39 @@ public class FacebookJSONParser {
 		}
 	}
 
+	public static List<User> parseUsers(String json) {
+		long time = System.currentTimeMillis();
+
+		String data = json.substring(8);
+
+		if (mapper == null) {
+			mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+					false);
+			reader = mapper.reader(new TypeReference<List<User>>() {
+			});
+		}
+
+		List<User> list = null;
+
+		try {
+			list = reader.readValue(data);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
+				+ " users.");
+		Log.i(FacebookJSONParser.class.getName(), "Name: "
+				+ list.get(30).getUserName() + ". ID: " + list.get(30).getId()
+				+ ". URL: " + list.get(30).getProfileImageURL());
+		Log.i(FacebookJSONParser.class.getName(),
+				"Time in millis: " + (System.currentTimeMillis() - time));
+
+		return list;
+	}
 }

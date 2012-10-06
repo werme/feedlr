@@ -73,30 +73,29 @@ public class FacebookAuthHelper {
 		setAccessToken();
 
 		if (!isAuthorized()) {
-			facebook.authorize((Activity) context,
-					new String[] { "read_stream" }, Clients.FACEBOOK,
+			facebook.authorize((Activity) context, new String[] {
+					"read_stream", "read_friendlists" }, Clients.FACEBOOK,
 
-					new DialogListener() {
-						@Override
-						public void onComplete(Bundle values) {
-							ClientStore.saveFacebookAccessToken(facebook,
-									context);
-							ClientStore.saveFacebookAccessTokenExpires(
-									facebook, context);
-						}
+			new DialogListener() {
+				@Override
+				public void onComplete(Bundle values) {
+					ClientStore.saveFacebookAccessToken(facebook, context);
+					ClientStore.saveFacebookAccessTokenExpires(facebook,
+							context);
+				}
 
-						@Override
-						public void onFacebookError(FacebookError error) {
-						}
+				@Override
+				public void onFacebookError(FacebookError error) {
+				}
 
-						@Override
-						public void onError(DialogError e) {
-						}
+				@Override
+				public void onError(DialogError e) {
+				}
 
-						@Override
-						public void onCancel() {
-						}
-					});
+				@Override
+				public void onCancel() {
+				}
+			});
 		}
 		authListener.onAuthorizationComplete();
 	}

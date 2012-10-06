@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.chalmers.feedlr.model.FacebookItem;
+import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.FacebookJSONParser;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -33,6 +34,7 @@ import com.facebook.android.FacebookError;
 public class FacebookHelper {
 
 	public static final String TIMELINE = "me/home";
+	public static final String FRIENDS = "me/friends";
 
 	private String accessToken;
 
@@ -40,12 +42,15 @@ public class FacebookHelper {
 	AsyncFacebookRunner asyncFacebookRunner = new AsyncFacebookRunner(
 			Clients.getFacebook());
 
+	// Must solve this another way.
+	private static String response;
+
 	public FacebookHelper(String accessToken) {
 		this.accessToken = accessToken;
 
 	}
 
-	/* public List<FacebookItem> getTimeline() {
+	public void getTimeline() {
 		long time = System.currentTimeMillis();
 
 		Bundle params = new Bundle();
@@ -56,7 +61,20 @@ public class FacebookHelper {
 		Log.i(FacebookJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-	} */
+	}
+
+	public void getFriends() {
+		long time = System.currentTimeMillis();
+
+		Bundle params = new Bundle();
+		params.putString("fields", "name, id");
+		request(FRIENDS, params, listener);
+
+		Log.i(FacebookJSONParser.class.getName(),
+				"Timeline request time in millis: "
+						+ (System.currentTimeMillis() - time));
+		// return FacebookJSONParser.parseUsers(response);
+	}
 
 	private void request(String requestURL, Bundle params,
 			RequestListener listener) {
@@ -68,7 +86,9 @@ public class FacebookHelper {
 
 		@Override
 		public void onComplete(String response, Object state) {
-			FacebookJSONParser.parse(response);
+			System.out.println("Response: " + response);
+			FacebookHelper.response = response;
+			FacebookJSONParser.parseUsers(response);
 		}
 
 		@Override

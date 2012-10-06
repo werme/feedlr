@@ -50,7 +50,9 @@ public class DataServiceHelper {
 	}
 
 	public void updateUsers() {
-		dataService.updateTwitterUsers();
+		// dataService.updateTwitterUsers();
+		dataService.updateFacebookUsers();
+		// dataService.updateFacebookTimeline();
 		// feedService.updateFacebookUsers();
 	}
 

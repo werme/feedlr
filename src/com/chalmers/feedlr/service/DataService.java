@@ -23,7 +23,6 @@ import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.listener.RequestListener;
-import com.chalmers.feedlr.model.FacebookItem;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
@@ -156,7 +155,7 @@ public class DataService extends Service {
 			public void run() {
 				long time = System.currentTimeMillis();
 
-				// List<User> users = facebook.getFriends();
+				facebook.getFriends();
 
 				// save to database
 
