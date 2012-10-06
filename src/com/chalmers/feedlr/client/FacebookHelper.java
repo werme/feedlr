@@ -78,6 +78,18 @@ public class FacebookHelper {
 		// return FacebookJSONParser.parseUsers(response);
 	}
 
+	public void getFriendsLists() {
+		long time = System.currentTimeMillis();
+
+		Bundle params = new Bundle();
+		params.putString("fields", "members, name");
+		request(FRIENDSLISTS, params, listener);
+
+		Log.i(FacebookJSONParser.class.getName(),
+				"Friendslists request time in millis: "
+						+ (System.currentTimeMillis() - time));
+	}
+
 	private void request(String requestURL, Bundle params,
 			RequestListener listener) {
 		asyncFacebookRunner.request(requestURL, params, listener);
