@@ -172,7 +172,7 @@ public class TwitterJSONParser {
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + list.size()
 				+ " users.");
 		Log.i(TwitterJSONParser.class.getName(), "Name: "
-				+ list.get(30).getUserName() + ". ID: " + list.get(30).getId()
+				+ list.get(30).getUserName() + ". ID: " + list.get(30).getID()
 				+ ". URL: " + list.get(30).getProfileImageURL());
 		;
 		Log.i(TwitterJSONParser.class.getName(),

@@ -71,10 +71,12 @@ public class databaseHelper extends SQLiteOpenHelper {
 				+ FEEDUSER_COLUMN_USER_ID + " INT NOT NULL" + ")");
 
 		// Creating user table
+		// TODO Should username be the unique idenifyer of a user?!
 		database.execSQL("CREATE TABLE " + TABLE_USER + "(" + USER_COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_COLUMN_USERNAME
-				+ " TEXT," + USER_COLUMN_USERID + " TEXT," + USER_COLUMN_IMGURL
-				+ " TEXT," + USER_COLUMN_SOURCE + " TEXT" + ")");
+				+ " TEXT," + USER_COLUMN_USERID + " TEXT UNIQUE,"
+				+ USER_COLUMN_IMGURL + " TEXT," + USER_COLUMN_SOURCE + " TEXT"
+				+ ")");
 
 		// Creating item table
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
@@ -128,39 +130,126 @@ public class databaseHelper extends SQLiteOpenHelper {
 		}
 		return feeds;
 	}
-	
-	public long getFeedID(String feedTitle){
+
+	public long getFeedID(Feed feed) {
+		String feedTitle = feed.getTitle();
 		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor c = db.query(TABLE_FEED, new String[] {FEED_COLUMN_ID}, FEED_COLUMN_NAME + "=?", new String[] {feedTitle}, null, null, null);
+		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_ID },
+				FEED_COLUMN_NAME + "=?", new String[] { feedTitle }, null,
+				null, null);
 		c.moveToNext();
-		Long l = Long.parseLong(c.getString(0));
+		Long id = Long.parseLong(c.getString(0));
 		c.close();
 		db.close();
-		return l;
+		return id;
 	}
-	
+
+	public long getUserID(User user) {
+		long id = user.getID();
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
+				USER_COLUMN_ID + "=?", new String[] { id + "" }, null, null,
+				null);
+		c.moveToNext();
+		Long id1 = Long.parseLong(c.getString(0));
+		c.close();
+		db.close();
+		return id1;
+	}
+
 	public ArrayList<String> listUsers() {
 		final ArrayList<String> users = new ArrayList<String>();
 
 		SQLiteDatabase DB = this.getWritableDatabase();
-		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_FEED, null);
+
+		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_USER, null);
+
 		while (c.moveToNext()) {
 			String s = c.getString(1);
 			users.add(s);
 		}
 		return users;
 	}
-	
-	public void addUserToFeed(User user, Feed feed){
+
+	public void addUserToFeed(User user, Feed feed) {
+		long FeedID = getFeedID(feed);
+		long UserID = addUser(user);
+
+		// Add bridge connection
+		if (UserID != -1) {
+			addFeedUserBridge(FeedID, UserID);
+		}
 	}
-	
-	public void removeUserFromFeed(){
+
+	public long addUser(User user) {
+		// TODO Check if the user already exists!!
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues temp = new ContentValues();
+
+		temp.put(USER_COLUMN_USERNAME, user.getUserName());
+		temp.put(USER_COLUMN_USERID, user.getID());
+		temp.put(USER_COLUMN_IMGURL, user.getProfileImageURL());
+		// TODO implement source on user?
+
+		long userID = db.insert(TABLE_USER, null, temp);
+
+		db.close();
+		return userID;
 	}
-	
-	public void updateUser(){
+
+	public void addFeedUserBridge(long feedID, long userID) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues temp = new ContentValues();
+
+		temp.put(FEEDUSER_COLUMN_FEED_ID, feedID);
+		temp.put(FEEDUSER_COLUMN_USER_ID, userID);
+
+		db.insert(TABLE_FEEDUSER, null, temp);
+
+		db.close();
 	}
-	
-	public void addFeedUserBridge(){	
+
+	public void removeUserFromFeed(Feed feed, User user) {
+		long feedID = getFeedID(feed);
+		long userID = getUserID(user);
+
+		removeFeedUserBridge(feedID, userID);
+	}
+
+	private void removeUser(User user) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		long id = user.getID();
+		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
+		db.close();
+	}
+
+	private void removeFeedUserBridge(long feedID, long userID) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?" + " and "
+				+ FEEDUSER_COLUMN_USER_ID + "=?", new String[] { feedID + "",
+				userID + "" });
+		db.close();
+	}
+
+	public ArrayList<String> listFeedUser() {
+		final ArrayList<String> feeduser = new ArrayList<String>();
+
+		SQLiteDatabase DB = this.getWritableDatabase();
+		Cursor c = DB.rawQuery("SELECT * FROM " + TABLE_FEEDUSER, null);
+		while (c.moveToNext()) {
+			feeduser.add(c.getString(0) + " " + c.getString(1));
+		}
+		return feeduser;
+	}
+
+	public void removeFeedBridge(Feed feed) {
+
+	}
+
+	public void updateUser(long userID) {
+
 	}
 
 }

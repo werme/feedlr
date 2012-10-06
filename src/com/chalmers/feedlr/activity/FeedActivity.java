@@ -173,22 +173,47 @@ public class FeedActivity extends FragmentActivity {
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
-		
+
 		testDatabase();
 	}
-	
-	public void testDatabase(){
+
+	public void testDatabase() {
+
+		// Simple feed testing
 		this.deleteDatabase("feedlrDatabase");
 		databaseHelper db = new databaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
 		db.addFeed(testFeed);
-		//db.addFeed(testFeed);
+		// db.addFeed(testFeed);
 		db.addFeed(testFeed);
 		Log.d("Feeds:", "" + db.listFeeds());
-		Log.d("FeedID:", "" + db.getFeedID("testfeed"));
-		db.removeFeed(testFeed.getTitle());
-		Log.d("Feed removed:", testFeed.getTitle());
+		Log.d("FeedID:", "" + db.getFeedID(testFeed));
+		// db.removeFeed(testFeed.getTitle());
+		// Log.d("Feed removed:", testFeed.getTitle());
 		Log.d("Feeds:", "" + db.listFeeds());
+
+		// //Simple user testing
+		// User testUser = new User(1, "David");
+		// db.addUser(testUser);
+		// db.addUser(new User(52, "Olle"));
+		// //db.addFeed(testFeed);
+		// db.addUser(testUser);
+		// Log.d("Users:", "" + db.listUsers());
+		// Log.d("UserID:", "" + db.getUserID(testUser));
+		// db.removeUser(testUser);
+		// Log.d("User removed:", testUser.getUserName());
+		// Log.d("User:", "" + db.listUsers());
+
+		User testUser = new User(1, "David");
+		db.addUserToFeed(testUser, testFeed);
+		db.addUserToFeed(new User(52, "Olle"), testFeed);
+		db.addUserToFeed(testUser, testFeed);
+		Log.d("Users:", "" + db.listUsers());
+		Log.d("UserID:", "" + db.getUserID(testUser));
+		Log.d("ListFeedUser:", "" + db.listFeedUser());
+		db.removeUserFromFeed(testFeed, testUser);
+		Log.d("User:", "" + db.listUsers());
+		Log.d("ListFeedUser:", "" + db.listFeedUser());
 	}
 
 	@Override
@@ -294,11 +319,11 @@ public class FeedActivity extends FragmentActivity {
 
 		// Stupid example
 		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User("Yeah Buddy"));
-		users.add(new User("Arne"));
-		users.add(new User("Holger"));
-		users.add(new User("Gottfrid"));
-		users.add(new User("Obama"));
+		users.add(new User(2, "Yeah Buddy"));
+		users.add(new User(3, "Arne"));
+		users.add(new User(4, "Holger"));
+		users.add(new User(5, "Gottfrid"));
+		users.add(new User(6, "Obama"));
 
 		userAdapter = new UsersAdapter(this, R.layout.user_list_item, users);
 		userListView.setAdapter(userAdapter);

@@ -9,13 +9,14 @@ package com.chalmers.feedlr.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class User {
-	private int id;
+	private long id;
 	private String userName, profileImageURL;
 
 	public User() {
 	}
 
-	public User(String userName) {
+	public User(long id, String userName) {
+		this.id = id;
 		this.userName = userName;
 	}
 
@@ -64,7 +65,7 @@ public class User {
 	/**
 	 * @return the user id
 	 */
-	public int getId() {
+	public long getID() {
 		return id;
 	}	
 }
