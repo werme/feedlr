@@ -301,4 +301,10 @@ public class databaseHelper extends SQLiteOpenHelper {
 		db.close();
 		return c;
 	}
+	public long getItemTableSize(){
+		SQLiteDatabase database = this.getReadableDatabase();
+		long l = DatabaseUtils.queryNumEntries(database ,TABLE_ITEM);
+		database.close();
+		return l;	
+	}
 }
