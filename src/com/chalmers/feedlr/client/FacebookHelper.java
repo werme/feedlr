@@ -36,6 +36,7 @@ public class FacebookHelper {
 
 	public static final String TIMELINE = "me/home";
 	public static final String FRIENDS = "me/friends";
+	public static final String FRIENDSLISTS = "me/friendslists";
 
 	private String accessToken;
 
