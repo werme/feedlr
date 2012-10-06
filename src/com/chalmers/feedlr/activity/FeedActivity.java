@@ -172,6 +172,12 @@ public class FeedActivity extends FragmentActivity {
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
+		
+		testDatabase();
+	}
+	
+	public void testDatabase(){
+		
 	}
 
 	@Override
