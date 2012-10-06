@@ -93,10 +93,19 @@ public class databaseHelper extends SQLiteOpenHelper {
 	}
 	
 	public void addFeed(Feed feed) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues temp = new ContentValues();
+		temp.put(FEED_COLUMN_NAME, feed.getTitle());
 		
+		db.insert(TABLE_FEED, null, temp);
+		db.close();
 	}
 	
 	public void removeFeed(String title){
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
+		db.close();
 	}
 	
 	public ArrayList<String> listFeeds(){

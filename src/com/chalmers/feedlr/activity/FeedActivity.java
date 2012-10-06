@@ -8,6 +8,7 @@ import com.chalmers.feedlr.adapter.UsersAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.ClientHandler;
+import com.chalmers.feedlr.database.databaseHelper;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.model.Feed;
@@ -177,7 +178,13 @@ public class FeedActivity extends FragmentActivity {
 	}
 	
 	public void testDatabase(){
-		
+		databaseHelper db = new databaseHelper(this);
+		Feed testFeed = new Feed("testfeed");
+		db.addFeed(testFeed);
+		Log.d("Feeds:", "" + db.listFeeds());
+		db.removeFeed(testFeed.getTitle());
+		Log.d("Feed removed:", testFeed.getTitle());
+		Log.d("Feeds:", "" + db.listFeeds());
 	}
 
 	@Override
