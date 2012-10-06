@@ -178,8 +178,11 @@ public class FeedActivity extends FragmentActivity {
 	}
 	
 	public void testDatabase(){
+		this.deleteDatabase("feedlrDatabase");
 		databaseHelper db = new databaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
+		db.addFeed(testFeed);
+		//db.addFeed(testFeed);
 		db.addFeed(testFeed);
 		Log.d("Feeds:", "" + db.listFeeds());
 		db.removeFeed(testFeed.getTitle());
