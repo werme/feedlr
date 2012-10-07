@@ -99,15 +99,6 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	public void getFeedForUsers(List<User> facebookUsersInFeed,
-			RequestListener listener) {
-
-		for (final User user : facebookUsersInFeed) {
-			List<FacebookItem> feed = getUserFeed(user.getId(), listener);
-
-		}
-	}
-
 	private void request(String requestURL, Bundle params,
 			RequestListener listener) {
 		asyncFacebookRunner.request(requestURL, params, listener);
