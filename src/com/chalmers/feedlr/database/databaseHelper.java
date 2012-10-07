@@ -22,7 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class databaseHelper extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
 	private static final int DATABASE_VERSION = 1;
@@ -48,15 +48,15 @@ public class databaseHelper extends SQLiteOpenHelper {
 
 	// Declaring item table
 	private static final String TABLE_ITEM = "item";
-	private static final String ITEM_COLUMN_ID = "_id";
-	private static final String ITEM_COLUMN_TEXT = "text";
+	public static final String ITEM_COLUMN_ID = "_id";
+	public static final String ITEM_COLUMN_TEXT = "text";
 	private static final String ITEM_COLUMN_TIMESTAMP = "timestamp";
 	private static final String ITEM_COLUMN_TYPE = "type";
 	private static final String ITEM_COLUMN_URL = "URL";
 	private static final String ITEM_COLUMN_IMGURL = "imgURL";
 	private static final String ITEM_COLUMN_USER_ID = "user_ID";
 
-	public databaseHelper(Context context) {
+	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -117,7 +117,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 			// exists!
 		}
 
-		db.close();
+//		db.close();
 	}
 
 	public void removeFeed(Feed feed) {
@@ -129,7 +129,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
-		db.close();
+//		db.close();
 	}
 
 	public ArrayList<String> listFeeds() {
@@ -142,7 +142,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 			feeds.add(s);
 		}
 		c.close();
-		db.close();
+//		db.close();
 		return feeds;
 	}
 
@@ -155,7 +155,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 		c.moveToNext();
 		Long id = Long.parseLong(c.getString(0));
 		c.close();
-		db.close();
+//		db.close();
 		return id;
 	}
 
@@ -168,7 +168,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 		c.moveToNext();
 		Long id1 = Long.parseLong(c.getString(0));
 		c.close();
-		db.close();
+//		db.close();
 		return id1;
 	}
 
@@ -183,7 +183,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 			String s = c.getString(1);
 			users.add(s);
 		}
-		db.close();
+//		db.close();
 		return users;
 	}
 
@@ -210,7 +210,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 
 		long userID = db.insert(TABLE_USER, null, temp);
 
-		db.close();
+//		db.close();
 		return userID;
 	}
 
@@ -224,7 +224,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 
 		db.insert(TABLE_FEEDUSER, null, temp);
 
-		db.close();
+//		db.close();
 	}
 
 	public void removeUserFromFeed(Feed feed, User user) {
@@ -238,7 +238,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		long id = user.getId();
 		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
-		db.close();
+//		db.close();
 	}
 
 	private void removeFeedUserBridge(long feedID, long userID) {
@@ -246,7 +246,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?" + " and "
 				+ FEEDUSER_COLUMN_USER_ID + "=?", new String[] { feedID + "",
 				userID + "" });
-		db.close();
+//		db.close();
 	}
 
 	public ArrayList<String> listFeedUser() {
@@ -258,7 +258,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 			feeduser.add(c.getString(0) + " " + c.getString(1));
 		}
 		c.close();
-		db.close();
+//		db.close();
 		return feeduser;
 	}
 
@@ -266,45 +266,51 @@ public class databaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?",
 				new String[] { id + "" });
-		db.close();
+//		db.close();
 	}
 
 	public void updateUser(long userID) {
 		// TODO implement this method
 	}
 
-	public void addListOfItems(List<Item> itemList) {
+	public void addListOfItems(List<? extends Item> itemList) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.beginTransaction();
 		for (Item i : itemList) {
 
 			ContentValues temp = new ContentValues();
 			temp.put(ITEM_COLUMN_TEXT, i.getText());
-			temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
-			temp.put(ITEM_COLUMN_TYPE, i.getText());
-			temp.put(ITEM_COLUMN_URL, i.getURL());
-			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
+			//temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
+			//temp.put(ITEM_COLUMN_TYPE, i.getText());
+			//temp.put(ITEM_COLUMN_URL, i.getURL());
+			//temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
 			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
 			db.insert(TABLE_ITEM, null, temp);
 
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
-		db.close();
+//		db.close();
 	}
 
 	public Cursor getAllItems() {
 		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_TEXT,
+		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID, ITEM_COLUMN_TEXT/*,
 				ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE, ITEM_COLUMN_URL,
-				ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID }, null, null, null, null, null);
-		db.close();
+				ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID */}, null, null, null, null, null);
+//		db.close();
 		return c;
 	}
+	
+	public void clearItemTable() {
+		SQLiteDatabase db = getWritableDatabase();
+		db.delete(TABLE_ITEM, null, null);
+	}
+	
 	public long getItemTableSize(){
 		SQLiteDatabase database = this.getReadableDatabase();
 		long l = DatabaseUtils.queryNumEntries(database ,TABLE_ITEM);
-		database.close();
+//		database.close();
 		return l;	
 	}
 }

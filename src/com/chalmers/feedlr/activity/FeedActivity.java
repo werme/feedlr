@@ -24,7 +24,7 @@ import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.ClientHandler;
-import com.chalmers.feedlr.database.databaseHelper;
+import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.model.Feed;
@@ -202,14 +202,14 @@ public class FeedActivity extends FragmentActivity {
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
 
-		testDatabase();
+//		testDatabase();
 	}
 
 	public void testDatabase() {
 
 		// Simple feed testing
 //		this.deleteDatabase("feedlrDatabase");
-		databaseHelper db = new databaseHelper(this);
+		DatabaseHelper db = new DatabaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
 		db.addFeed(testFeed);
 		// db.addFeed(testFeed);
@@ -457,7 +457,7 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void updateFeed(View v) {
-		// feedService.updateAll();
-		feedService.updateUsers();
+		feedService.updateAll();
+		// feedService.updateUsers();
 	}
 }
