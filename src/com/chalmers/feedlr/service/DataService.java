@@ -1,22 +1,42 @@
-/**
- * Class description
+/*
+ * Copyright 2012 Feedlr
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * @author Olle Werme
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.chalmers.feedlr.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.chalmers.feedlr.activity.FeedActivity;
+import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
+import com.chalmers.feedlr.database.DatabaseHelper;
+import com.chalmers.feedlr.model.FacebookItem;
 import com.chalmers.feedlr.listener.RequestListener;
+
 import com.chalmers.feedlr.model.Feed;
+import com.chalmers.feedlr.model.Item;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
+import com.chalmers.feedlr.parser.FacebookJSONParser;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.util.ClientStore;
+import com.facebook.android.FacebookError;
 
 import android.app.Service;
 import android.content.Intent;
@@ -26,12 +46,21 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+/**
+ * Class description
+ * 
+ * @author Olle Werme
+ */
+
 public class DataService extends Service {
 	private final IBinder binder = new FeedServiceBinder();
 
 	private LocalBroadcastManager lbm;
 
 	private TwitterHelper twitter;
+	private FacebookHelper facebook;
+
+	private DatabaseHelper db;
 
 	public class FeedServiceBinder extends Binder {
 		DataService getService() {
@@ -44,6 +73,9 @@ public class DataService extends Service {
 		lbm = LocalBroadcastManager.getInstance(DataService.this);
 
 		twitter = new TwitterHelper(ClientStore.getTwitterAccessToken(this));
+		facebook = new FacebookHelper(ClientStore.getFacebookAccessToken(this));
+
+		db = new DatabaseHelper(this);
 		return START_STICKY;
 	}
 
@@ -71,9 +103,11 @@ public class DataService extends Service {
 			public void run() {
 				long time = System.currentTimeMillis();
 
-				List<TwitterItem> timeline = twitter.getTimeline();
+				List<TwitterItem> twitterTimeline = twitter.getTimeline();
 
 				// save to database
+				db.clearItemTable();
+				db.addListOfItems(twitterTimeline);
 
 				// Broadcast update to activity
 				Intent intent = new Intent();
@@ -134,6 +168,168 @@ public class DataService extends Service {
 		});
 	}
 
+	public void updateFacebookUsers() {
+		final long time = System.currentTimeMillis();
+
+		facebook.getFriends(new com.facebook.android.AsyncFacebookRunner.RequestListener() {
+
+			@Override
+			public void onComplete(String response, Object state) {
+				if (response != null) {
+					List<User> facebookUsers = FacebookJSONParser
+							.parseUsers(response);
+
+					// save to database
+
+					// Broadcast update to activity
+					Intent intent = new Intent();
+					intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
+					lbm.sendBroadcast(intent);
+
+					Log.i(FacebookJSONParser.class.getName(),
+							"Time in millis for complete Facebook friends request: "
+									+ (System.currentTimeMillis() - time));
+				}
+			}
+
+			@Override
+			public void onFacebookError(FacebookError e, final Object state) {
+				Log.e("Parse", "Facebook Error:" + e.getMessage());
+			}
+
+			@Override
+			public void onFileNotFoundException(FileNotFoundException e,
+					final Object state) {
+				Log.e("Parse", "Resource not found:" + e.getMessage());
+			}
+
+			@Override
+			public void onIOException(IOException e, final Object state) {
+				Log.e("Parse", "Network Error:" + e.getMessage());
+			}
+
+			@Override
+			public void onMalformedURLException(MalformedURLException e,
+					final Object state) {
+				Log.e("Parse", "Invalid URL:" + e.getMessage());
+			}
+		});
+	}
+
+	// No need to start a new thread, since Facebook makes the request Async
+	// automatically when using AsyncFacebookRunner
+	public void updateFacebookTimeline() {
+		final long time = System.currentTimeMillis();
+
+		facebook.getTimeline(new com.facebook.android.AsyncFacebookRunner.RequestListener() {
+
+			@Override
+			public void onComplete(String response, Object state) {
+				if (response != null) {
+					List<FacebookItem> facebookTimeline = FacebookJSONParser
+							.parseFeed(response);
+
+					// save to database
+
+					// Broadcast update to activity
+					Intent intent = new Intent();
+					intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
+					lbm.sendBroadcast(intent);
+
+					Log.i(FacebookJSONParser.class.getName(),
+							"Time in millis for complete Facebook friends request: "
+									+ (System.currentTimeMillis() - time));
+				}
+			}
+
+			@Override
+			public void onFacebookError(FacebookError e, final Object state) {
+				Log.e("Parse", "Facebook Error:" + e.getMessage());
+			}
+
+			@Override
+			public void onFileNotFoundException(FileNotFoundException e,
+					final Object state) {
+				Log.e("Parse", "Resource not found:" + e.getMessage());
+			}
+
+			@Override
+			public void onIOException(IOException e, final Object state) {
+				Log.e("Parse", "Network Error:" + e.getMessage());
+			}
+
+			@Override
+			public void onMalformedURLException(MalformedURLException e,
+					final Object state) {
+				Log.e("Parse", "Invalid URL:" + e.getMessage());
+			}
+		});
+
+		// List<FacebookItem> facebookTimeline = facebook.getTimeline();
+
+		// Save to database
+
+		// Broadcast update to activity
+		Intent intent = new Intent();
+		intent.setAction(FeedActivity.FACEBOOK_TIMELINE_UPDATED);
+		lbm.sendBroadcast(intent);
+
+		Log.i(FacebookJSONParser.class.getName(),
+				"Time in millis for complete Facebook timeline request: "
+						+ (System.currentTimeMillis() - time));
+
+	}
+
+	public void updateFacebookUserFeed(final long userID) {
+		final long time = System.currentTimeMillis();
+
+		facebook.getUserFeed(userID,
+				new com.facebook.android.AsyncFacebookRunner.RequestListener() {
+
+					@Override
+					public void onComplete(String response, Object state) {
+						if (response != null) {
+							List<FacebookItem> facebookUsers = FacebookJSONParser
+									.parseFeed(response);
+
+							// save to database
+
+							// Broadcast update to activity
+							Intent intent = new Intent();
+							intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
+							lbm.sendBroadcast(intent);
+
+							Log.i(FacebookJSONParser.class.getName(),
+									"Time in millis for complete Facebook user feed request: "
+											+ (System.currentTimeMillis() - time));
+						}
+					}
+
+					@Override
+					public void onFacebookError(FacebookError e,
+							final Object state) {
+						Log.e("Parse", "Facebook Error:" + e.getMessage());
+					}
+
+					@Override
+					public void onFileNotFoundException(
+							FileNotFoundException e, final Object state) {
+						Log.e("Parse", "Resource not found:" + e.getMessage());
+					}
+
+					@Override
+					public void onIOException(IOException e, final Object state) {
+						Log.e("Parse", "Network Error:" + e.getMessage());
+					}
+
+					@Override
+					public void onMalformedURLException(
+							MalformedURLException e, final Object state) {
+						Log.e("Parse", "Invalid URL:" + e.getMessage());
+					}
+				});
+	}
+
 	public void updateFeed(final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
@@ -153,7 +349,7 @@ public class DataService extends Service {
 								if (response != null)
 									twitterItemsforUsers
 											.addAll((List<TwitterItem>) response);
-								
+
 								responses++;
 								if (responses == twitterUsersInFeed.size())
 									onAllComplete();
@@ -179,6 +375,54 @@ public class DataService extends Service {
 												+ (System.currentTimeMillis() - time));
 							}
 						});
+
+				// facebook.getUserFeed(userId, listener)(userId,
+				// new
+				// com.facebook.android.AsyncFacebookRunner.RequestListener() {
+				//
+				// @Override
+				// public void onComplete(String response, Object state) {
+				// if (response != null) {
+				// List<FacebookItem> facebookUsers = FacebookJSONParser
+				// .parseFeed(response);
+				//
+				// // save to database
+				//
+				// // Broadcast update to activity
+				// Intent intent = new Intent();
+				// intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
+				// lbm.sendBroadcast(intent);
+				//
+				// Log.i(FacebookJSONParser.class.getName(),
+				// "Time in millis for complete Facebook user feed request: "
+				// + (System.currentTimeMillis() - time));
+				// }
+				// }
+				//
+				// @Override
+				// public void onFacebookError(FacebookError e,
+				// final Object state) {
+				// Log.e("Parse", "Facebook Error:" + e.getMessage());
+				// }
+				//
+				// @Override
+				// public void onFileNotFoundException(
+				// FileNotFoundException e, final Object state) {
+				// Log.e("Parse", "Resource not found:" + e.getMessage());
+				// }
+				//
+				// @Override
+				// public void onIOException(IOException e, final Object state)
+				// {
+				// Log.e("Parse", "Network Error:" + e.getMessage());
+				// }
+				//
+				// @Override
+				// public void onMalformedURLException(
+				// MalformedURLException e, final Object state) {
+				// Log.e("Parse", "Invalid URL:" + e.getMessage());
+				// }
+				// });
 			}
 		});
 	}

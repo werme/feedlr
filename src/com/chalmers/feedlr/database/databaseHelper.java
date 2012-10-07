@@ -160,7 +160,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 	}
 
 	public long getUserID(User user) {
-		long id = user.getID();
+		long id = user.getId();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
 				USER_COLUMN_ID + "=?", new String[] { id + "" }, null, null,
@@ -204,7 +204,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 		ContentValues temp = new ContentValues();
 
 		temp.put(USER_COLUMN_USERNAME, user.getUserName());
-		temp.put(USER_COLUMN_USERID, user.getID());
+		temp.put(USER_COLUMN_USERID, user.getId());
 		temp.put(USER_COLUMN_IMGURL, user.getProfileImageURL());
 		// TODO implement source on user?
 
@@ -236,7 +236,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 
 	private void removeUser(User user) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		long id = user.getID();
+		long id = user.getId();
 		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
 		db.close();
 	}
@@ -284,7 +284,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 			temp.put(ITEM_COLUMN_TYPE, i.getText());
 			temp.put(ITEM_COLUMN_URL, i.getURL());
 			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
-			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getID());
+			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
 			db.insert(TABLE_ITEM, null, temp);
 
 		}

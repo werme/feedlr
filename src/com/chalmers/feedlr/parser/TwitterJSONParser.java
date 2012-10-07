@@ -1,7 +1,17 @@
-/**
- * Class description
+/*
+ * Copyright 2012 Feedlr
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * @author Olle Werme
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.chalmers.feedlr.parser;
@@ -28,17 +38,23 @@ import com.fasterxml.jackson.databind.ObjectReader;
 
 import android.util.Log;
 
+/**
+ * Class description
+ * 
+ * @author Olle Werme
+ */
+
 public class TwitterJSONParser {
 
 	private static ObjectMapper mapper;
 	private static ObjectReader reader;
 
-//	private static JsonFactory jfactory;
-//	private static JsonParser jParser;
+	// private static JsonFactory jfactory;
+	// private static JsonParser jParser;
 
 	public static List<TwitterItem> parseTweets(String json) {
 		return dataBindingParse(json);
-		//streamingParse(json);
+		// streamingParse(json);
 	}
 
 	private static List<TwitterItem> dataBindingParse(String json) {
@@ -68,58 +84,58 @@ public class TwitterJSONParser {
 		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
 		Log.i(TwitterJSONParser.class.getName(),
 				"Time in millis: " + (System.currentTimeMillis() - time));
-		
+
 		return list;
 	}
 
-//	private static void streamingParse(String json) {
-//		long time = System.currentTimeMillis();
-//
-//		List<TwitterItem> list = new ArrayList<TwitterItem>();
-//
-//		try {
-//
-//			if (jfactory == null)
-//				jfactory = new JsonFactory();
-//
-//			jParser = jfactory.createJsonParser(json);
-//
-//			TwitterItem o = null;
-//			while (jParser.nextToken() != null) {
-//				if ("created_at".equals(jParser.getCurrentName())) {
-//					jParser.nextToken();
-//					o = new TwitterItem();
-//					o.setTimestamp(jParser.getText());
-//				}
-//				if ("text".equals(jParser.getCurrentName())) {
-//					jParser.nextToken();
-//					o.setText(jParser.getText());
-//				}
-//				if ("name".equals(jParser.getCurrentName())) {
-//					jParser.nextToken();
-//					o.getUser().setUserName(jParser.getText());
-//				}
-//				if ("profile_image_url".equals(jParser.getCurrentName())) {
-//					jParser.nextToken();
-//					o.getUser().setProfileImageURL(jParser.getText());
-//					list.add(o);
-//				}
-//			}
-//			jParser.close();
-//
-//		} catch (JsonGenerationException e) {
-//			e.printStackTrace();
-//		} catch (JsonMappingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		Log.i(TwitterJSONParser.class.getName(), "Streaming parse");
-//		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
-//		Log.i(TwitterJSONParser.class.getName(),
-//				"Time in millis: " + (System.currentTimeMillis() - time));
-//	}
+	// private static void streamingParse(String json) {
+	// long time = System.currentTimeMillis();
+	//
+	// List<TwitterItem> list = new ArrayList<TwitterItem>();
+	//
+	// try {
+	//
+	// if (jfactory == null)
+	// jfactory = new JsonFactory();
+	//
+	// jParser = jfactory.createJsonParser(json);
+	//
+	// TwitterItem o = null;
+	// while (jParser.nextToken() != null) {
+	// if ("created_at".equals(jParser.getCurrentName())) {
+	// jParser.nextToken();
+	// o = new TwitterItem();
+	// o.setTimestamp(jParser.getText());
+	// }
+	// if ("text".equals(jParser.getCurrentName())) {
+	// jParser.nextToken();
+	// o.setText(jParser.getText());
+	// }
+	// if ("name".equals(jParser.getCurrentName())) {
+	// jParser.nextToken();
+	// o.getUser().setUserName(jParser.getText());
+	// }
+	// if ("profile_image_url".equals(jParser.getCurrentName())) {
+	// jParser.nextToken();
+	// o.getUser().setProfileImageURL(jParser.getText());
+	// list.add(o);
+	// }
+	// }
+	// jParser.close();
+	//
+	// } catch (JsonGenerationException e) {
+	// e.printStackTrace();
+	// } catch (JsonMappingException e) {
+	// e.printStackTrace();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// Log.i(TwitterJSONParser.class.getName(), "Streaming parse");
+	// Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
+	// Log.i(TwitterJSONParser.class.getName(),
+	// "Time in millis: " + (System.currentTimeMillis() - time));
+	// }
 
 	public static String[] parseUserIDs(String json) {
 		long time = System.currentTimeMillis();
@@ -172,7 +188,7 @@ public class TwitterJSONParser {
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + list.size()
 				+ " users.");
 		Log.i(TwitterJSONParser.class.getName(), "Name: "
-				+ list.get(30).getUserName() + ". ID: " + list.get(30).getID()
+				+ list.get(30).getUserName() + ". ID: " + list.get(30).getId()
 				+ ". URL: " + list.get(30).getProfileImageURL());
 		;
 		Log.i(TwitterJSONParser.class.getName(),

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012 Feedlr
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.chalmers.feedlr.activity;
 
 import java.util.ArrayList;
@@ -7,7 +23,6 @@ import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
-import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.ClientHandler;
 import com.chalmers.feedlr.database.databaseHelper;
 import com.chalmers.feedlr.service.DataServiceHelper;
@@ -49,12 +64,16 @@ public class FeedActivity extends FragmentActivity {
 	private DataServiceHelper feedService;
 	private ClientHandler clientHandler;
 
-	// TODO implement this into the service handler
-	private FacebookHelper facebookHelper;
-
+	// Twitter strings
 	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
 	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
 	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
+
+	// Facebook strings
+	public static final String FACEBOOK_TIMELINE_UPDATED = "com.chalmers.feedlr.FACEBOOK_TIMELINE_UPDATED";
+	public static final String FACEBOOK_USERS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USERS_UPDATED";
+	public static final String FACEBOOK_USER_NEWS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USER_NEWS_UPDATED";
+
 	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
 
 	// Android system helpers
@@ -99,6 +118,13 @@ public class FeedActivity extends FragmentActivity {
 				dialog = "Twitter users updated!";
 			else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
 				dialog = "Tweets for Twitter user with ID: "
+						+ b.getInt("userID") + " updated!";
+			else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED))
+				dialog = "Facebook timeline updated!";
+			else if (broadcast.equals(FACEBOOK_USERS_UPDATED))
+				dialog = "Facebook users updated!";
+			else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED))
+				dialog = "News for Facebook user with ID: "
 						+ b.getInt("userID") + " updated!";
 			else if (broadcast.equals(FEED_UPDATED))
 				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
@@ -159,8 +185,6 @@ public class FeedActivity extends FragmentActivity {
 
 		// Instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
-		facebookHelper = new FacebookHelper(this);
-		facebookHelper.init();
 
 		feedService = new DataServiceHelper(this);
 		feedService.startService();
@@ -184,12 +208,12 @@ public class FeedActivity extends FragmentActivity {
 	public void testDatabase() {
 
 		// Simple feed testing
-		this.deleteDatabase("feedlrDatabase");
+//		this.deleteDatabase("feedlrDatabase");
 		databaseHelper db = new databaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
 		db.addFeed(testFeed);
 		// db.addFeed(testFeed);
-		db.addFeed(testFeed);
+//		db.addFeed(testFeed);
 		Log.d("Feeds:", "" + db.listFeeds());
 		Log.d("FeedID:", "" + db.getFeedID(testFeed));
 		// db.removeFeed(testFeed.getTitle());
@@ -207,17 +231,17 @@ public class FeedActivity extends FragmentActivity {
 		// db.removeUser(testUser);
 		// Log.d("User removed:", testUser.getUserName());
 		// Log.d("User:", "" + db.listUsers());
-
-		User testUser = new User(1, "David");
-		db.addUserToFeed(testUser, testFeed);
-		db.addUserToFeed(new User(52, "Olle"), testFeed);
-		db.addUserToFeed(testUser, testFeed);
-		Log.d("Users:", "" + db.listUsers());
-		Log.d("UserID:", "" + db.getUserID(testUser));
-		Log.d("ListFeedUser:", "" + db.listFeedUser());
-		db.removeFeed(testFeed);
-		Log.d("User:", "" + db.listUsers());
-		Log.d("ListFeedUser:", "" + db.listFeedUser());
+//
+//		User testUser = new User(1, "David");
+//		db.addUserToFeed(testUser, testFeed);
+//		db.addUserToFeed(new User(52, "Olle"), testFeed);
+//		db.addUserToFeed(testUser, testFeed);
+//		Log.d("Users:", "" + db.listUsers());
+//		Log.d("UserID:", "" + db.getUserID(testUser));
+//		Log.d("ListFeedUser:", "" + db.listFeedUser());
+//		db.removeFeed(testFeed);
+//		Log.d("User:", "" + db.listUsers());
+//		Log.d("ListFeedUser:", "" + db.listFeedUser());
 	}
 
 	@Override
@@ -242,7 +266,8 @@ public class FeedActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 
-		boolean isFacebookAuthorized = facebookHelper.isAuthorized();
+		boolean isFacebookAuthorized = clientHandler
+				.isAuthorized(Clients.FACEBOOK);
 		facebookAuthButton.setText(isFacebookAuthorized ? res
 				.getString(R.string.facebook_authorized) : res
 				.getString(R.string.authorize_facebook));
@@ -256,16 +281,19 @@ public class FeedActivity extends FragmentActivity {
 				.getString(R.string.authorize_twitter));
 
 		twitterAuthButton.setEnabled(!isTwitterAuthorized);
-		updateButton.setEnabled(isTwitterAuthorized);
+		updateButton.setEnabled(isTwitterAuthorized || isFacebookAuthorized);
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TWITTER_TIMELINE_UPDATED);
 		filter.addAction(TWITTER_USERS_UPDATED);
 		filter.addAction(TWITTER_USER_TWEETS_UPDATED);
+		filter.addAction(FACEBOOK_TIMELINE_UPDATED);
+		filter.addAction(FACEBOOK_USERS_UPDATED);
+		filter.addAction(FACEBOOK_USER_NEWS_UPDATED);
 		filter.addAction(FEED_UPDATED);
 		lbm.registerReceiver(receiver, filter);
 
-		facebookHelper.extendTokenIfNeeded(this, null);
+		clientHandler.extendFacebookAccessTokenIfNeeded();
 	}
 
 	@Override
@@ -302,7 +330,8 @@ public class FeedActivity extends FragmentActivity {
 				clientHandler.onTwitterAuthCallback(data);
 				break;
 			case Clients.FACEBOOK:
-				facebookHelper.onAuthCallback(requestCode, resultCode, data);
+				clientHandler.onFacebookAuthCallback(requestCode, resultCode,
+						data);
 				break;
 			default:
 				Log.wtf(getClass().getName(),
@@ -406,7 +435,25 @@ public class FeedActivity extends FragmentActivity {
 	}
 
 	public void authorizeFacebook(View v) {
-		facebookHelper.authorize();
+		clientHandler.authorize(Clients.FACEBOOK, new AuthListener() {
+			@Override
+			public void onAuthorizationComplete() {
+				Toast.makeText(FeedActivity.this,
+						"Facebook authorization successful", Toast.LENGTH_LONG)
+						.show();
+				facebookAuthButton.setText(res
+						.getString(R.string.facebook_authorized));
+				facebookAuthButton.setEnabled(false);
+				updateButton.setEnabled(true);
+			}
+
+			@Override
+			public void onAuthorizationFail() {
+				Toast.makeText(FeedActivity.this,
+						"Facebook authorization failed", Toast.LENGTH_SHORT)
+						.show();
+			}
+		});
 	}
 
 	public void updateFeed(View v) {
