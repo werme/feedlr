@@ -112,9 +112,10 @@ public class FeedActivity extends FragmentActivity {
 
 			String dialog;
 
-			if (broadcast.equals(TWITTER_TIMELINE_UPDATED))
+			if (broadcast.equals(TWITTER_TIMELINE_UPDATED)) {
 				dialog = "Twitter timeline updated!";
-			else if (broadcast.equals(TWITTER_USERS_UPDATED))
+				// update view
+			} else if (broadcast.equals(TWITTER_USERS_UPDATED))
 				dialog = "Twitter users updated!";
 			else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
 				dialog = "Tweets for Twitter user with ID: "
@@ -157,7 +158,7 @@ public class FeedActivity extends FragmentActivity {
 		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
 
 		// set adapters
-		adapter = new PageAdapter(getSupportFragmentManager(), this /* ,database */);
+		adapter = new PageAdapter(getSupportFragmentManager(), this);
 		feedViewSwiper.setAdapter(adapter);
 
 		// Swipe testing, this is just a stub

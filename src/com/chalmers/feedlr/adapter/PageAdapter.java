@@ -44,31 +44,9 @@ public class PageAdapter extends FragmentPagerAdapter {
 	@Override
 	public Fragment getItem(int index) {
 
-		// ArrayList<HashMap<String, String>> feedData =
-		// getFeedData(feeds.get(index));
-
 		ListFragment f = FeedFragment.newInstance();
 		
-		Cursor cursor = db.getAllItems();
-
-		String[] columns = new String[] { DatabaseHelper.ITEM_COLUMN_TEXT };
-		int[] to = new int[] { R.id.feed_item_text };
-
-		FeedAdapter tweetAdapter = new FeedAdapter(context,
-				R.layout.feed_item, cursor, columns, to,
-				CursorAdapter.NO_SELECTION);
-
-		f.setListAdapter(tweetAdapter);
-
 		return f;
-	}
-
-	private ArrayList<HashMap<String, String>> getFeedData(String feedTitle) {
-		ArrayList<HashMap<String, String>> feedData = new ArrayList<HashMap<String, String>>();
-
-		// get feed
-
-		return null;
 	}
 
 	@Override
