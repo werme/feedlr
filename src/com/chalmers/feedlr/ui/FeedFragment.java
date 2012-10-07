@@ -10,12 +10,8 @@ import android.view.ViewGroup;
 
 public class FeedFragment extends ListFragment {
 
-	public static FeedFragment newInstance(String title) {
-
+	public static FeedFragment newInstance() {
 		FeedFragment pageFragment = new FeedFragment();
-		Bundle bundle = new Bundle();
-		bundle.putString("title", title);
-		pageFragment.setArguments(bundle);
 		return pageFragment;
 	}
 

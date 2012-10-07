@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.adapter.FeedAdapter;
-import com.chalmers.feedlr.adapter.UsersAdapter;
+import com.chalmers.feedlr.adapter.PageAdapter;
+import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.ClientHandler;
@@ -20,9 +21,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -58,8 +62,8 @@ public class FeedActivity extends FragmentActivity {
 	private LayoutInflater inflater;
 
 	// Adapters
-	private FeedAdapter adapter;
-	private UsersAdapter userAdapter;
+	private PageAdapter adapter;
+	private UserAdapter userAdapter;
 
 	// Views
 	private ViewFlipper mainViewFlipper;
@@ -126,7 +130,7 @@ public class FeedActivity extends FragmentActivity {
 		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
 
 		// set adapters
-		adapter = new FeedAdapter(getSupportFragmentManager(), this);
+		adapter = new PageAdapter(getSupportFragmentManager(), this /* ,database */);
 		feedViewSwiper.setAdapter(adapter);
 
 		// Swipe testing, this is just a stub
@@ -275,19 +279,24 @@ public class FeedActivity extends FragmentActivity {
 
 		// get users from database here
 
-		// Stupid example
-		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User("Yeah Buddy"));
-		users.add(new User("Arne"));
-		users.add(new User("Holger"));
-		users.add(new User("Gottfrid"));
-		users.add(new User("Obama"));
-
-		userAdapter = new UsersAdapter(this, R.layout.user_list_item, users);
-		userListView.setAdapter(userAdapter);
-
-		settingsViewFlipper.addView(userListLayout);
-		settingsViewFlipper.showNext();
+//		// Stupid example
+//		Cursor cursor = null;
+//
+//		// the desired columns to be bound
+//		String[] columns = new String[] { People.NAME, People.NUMBER };
+//		// the XML defined views which the data will be bound to
+//		int[] to = new int[] { R.id.name_entry, R.id.number_entry };
+//
+//		// create the adapter using the cursor pointing to the desired data as
+//		// well as the layout information
+//		SimpleCursorAdapter userAdapter = new SimpleCursorAdapter(this,
+//				R.layout.user_list_item, cursor, columns, to,
+//				CursorAdapter.NO_SELECTION);
+//
+//		userListView.setAdapter(userAdapter);
+//
+//		settingsViewFlipper.addView(userListLayout);
+//		settingsViewFlipper.showNext();
 	}
 
 	public void toggleSettingsView(View v) {
@@ -320,7 +329,7 @@ public class FeedActivity extends FragmentActivity {
 
 		for (int i = 0; i < userListView.getCount(); i++)
 			if (checked.get(i))
-				users.add(userAdapter.getItem(i));
+				users.add((User) userAdapter.getItem(i));
 
 		// save user list as a feed in database here
 
