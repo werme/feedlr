@@ -375,54 +375,6 @@ public class DataService extends Service {
 												+ (System.currentTimeMillis() - time));
 							}
 						});
-
-				// facebook.getUserFeed(userId, listener)(userId,
-				// new
-				// com.facebook.android.AsyncFacebookRunner.RequestListener() {
-				//
-				// @Override
-				// public void onComplete(String response, Object state) {
-				// if (response != null) {
-				// List<FacebookItem> facebookUsers = FacebookJSONParser
-				// .parseFeed(response);
-				//
-				// // save to database
-				//
-				// // Broadcast update to activity
-				// Intent intent = new Intent();
-				// intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
-				// lbm.sendBroadcast(intent);
-				//
-				// Log.i(FacebookJSONParser.class.getName(),
-				// "Time in millis for complete Facebook user feed request: "
-				// + (System.currentTimeMillis() - time));
-				// }
-				// }
-				//
-				// @Override
-				// public void onFacebookError(FacebookError e,
-				// final Object state) {
-				// Log.e("Parse", "Facebook Error:" + e.getMessage());
-				// }
-				//
-				// @Override
-				// public void onFileNotFoundException(
-				// FileNotFoundException e, final Object state) {
-				// Log.e("Parse", "Resource not found:" + e.getMessage());
-				// }
-				//
-				// @Override
-				// public void onIOException(IOException e, final Object state)
-				// {
-				// Log.e("Parse", "Network Error:" + e.getMessage());
-				// }
-				//
-				// @Override
-				// public void onMalformedURLException(
-				// MalformedURLException e, final Object state) {
-				// Log.e("Parse", "Invalid URL:" + e.getMessage());
-				// }
-				// });
 			}
 		});
 	}
