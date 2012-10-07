@@ -9,6 +9,7 @@ import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.ClientHandler;
+import com.chalmers.feedlr.database.databaseHelper;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.model.Feed;
@@ -176,6 +177,47 @@ public class FeedActivity extends FragmentActivity {
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
+
+		testDatabase();
+	}
+
+	public void testDatabase() {
+
+		// Simple feed testing
+		this.deleteDatabase("feedlrDatabase");
+		databaseHelper db = new databaseHelper(this);
+		Feed testFeed = new Feed("testfeed");
+		db.addFeed(testFeed);
+		// db.addFeed(testFeed);
+		db.addFeed(testFeed);
+		Log.d("Feeds:", "" + db.listFeeds());
+		Log.d("FeedID:", "" + db.getFeedID(testFeed));
+		// db.removeFeed(testFeed.getTitle());
+		// Log.d("Feed removed:", testFeed.getTitle());
+		Log.d("Feeds:", "" + db.listFeeds());
+
+		// //Simple user testing
+		// User testUser = new User(1, "David");
+		// db.addUser(testUser);
+		// db.addUser(new User(52, "Olle"));
+		// //db.addFeed(testFeed);
+		// db.addUser(testUser);
+		// Log.d("Users:", "" + db.listUsers());
+		// Log.d("UserID:", "" + db.getUserID(testUser));
+		// db.removeUser(testUser);
+		// Log.d("User removed:", testUser.getUserName());
+		// Log.d("User:", "" + db.listUsers());
+
+		User testUser = new User(1, "David");
+		db.addUserToFeed(testUser, testFeed);
+		db.addUserToFeed(new User(52, "Olle"), testFeed);
+		db.addUserToFeed(testUser, testFeed);
+		Log.d("Users:", "" + db.listUsers());
+		Log.d("UserID:", "" + db.getUserID(testUser));
+		Log.d("ListFeedUser:", "" + db.listFeedUser());
+		db.removeFeed(testFeed);
+		Log.d("User:", "" + db.listUsers());
+		Log.d("ListFeedUser:", "" + db.listFeedUser());
 	}
 
 	@Override
@@ -297,6 +339,7 @@ public class FeedActivity extends FragmentActivity {
 //
 //		settingsViewFlipper.addView(userListLayout);
 //		settingsViewFlipper.showNext();
+
 	}
 
 	public void toggleSettingsView(View v) {

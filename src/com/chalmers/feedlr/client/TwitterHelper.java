@@ -45,7 +45,7 @@ public class TwitterHelper {
 		return TwitterJSONParser.parseTweets(response);
 	}
 
-	public List<TwitterItem> getUserTweets(int userID) {
+	public List<TwitterItem> getUserTweets(long userID) {
 		long time = System.currentTimeMillis();
 
 		StringBuilder url = new StringBuilder();
@@ -109,7 +109,7 @@ public class TwitterHelper {
 							@Override
 							public void run() {
 								List<TwitterItem> tweets = getUserTweets(user
-										.getId());
+										.getID());
 								listener.onComplete(tweets);
 							}
 						};
