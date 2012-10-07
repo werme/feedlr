@@ -19,7 +19,6 @@ package com.chalmers.feedlr.activity;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
-import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
@@ -37,12 +36,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -459,6 +455,7 @@ public class FeedActivity extends FragmentActivity {
 
 	public void updateFeed(View v) {
 		feedService.updateAll();
+		adapter.notifyDataSetChanged();
 		// feedService.updateUsers();
 	}
 }

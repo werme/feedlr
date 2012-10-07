@@ -77,6 +77,7 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	public void onLoadFinished(Loader<Cursor> arg0,
 			Cursor data) {
 		adapter.swapCursor(data);
+		adapter.notifyDataSetChanged();
 	}
 
 	@Override

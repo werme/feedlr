@@ -23,7 +23,7 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	private static final String TAG_TEXT = "text";
 
-	private int numberOfFeeds = 3;
+	private int numberOfFeeds = 1;
 
 	private Context context;
 
