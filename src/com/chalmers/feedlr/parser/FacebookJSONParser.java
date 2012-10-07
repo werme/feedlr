@@ -58,11 +58,7 @@ public class FacebookJSONParser {
 	static JSONObject jsonObject;
 	static JSONArray jArray;
 
-	public static List<User> parseItems(String json) {
-		return dataBindingParse(json);
-	}
-
-	private static List<User> dataBindingParse(String json) {
+	public static List<FacebookItem> parseFeed(String json) {
 		long time = System.currentTimeMillis();
 
 		String data = json.substring(8);
@@ -75,7 +71,7 @@ public class FacebookJSONParser {
 			});
 		}
 
-		List<User> list = null;
+		List<FacebookItem> list = null;
 
 		try {
 			list = reader.readValue(data);
@@ -87,8 +83,11 @@ public class FacebookJSONParser {
 			e.printStackTrace();
 		}
 
-		Log.i(FacebookJSONParser.class.getName(), "Data binding parse");
-		Log.i(FacebookJSONParser.class.getName(), "Items: " + list.size());
+		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
+				+ " items.");
+		Log.i(FacebookJSONParser.class.getName(), "Example:     From: "
+				+ list.get(5).getUser().getUserName() + ". Message: "
+				+ list.get(5).getText());
 		Log.i(FacebookJSONParser.class.getName(),
 				"Time in millis: " + (System.currentTimeMillis() - time));
 

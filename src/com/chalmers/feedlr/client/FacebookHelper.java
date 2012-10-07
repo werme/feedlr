@@ -40,19 +40,15 @@ public class FacebookHelper {
 
 	private String accessToken;
 
-	FacebookRequestListener listener = new FacebookRequestListener();
 	AsyncFacebookRunner asyncFacebookRunner = new AsyncFacebookRunner(
 			Clients.getFacebook());
-
-	// Must solve this another way.
-	private static String response;
 
 	public FacebookHelper(String accessToken) {
 		this.accessToken = accessToken;
 
 	}
 
-	public void getTimeline() {
+	public void getTimeline(RequestListener listener) {
 		long time = System.currentTimeMillis();
 
 		Bundle params = new Bundle();
@@ -65,7 +61,7 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	public void getFriends() {
+	public void getFriends(RequestListener listener) {
 		long time = System.currentTimeMillis();
 
 		Bundle params = new Bundle();
@@ -75,10 +71,9 @@ public class FacebookHelper {
 		Log.i(FacebookJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-		// return FacebookJSONParser.parseUsers(response);
 	}
 
-	public void getFriendsLists() {
+	public void getFriendsLists(RequestListener listener) {
 		long time = System.currentTimeMillis();
 
 		Bundle params = new Bundle();
@@ -88,6 +83,29 @@ public class FacebookHelper {
 		Log.i(FacebookJSONParser.class.getName(),
 				"Friendslists request time in millis: "
 						+ (System.currentTimeMillis() - time));
+	}
+
+	public void getUserFeed(long userID, RequestListener listener) {
+		long time = System.currentTimeMillis();
+
+		// Can this be done smoother?
+		String values = "uid(" + userID + "), feed";
+		Bundle params = new Bundle();
+		params.putString("fields", values);
+		request(FRIENDS, params, listener);
+
+		Log.i(FacebookJSONParser.class.getName(),
+				"Friendslists request time in millis: "
+						+ (System.currentTimeMillis() - time));
+	}
+
+	public void getFeedForUsers(List<User> facebookUsersInFeed,
+			RequestListener listener) {
+
+		for (final User user : facebookUsersInFeed) {
+			List<FacebookItem> feed = getUserFeed(user.getId(), listener);
+
+		}
 	}
 
 	private void request(String requestURL, Bundle params,
@@ -110,38 +128,5 @@ public class FacebookHelper {
 		}
 		return url;
 
-	}
-
-	private class FacebookRequestListener implements
-			com.facebook.android.AsyncFacebookRunner.RequestListener {
-
-		@Override
-		public void onComplete(String response, Object state) {
-			System.out.println("Response: " + response);
-			FacebookHelper.response = response;
-			FacebookJSONParser.parseUsers(response);
-		}
-
-		@Override
-		public void onFacebookError(FacebookError e, final Object state) {
-			Log.e("stream", "Facebook Error:" + e.getMessage());
-		}
-
-		@Override
-		public void onFileNotFoundException(FileNotFoundException e,
-				final Object state) {
-			Log.e("stream", "Resource not found:" + e.getMessage());
-		}
-
-		@Override
-		public void onIOException(IOException e, final Object state) {
-			Log.e("stream", "Network Error:" + e.getMessage());
-		}
-
-		@Override
-		public void onMalformedURLException(MalformedURLException e,
-				final Object state) {
-			Log.e("stream", "Invalid URL:" + e.getMessage());
-		}
 	}
 }
