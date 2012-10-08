@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.chalmers.feedlr.ui.CreateFeedView
+        android:id="@+id/settings_view_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:background="#222222">
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/button_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="authorizeTwitter"
+                android:text="@string/authorize_twitter" />
+
+            <Button
+                android:id="@+id/button_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="authorizeFacebook"
+                android:text="@string/authorize_facebook" />
+
+            <Button
+                android:id="@+id/button_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="updateFeed"
+                android:text="@string/update_feed" />
+
+            <Button
+                android:id="@+id/button_create_feed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="initCreateFeedView"
+                android:text="@string/button_create_feed" />
+
+            <Button
+                android:id="@+id/button_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="toggleSettingsView"
+                android:text="@string/button_main" />
+        </LinearLayout>
+        
+    </com.chalmers.feedlr.ui.CreateFeedView>
+
+</LinearLayout>

@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package com.chalmers.feedlr.model;
+package com.chalmers.feedlr.listener;
 
-public interface Item {
+/*
+ * Class description
+ * 
+ * Interface that represents a Request listener. 
+ */
 
-	public void setText(String text);
-
-	public void setUser(User user);
-
-	public User getUser();
-
-	public String getText();
-
-	public String getType();
-
-	public String getTimestamp();
-
-	public String getURL();
-
-	public String getIMGURL();
+public interface RequestListener {
+    public void onComplete(Object response);
 }

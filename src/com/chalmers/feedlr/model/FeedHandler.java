@@ -16,21 +16,32 @@
 
 package com.chalmers.feedlr.model;
 
-public interface Item {
+import java.util.List;
 
-	public void setText(String text);
+import android.content.Context;
 
-	public void setUser(User user);
+public class FeedHandler {
 
-	public User getUser();
+	private Context context;
 
-	public String getText();
+	public FeedHandler(Context context) {
+		this.context = context;
+	}
 
-	public String getType();
+	public void createFeed(String title, List<User> twitterUsers,
+			List<User> facebookUsers) {
+		// insert feed into database
+	}
 
-	public String getTimestamp();
+	public List<Feed> getAllFeeds() {
+		// get feeds from database
+		List<Feed> feeds = null;
+		return feeds;
+	}
 
-	public String getURL();
-
-	public String getIMGURL();
+	public Feed getFeed(String title) {
+		// query database for feed with title
+		Feed feed = null;
+		return feed;
+	}
 }

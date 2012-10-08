@@ -17,21 +17,27 @@
 package com.chalmers.feedlr.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.AnnotationIntrospector.ReferenceProperty.Type;
 
 /**
  * Class description
  * 
- * @author Olle Werme
+ * @author Daniel Larsson
+ * 
+ *         Represents a Facebook item in a feed. Contains all the attributes
+ *         that are relevant for the feed.
+ * 
  */
 
-public class TwitterItem implements Item {
+public class FacebookItem implements Item {
 
-	private String text;
+	private String message;
 	private User user;
 	private String timestamp;
+	private String type;
+	private String name;
+	private String userId;
 
-	public TwitterItem() {
+	public FacebookItem() {
 		user = new User();
 	}
 
@@ -41,8 +47,10 @@ public class TwitterItem implements Item {
 	 * @see com.chalmers.feedlr.model.Item#setText(java.lang.String)
 	 */
 	@Override
-	public void setText(String text) {
-		this.text = text;
+	@JsonProperty("message")
+	public void setText(String message) {
+		this.message = message;
+		System.out.println("Set message: " + message);
 	}
 
 	/*
@@ -51,17 +59,43 @@ public class TwitterItem implements Item {
 	 * @see
 	 * com.chalmers.feedlr.model.Item#setUser(com.chalmers.feedlr.model.User)
 	 */
-	@Override
 	public void setUser(User user) {
 		this.user = user;
 	}
 
 	/*
-	 * @param timestamp the time the Twitter item was created
+	 * @param userId the user id of a user
 	 */
-	@JsonProperty("created_at")
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	/*
+	 * @param name the name of the user
+	 */
+	public void setName(String name) {
+		this.name = name;
+		System.out.println("Set name: " + name);
+	}
+
+	/*
+	 * @param timestamp the time the Facebook item was created
+	 */
+	@JsonProperty("created_time")
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	/*
+	 * Sets the users name and user ID
+	 * 
+	 * @see setName, setUserId
+	 * 
+	 * @param from an array of strings containing the name and user id
+	 */
+	public void setFrom(String[] from) {
+		setName(from[0]);
+		setUserId(from[1]);
 	}
 
 	/*
@@ -81,28 +115,39 @@ public class TwitterItem implements Item {
 	 */
 	@Override
 	public String getText() {
-		return text;
+		return message;
 	}
 
 	/*
-	 * @return timestamp the time the Twitter item was created
+	 * @return timestamp the time the Facebook item was created
 	 */
 	public String getTimestamp() {
 		return timestamp;
 	}
 
-	@Override
+	/*
+	 * @param type the type of Facebook Item
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/*
+	 * @return type the type of Facebook Item
+	 */
 	public String getType() {
-		return "STATUS";
+		return type;
 	}
 
 	@Override
 	public String getURL() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getIMGURL() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }
