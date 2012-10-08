@@ -17,16 +17,25 @@
 package com.chalmers.feedlr.ui;
 
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
+import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
+import com.chalmers.feedlr.ui.PullToRefreshListView.OnRefreshListener;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +51,9 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 
 	private FeedAdapter adapter;
 	private String feedTitle;
+	private PullToRefreshListView listView;
+	private Loader<Cursor> loader;
+	private FeedListener listener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +61,21 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 		
 		Bundle arg = getArguments();
 		feedTitle = arg.getString("title");
+		
+		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(getActivity());
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(FeedActivity.TWITTER_TIMELINE_UPDATED);
+		filter.addAction(FeedActivity.TWITTER_USERS_UPDATED);
+		filter.addAction(FeedActivity.TWITTER_USER_TWEETS_UPDATED);
+		filter.addAction(FeedActivity.FACEBOOK_TIMELINE_UPDATED);
+		filter.addAction(FeedActivity.FACEBOOK_USERS_UPDATED);
+		filter.addAction(FeedActivity.FACEBOOK_USER_NEWS_UPDATED);
+		filter.addAction(FeedActivity.FEED_UPDATED);
+		lbm.registerReceiver(receiver, filter);
 	}
+	
+	
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -63,7 +89,17 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 
 		setListAdapter(adapter);
 
-        getLoaderManager().initLoader(0, null, this);
+        loader = getLoaderManager().initLoader(0, null, this);
+        
+        listView = (PullToRefreshListView) getListView();
+        listView.setOnRefreshListener(new OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                listener.onFeedUpdateRequest(feedTitle);
+            }
+        });
+
     }
 	
 	@Override
@@ -93,4 +129,16 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	public void update() {
 		getLoaderManager().restartLoader(0, null, this);
 	}
+	
+	public void setUpdateRequestListener(FeedListener listener) {
+		this.listener = listener;
+	}
+	
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			loader.forceLoad();
+			listView.onRefreshComplete();
+		}
+	};
 }

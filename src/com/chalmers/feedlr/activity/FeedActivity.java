@@ -27,6 +27,7 @@ import com.chalmers.feedlr.client.ClientHandler;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
+import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.User;
 
@@ -59,7 +60,7 @@ import android.widget.Toast;
 import android.widget.ViewAnimator;
 import android.widget.ViewFlipper;
 
-public class FeedActivity extends FragmentActivity {
+public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	private DataServiceHelper feedService;
 	private ClientHandler clientHandler;
@@ -474,5 +475,10 @@ public class FeedActivity extends FragmentActivity {
 
 		// This doesn't work at all
 		adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onFeedUpdateRequest(String feedTitle) {
+		feedService.updateAll();
 	}
 }
