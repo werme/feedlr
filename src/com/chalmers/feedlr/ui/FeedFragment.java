@@ -20,6 +20,7 @@ import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
+import com.chalmers.feedlr.model.Feed;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -33,16 +34,21 @@ import android.view.ViewGroup;
 
 public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor> {
 
-	public static FeedFragment newInstance() {
+	public static FeedFragment newInstance(Bundle args) {
 		FeedFragment pageFragment = new FeedFragment();
+		pageFragment.setArguments(args);
 		return pageFragment;
 	}
 
 	private FeedAdapter adapter;
+	private String feedTitle;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Bundle arg = getArguments();
+		feedTitle = arg.getString("title");
 	}
 
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
@@ -70,14 +76,13 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 
 	@Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new FeedCursorLoader(getActivity(), new DatabaseHelper(getActivity()));
+            return new FeedCursorLoader(getActivity(), feedTitle);
     }
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> arg0,
 			Cursor data) {
 		adapter.swapCursor(data);
-		adapter.notifyDataSetChanged();
 	}
 
 	@Override
