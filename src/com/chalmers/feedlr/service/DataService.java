@@ -30,7 +30,6 @@ import com.chalmers.feedlr.model.FacebookItem;
 import com.chalmers.feedlr.listener.RequestListener;
 
 import com.chalmers.feedlr.model.Feed;
-import com.chalmers.feedlr.model.Item;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.FacebookJSONParser;
@@ -129,7 +128,7 @@ public class DataService extends Service {
 
 				List<User> users = twitter.getFollowing();
 
-				// save to database
+				db.addUsers(users);
 
 				// Broadcast update to activity
 				Intent intent = new Intent();

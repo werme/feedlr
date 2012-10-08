@@ -40,7 +40,10 @@ public class Feed extends ArrayList<Item> {
 	}
 
 	public Feed(String title) {
-		this.setTitle(title);
+		if(title != null)
+			this.setTitle(title);
+		else
+			setTitle("Yeah buddy");
 	}
 
 	/**

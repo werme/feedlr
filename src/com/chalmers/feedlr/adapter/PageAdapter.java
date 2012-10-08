@@ -56,6 +56,6 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	public void addFeed(Feed feed) {
 		numberOfFeeds++;
-		feeds.add(feed.getTitle());
+//		feeds.add(feed.getTitle());
 	}
 }

@@ -19,6 +19,7 @@ package com.chalmers.feedlr.activity;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
@@ -36,9 +37,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -346,8 +350,19 @@ public class FeedActivity extends FragmentActivity {
 				.findViewById(R.id.user_list_view);
 
 		// get users from database here
+		
+		DatabaseHelper db = new DatabaseHelper(this);
+		Cursor cursor = db.getAllUsers();
 
-//		// Stupid example
+		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME };
+		int[] to = new int[] { R.id.checked_text_view };
+		
+		UserAdapter userAdapter = new UserAdapter(this,
+				R.layout.user_list_item, cursor, columns, to,
+				CursorAdapter.NO_SELECTION);
+
+		userListView.setAdapter(userAdapter);
+		
 //		Cursor cursor = null;
 //
 //		// the desired columns to be bound
@@ -362,9 +377,9 @@ public class FeedActivity extends FragmentActivity {
 //				CursorAdapter.NO_SELECTION);
 //
 //		userListView.setAdapter(userAdapter);
-//
-//		settingsViewFlipper.addView(userListLayout);
-//		settingsViewFlipper.showNext();
+
+		settingsViewFlipper.addView(userListLayout);
+		settingsViewFlipper.showNext();
 
 	}
 
@@ -387,18 +402,18 @@ public class FeedActivity extends FragmentActivity {
 
 	public void createFeed(View v) {
 		toggleSettingsView(null);
-
-		SparseBooleanArray checked = userListView.getCheckedItemPositions();
+		
+//		SparseBooleanArray checked = userListView.getCheckedItemPositions();
 		EditText titleEditText = (EditText) userListLayout
 				.findViewById(R.id.create_feed_action_bar_title);
 		String feedTitle = titleEditText.getText().toString();
 
 		Feed feed = new Feed(feedTitle);
-		ArrayList<User> users = new ArrayList<User>();
+//		ArrayList<User> users = new ArrayList<User>();
 
-		for (int i = 0; i < userListView.getCount(); i++)
-			if (checked.get(i))
-				users.add((User) userAdapter.getItem(i));
+//		for (int i = 0; i < userListView.getCount(); i++)
+//			if (checked.get(i))
+//				users.add((User) userAdapter.getItem(i));
 
 		// save user list as a feed in database here
 
@@ -455,7 +470,9 @@ public class FeedActivity extends FragmentActivity {
 
 	public void updateFeed(View v) {
 		feedService.updateAll();
+//		feedService.updateUsers();
+
+		// This doesn't work at all
 		adapter.notifyDataSetChanged();
-		// feedService.updateUsers();
 	}
 }

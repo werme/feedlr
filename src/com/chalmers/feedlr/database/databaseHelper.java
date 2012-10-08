@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// Declaring user table
 	private static final String TABLE_USER = "user";
 	private static final String USER_COLUMN_ID = "_id";
-	private static final String USER_COLUMN_USERNAME = "username";
+	public static final String USER_COLUMN_USERNAME = "username";
 	private static final String USER_COLUMN_USERID = "userid";
 	private static final String USER_COLUMN_IMGURL = "ProfileImageURL";
 	private static final String USER_COLUMN_SOURCE = "source";
@@ -63,9 +63,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase database) {
 		// @formatter:off
 		// Creating feed table
-		database.execSQL("CREATE TABLE " + TABLE_FEED + "(" 
-				+ FEED_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-				+ FEED_COLUMN_NAME + " TEXT UNIQUE" + ")");
+		database.execSQL("CREATE TABLE " + TABLE_FEED + "(" + FEED_COLUMN_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + FEED_COLUMN_NAME
+				+ " TEXT UNIQUE" + ")");
 
 		// Creating feed-user bridge table
 		database.execSQL("CREATE TABLE " + TABLE_FEEDUSER + "("
@@ -74,22 +74,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		// Creating user table
 		// TODO Should username be the unique idenifier of a user?!
-		database.execSQL("CREATE TABLE " + TABLE_USER + "(" 
-				+ USER_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-				+ USER_COLUMN_USERNAME + " TEXT NOT NULL," 
-				+ USER_COLUMN_USERID + " TEXT UNIQUE,"
-				+ USER_COLUMN_IMGURL + " TEXT," 
-				+ USER_COLUMN_SOURCE + " TEXT NOT NULL" + ")");
+		database.execSQL("CREATE TABLE " + TABLE_USER + "(" + USER_COLUMN_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + USER_COLUMN_USERNAME
+				+ " TEXT NOT NULL," + USER_COLUMN_USERID + " TEXT UNIQUE,"
+				+ USER_COLUMN_IMGURL + " TEXT," + USER_COLUMN_SOURCE
+				+ " TEXT NOT NULL" + ")");
 
 		// Creating item table
-		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + 
-				ITEM_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
-				+ ITEM_COLUMN_TEXT + " TEXT," 
-				+ ITEM_COLUMN_TIMESTAMP + " TEXT,"
-				+ ITEM_COLUMN_TYPE + " TEXT," 
-				+ ITEM_COLUMN_URL + " TEXT,"
-				+ ITEM_COLUMN_IMGURL + " TEXT," 
-				+ ITEM_COLUMN_USER_ID + " INT NOT NULL" + ")");
+		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_TEXT
+				+ " TEXT," + ITEM_COLUMN_TIMESTAMP + " TEXT,"
+				+ ITEM_COLUMN_TYPE + " TEXT," + ITEM_COLUMN_URL + " TEXT,"
+				+ ITEM_COLUMN_IMGURL + " TEXT," + ITEM_COLUMN_USER_ID
+				+ " INT NOT NULL" + ")");
 		// @formatter:on
 	}
 
@@ -117,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			// exists!
 		}
 
-//		db.close();
+		// db.close();
 	}
 
 	public void removeFeed(Feed feed) {
@@ -129,7 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
-//		db.close();
+		// db.close();
 	}
 
 	public ArrayList<String> listFeeds() {
@@ -142,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			feeds.add(s);
 		}
 		c.close();
-//		db.close();
+		// db.close();
 		return feeds;
 	}
 
@@ -155,7 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		c.moveToNext();
 		Long id = Long.parseLong(c.getString(0));
 		c.close();
-//		db.close();
+		// db.close();
 		return id;
 	}
 
@@ -168,7 +165,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		c.moveToNext();
 		Long id1 = Long.parseLong(c.getString(0));
 		c.close();
-//		db.close();
+		// db.close();
 		return id1;
 	}
 
@@ -183,7 +180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			String s = c.getString(1);
 			users.add(s);
 		}
-//		db.close();
+		// db.close();
 		return users;
 	}
 
@@ -210,7 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		long userID = db.insert(TABLE_USER, null, temp);
 
-//		db.close();
+		// db.close();
 		return userID;
 	}
 
@@ -224,7 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		db.insert(TABLE_FEEDUSER, null, temp);
 
-//		db.close();
+		// db.close();
 	}
 
 	public void removeUserFromFeed(Feed feed, User user) {
@@ -238,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		long id = user.getId();
 		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
-//		db.close();
+		// db.close();
 	}
 
 	private void removeFeedUserBridge(long feedID, long userID) {
@@ -246,7 +243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?" + " and "
 				+ FEEDUSER_COLUMN_USER_ID + "=?", new String[] { feedID + "",
 				userID + "" });
-//		db.close();
+		// db.close();
 	}
 
 	public ArrayList<String> listFeedUser() {
@@ -258,7 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			feeduser.add(c.getString(0) + " " + c.getString(1));
 		}
 		c.close();
-//		db.close();
+		// db.close();
 		return feeduser;
 	}
 
@@ -266,7 +263,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?",
 				new String[] { id + "" });
-//		db.close();
+		// db.close();
 	}
 
 	public void updateUser(long userID) {
@@ -280,37 +277,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			ContentValues temp = new ContentValues();
 			temp.put(ITEM_COLUMN_TEXT, i.getText());
-			//temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
-			//temp.put(ITEM_COLUMN_TYPE, i.getText());
-			//temp.put(ITEM_COLUMN_URL, i.getURL());
-			//temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
+			// temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
+			// temp.put(ITEM_COLUMN_TYPE, i.getText());
+			// temp.put(ITEM_COLUMN_URL, i.getURL());
+			// temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
 			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
 			db.insert(TABLE_ITEM, null, temp);
 
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
-//		db.close();
+		// db.close();
 	}
 
 	public Cursor getAllItems() {
 		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID, ITEM_COLUMN_TEXT/*,
-				ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE, ITEM_COLUMN_URL,
-				ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID */}, null, null, null, null, null);
-//		db.close();
+		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
+				ITEM_COLUMN_TEXT /*
+								 * , ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
+								 * ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL,
+								 * ITEM_COLUMN_USER_ID
+								 */}, null, null, null, null, null);
+		// db.close();
 		return c;
 	}
-	
+
+	public long getItemTableSize() {
+		SQLiteDatabase database = this.getReadableDatabase();
+		long l = DatabaseUtils.queryNumEntries(database, TABLE_ITEM);
+		// database.close();
+		return l;
+	}
+
 	public void clearItemTable() {
 		SQLiteDatabase db = getWritableDatabase();
 		db.delete(TABLE_ITEM, null, null);
 	}
-	
-	public long getItemTableSize(){
-		SQLiteDatabase database = this.getReadableDatabase();
-		long l = DatabaseUtils.queryNumEntries(database ,TABLE_ITEM);
-//		database.close();
-		return l;	
+
+	public void addUsers(List<? extends User> users) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.beginTransaction();
+
+		for (User u : users) {
+			ContentValues temp = new ContentValues();
+			temp.put(USER_COLUMN_USERNAME, u.getUserName());
+			db.insert(TABLE_USER, null, temp);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+
+	public Cursor getAllUsers() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
+				USER_COLUMN_USERNAME }, null, null, null, null, null);
+		return c;
 	}
 }

@@ -137,7 +137,7 @@ public class TwitterHelper {
 		}
 	}
 
-	private String request(String requestURL) {
+	private synchronized String request(String requestURL) {
 		try {
 			OAuthRequest request = new OAuthRequest(Verb.GET, requestURL);
 			twitter.signRequest(accessToken, request);
