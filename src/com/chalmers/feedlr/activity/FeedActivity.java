@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -102,6 +103,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private Animation slideInLeft;
 	private Animation slideInRight;
 
+	// Typefaces
+	private Typeface robotoThinItalic;
+	private Typeface robotoMedium;
+
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -132,7 +137,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
 		}
 	};
-	private FeedCursorLoader userLoader;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -144,6 +148,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		lbm = LocalBroadcastManager.getInstance(this);
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+		robotoThinItalic = Typeface.createFromAsset(getAssets(),
+				"fonts/Roboto-ThinItalic.ttf");
+		robotoMedium = Typeface.createFromAsset(getAssets(),
+				"fonts/Roboto-Medium.ttf");
+
 		// find views inflated from xml
 		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
@@ -152,8 +161,19 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
 		updateButton = (Button) findViewById(R.id.button_update);
+		Button cfb = (Button) findViewById(R.id.button_create_feed);
+		Button bm = (Button) findViewById(R.id.button_main);
+		Button s = (Button) findViewById(R.id.button_settings);
+
+		twitterAuthButton.setTypeface(robotoMedium);
+		facebookAuthButton.setTypeface(robotoMedium);
+		updateButton.setTypeface(robotoMedium);
+		cfb.setTypeface(robotoMedium);
+		bm.setTypeface(robotoMedium);
+		s.setTypeface(robotoMedium);
 
 		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
+		feedTitleTextView.setTypeface(robotoMedium);
 
 		// set adapters
 		adapter = new PageAdapter(getSupportFragmentManager(), this);
@@ -309,7 +329,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	@Override
 	public void onBackPressed() {
 		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
-			toggleSettingsView(null);
+			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
+				settingsViewFlipper.showPrevious();
+			else
+				toggleSettingsView(null);
 		else
 			super.onBackPressed();
 	}

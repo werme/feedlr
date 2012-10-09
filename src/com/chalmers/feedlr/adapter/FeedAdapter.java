@@ -20,6 +20,7 @@ import com.chalmers.feedlr.R;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,26 +30,25 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 	Context context;
 
-	public FeedAdapter(Context context, int layout, Cursor c,
-			String[] from, int[] to, int flags) {
+	public FeedAdapter(Context context, int layout, Cursor c, String[] from,
+			int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
-		// TODO Auto-generated constructor stub
+		this.context = context;
 	}
 
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View v = super.getView(position, convertView, parent);
+		// if (convertView == null)
+		// convertView = View.inflate(context, R.layout.feed_item, null);
 
-//	@Override
-//	public View getView(int position, View convertView, ViewGroup parent) {
-//
-//		if (convertView == null)
-//			convertView = View.inflate(context, R.layout.feed_item, null);
-//
-//		View feedItem = convertView;
-//
-//		TextView text = (TextView) convertView
-//				.findViewById(R.id.feed_item_text);
-//		//text.setText(data.get(position).getText());
-//		text.setText("data: " + data.get(position).get("text"));
-//
-//		return (feedItem);
-//	}
+		TextView text = (TextView) v.findViewById(R.id.feed_item_text);
+
+		Typeface robotoThinItalic = Typeface.createFromAsset(
+				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
+
+		text.setTypeface(robotoThinItalic);
+
+		return v;
+	}
 }
