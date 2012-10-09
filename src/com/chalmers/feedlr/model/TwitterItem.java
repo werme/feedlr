@@ -30,6 +30,7 @@ public class TwitterItem implements Item {
 	private String text;
 	private User user;
 	private String timestamp;
+	private String source = "twitter";
 
 	public TwitterItem() {
 		user = new User();
@@ -43,6 +44,17 @@ public class TwitterItem implements Item {
 	@Override
 	public void setText(String text) {
 		this.text = text;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.chalmers.feedlr.model.Item#setSource(java.lang.String)
+	 */
+	@Override
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	/*
@@ -63,6 +75,17 @@ public class TwitterItem implements Item {
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.chalmers.feedlr.model.Item#getSource()
+	 */
+	@Override
+	public String getSource() {
+		return source;
+	}
+
 
 	/*
 	 * (non-Javadoc)

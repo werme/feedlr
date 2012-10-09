@@ -320,7 +320,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		for (User u : users) {
 			ContentValues temp = new ContentValues();
+			temp.put(USER_COLUMN_USERID, u.getId());
 			temp.put(USER_COLUMN_USERNAME, u.getUserName());
+			temp.put(USER_COLUMN_SOURCE, u.getSource());
 			db.insert(TABLE_USER, null, temp);
 		}
 		db.setTransactionSuccessful();

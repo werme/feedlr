@@ -37,6 +37,8 @@ public class TwitterHelper {
 
 	public static final String VERIFY_CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
 	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";
+	
+	// temp with static username
 	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?screen_name=blueliine";
 	public static final String USER_NAMES = "https://api.twitter.com/1.1/users/lookup.json?include_entities=false&user_id=";
 	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
@@ -108,6 +110,9 @@ public class TwitterHelper {
 		}
 		String response = request(url.toString());
 		users.addAll(TwitterJSONParser.parseUserNames(response));
+		
+		for (User u : users)
+			u.setSource("twitter");
 
 		return users;
 	}

@@ -19,17 +19,16 @@ package com.chalmers.feedlr.activity;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
-import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.ClientHandler;
 import com.chalmers.feedlr.database.DatabaseHelper;
+import com.chalmers.feedlr.database.FeedCursorLoader;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
-import com.chalmers.feedlr.model.User;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -39,7 +38,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -84,7 +82,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	// Adapters
 	private PageAdapter adapter;
-	private UserAdapter userAdapter;
 
 	// Views
 	private ViewFlipper mainViewFlipper;
@@ -115,10 +112,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 			if (broadcast.equals(TWITTER_TIMELINE_UPDATED)) {
 				dialog = "Twitter timeline updated!";
-				// update view
-			} else if (broadcast.equals(TWITTER_USERS_UPDATED))
+			} else if (broadcast.equals(TWITTER_USERS_UPDATED)) {
 				dialog = "Twitter users updated!";
-			else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
+			} else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
 				dialog = "Tweets for Twitter user with ID: "
 						+ b.getInt("userID") + " updated!";
 			else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED))
@@ -136,6 +132,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
 		}
 	};
+	private FeedCursorLoader userLoader;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -187,7 +184,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		// Instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
-
 		feedService = new DataServiceHelper(this);
 		feedService.startService();
 
@@ -204,18 +200,18 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
 
-//		testDatabase();
+		// testDatabase();
 	}
 
 	public void testDatabase() {
 
 		// Simple feed testing
-//		this.deleteDatabase("feedlrDatabase");
+		// this.deleteDatabase("feedlrDatabase");
 		DatabaseHelper db = new DatabaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
 		db.addFeed(testFeed);
 		// db.addFeed(testFeed);
-//		db.addFeed(testFeed);
+		// db.addFeed(testFeed);
 		Log.d("Feeds:", "" + db.listFeeds());
 		Log.d("FeedID:", "" + db.getFeedID(testFeed));
 		// db.removeFeed(testFeed.getTitle());
@@ -233,17 +229,17 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// db.removeUser(testUser);
 		// Log.d("User removed:", testUser.getUserName());
 		// Log.d("User:", "" + db.listUsers());
-//
-//		User testUser = new User(1, "David");
-//		db.addUserToFeed(testUser, testFeed);
-//		db.addUserToFeed(new User(52, "Olle"), testFeed);
-//		db.addUserToFeed(testUser, testFeed);
-//		Log.d("Users:", "" + db.listUsers());
-//		Log.d("UserID:", "" + db.getUserID(testUser));
-//		Log.d("ListFeedUser:", "" + db.listFeedUser());
-//		db.removeFeed(testFeed);
-//		Log.d("User:", "" + db.listUsers());
-//		Log.d("ListFeedUser:", "" + db.listFeedUser());
+		//
+		// User testUser = new User(1, "David");
+		// db.addUserToFeed(testUser, testFeed);
+		// db.addUserToFeed(new User(52, "Olle"), testFeed);
+		// db.addUserToFeed(testUser, testFeed);
+		// Log.d("Users:", "" + db.listUsers());
+		// Log.d("UserID:", "" + db.getUserID(testUser));
+		// Log.d("ListFeedUser:", "" + db.listFeedUser());
+		// db.removeFeed(testFeed);
+		// Log.d("User:", "" + db.listUsers());
+		// Log.d("ListFeedUser:", "" + db.listFeedUser());
 	}
 
 	@Override
@@ -313,10 +309,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	@Override
 	public void onBackPressed() {
 		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
-			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
-				settingsViewFlipper.showPrevious();
-			else
-				toggleSettingsView(null);
+			toggleSettingsView(null);
 		else
 			super.onBackPressed();
 	}
@@ -342,55 +335,17 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		}
 	}
 
-	// Methods called on button press below. See xml files.
-
-	public void initCreateFeedView(View v) {
-		userListLayout = (LinearLayout) inflater.inflate(
-				R.layout.user_list_layout, null);
-		userListView = (ListView) userListLayout
-				.findViewById(R.id.user_list_view);
-
-		// get users from database here
-		
-		DatabaseHelper db = new DatabaseHelper(this);
-		Cursor cursor = db.getAllUsers();
-
-		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME };
-		int[] to = new int[] { R.id.checked_text_view };
-		
-		UserAdapter userAdapter = new UserAdapter(this,
-				R.layout.user_list_item, cursor, columns, to,
-				CursorAdapter.NO_SELECTION);
-
-		userListView.setAdapter(userAdapter);
-		
-//		Cursor cursor = null;
-//
-//		// the desired columns to be bound
-//		String[] columns = new String[] { People.NAME, People.NUMBER };
-//		// the XML defined views which the data will be bound to
-//		int[] to = new int[] { R.id.name_entry, R.id.number_entry };
-//
-//		// create the adapter using the cursor pointing to the desired data as
-//		// well as the layout information
-//		SimpleCursorAdapter userAdapter = new SimpleCursorAdapter(this,
-//				R.layout.user_list_item, cursor, columns, to,
-//				CursorAdapter.NO_SELECTION);
-//
-//		userListView.setAdapter(userAdapter);
-
-		settingsViewFlipper.addView(userListLayout);
-		settingsViewFlipper.showNext();
-
+	@Override
+	public void onFeedUpdateRequest(String feedTitle) {
+		feedService.updateAll();
 	}
+
+	// Methods called on button press below. See xml files.
 
 	public void toggleSettingsView(View v) {
 		int currentView = mainViewFlipper.getCurrentView().getId();
-		int currentSettingView = settingsViewFlipper.getCurrentView().getId();
 
 		if (currentView == R.id.main_layout) {
-			if (currentSettingView == R.id.user_list_layout)
-				settingsViewFlipper.showPrevious();
 			mainViewFlipper.setInAnimation(slideInLeft);
 			mainViewFlipper.setOutAnimation(slideOutRight);
 			mainViewFlipper.showNext();
@@ -401,28 +356,67 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		}
 	}
 
-	public void createFeed(View v) {
+	public void initCreateFeedView(View v) {
+		userListLayout = (LinearLayout) inflater.inflate(
+				R.layout.user_list_layout, null);
+		userListView = (ListView) userListLayout
+				.findViewById(R.id.user_list_view);
+
+		feedService.updateUsers();
+
+		DatabaseHelper db = new DatabaseHelper(this);
+		Cursor cursor = db.getAllUsers();
+
+		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME };
+		int[] to = new int[] { R.id.user_item_text_view };
+
+		UserAdapter userAdapter = new UserAdapter(this,
+				R.layout.user_list_item, cursor, columns, to,
+				CursorAdapter.NO_SELECTION);
+
+		userListView.setAdapter(userAdapter);
+
+		settingsViewFlipper.addView(userListLayout);
+		settingsViewFlipper.showNext();
+
+	}
+
+	public void createFeed(View button) {
+		// Animate switch to main view
 		toggleSettingsView(null);
-		
-//		SparseBooleanArray checked = userListView.getCheckedItemPositions();
+
+		// Extract new feed title
 		EditText titleEditText = (EditText) userListLayout
 				.findViewById(R.id.create_feed_action_bar_title);
 		String feedTitle = titleEditText.getText().toString();
-
 		Feed feed = new Feed(feedTitle);
-//		ArrayList<User> users = new ArrayList<User>();
 
-//		for (int i = 0; i < userListView.getCount(); i++)
-//			if (checked.get(i))
-//				users.add((User) userAdapter.getItem(i));
+		// Extract new feed users
+		SparseBooleanArray checked = userListView.getCheckedItemPositions();
+		ArrayList<Object> users = new ArrayList<Object>();
 
-		// save user list as a feed in database here
+		UserAdapter adapter = (UserAdapter) userListView.getAdapter();
 
-		adapter.addFeed(feed);
+		Cursor c;
+		for (int i = 0; i < adapter.getCount(); i++) {
+			if (checked.get(i)) {
+				c = (Cursor) adapter.getItem(i);
+				users.add(c.getString(c
+						.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME)));
+			}
+		}
+
+		// Save user list as a feed in database here
+
+		// Animate switch to new feed view
 		feedViewSwiper.setCurrentItem(adapter.getCount());
 
-		Toast.makeText(FeedActivity.this, "Feed created: " + feed.getTitle(),
-				Toast.LENGTH_SHORT).show();
+		// Remove the createFeedView
+		View v = settingsViewFlipper.getCurrentView();
+		settingsViewFlipper.showPrevious();
+		settingsViewFlipper.removeView(v);
+		userListLayout = null;
+		userListView = null;
 	}
 
 	public void authorizeTwitter(View v) {
@@ -471,14 +465,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	public void updateFeed(View v) {
 		feedService.updateAll();
-//		feedService.updateUsers();
-
-		// This doesn't work at all
-		adapter.notifyDataSetChanged();
 	}
 
-	@Override
-	public void onFeedUpdateRequest(String feedTitle) {
-		feedService.updateAll();
-	}
 }

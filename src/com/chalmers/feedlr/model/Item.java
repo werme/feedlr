@@ -22,10 +22,14 @@ public interface Item {
 
 	public void setUser(User user);
 
-	public User getUser();
+	public void setSource(String source);
 
 	public String getText();
 
+	public String getSource();
+	
+	public User getUser();
+	
 	public String getType();
 
 	public String getTimestamp();
@@ -33,4 +37,5 @@ public interface Item {
 	public String getURL();
 
 	public String getIMGURL();
+
 }

@@ -22,10 +22,8 @@ import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
 import com.chalmers.feedlr.listener.FeedListener;
-import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.ui.PullToRefreshListView.OnRefreshListener;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -75,8 +73,6 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 		lbm.registerReceiver(receiver, filter);
 	}
 	
-	
-
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 

@@ -36,6 +36,7 @@ public class FacebookItem implements Item {
 	private String type;
 	private String name;
 	private String userId;
+	private String source = "facebook";
 
 	public FacebookItem() {
 		user = new User();
@@ -147,6 +148,18 @@ public class FacebookItem implements Item {
 
 	@Override
 	public String getIMGURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setSource(String source) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getSource() {
 		// TODO Auto-generated method stub
 		return null;
 	}
