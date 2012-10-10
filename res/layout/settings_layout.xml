@@ -15,86 +15,52 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/dark_gradient"
+            android:background="@drawable/settings_background_gradient"
             android:orientation="vertical" >
-
+
             <Button
                 android:id="@+id/button_twitter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dark_gradient"
-                android:gravity="left|center_vertical"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@layout/add_twitter_button"
+                android:gravity="center_vertical|center_horizontal"
                 android:onClick="authorizeTwitter"
-                android:padding="25sp"
                 android:text="@string/authorize_twitter"
                 android:textColor="#fffafafa"
                 android:textSize="20sp" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#232629" />
+                android:layout_height="1dp"
+                android:background="#11171c" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#34383e" />
-
+                android:layout_height="1dp"
+                android:background="#212b35" />
+
             <Button
                 android:id="@+id/button_facebook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dark_gradient"
-                android:gravity="left|center_vertical"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@layout/add_facebook_button"
+                android:gravity="center_vertical|center_horizontal"
                 android:onClick="authorizeFacebook"
-                android:padding="25sp"
                 android:text="@string/authorize_facebook"
                 android:textColor="#fffafafa"
                 android:textSize="20sp" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#232629" />
+                android:layout_height="1dp"
+                android:background="#11171c" />
 
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#34383e" />
-
-            <Button
-                android:id="@+id/button_create_feed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dark_gradient"
-                android:gravity="left|center_vertical"
-                android:onClick="initCreateFeedView"
-                android:padding="25sp"
-                android:text="@string/button_create_feed"
-                android:textColor="#fffafafa"
-                android:textSize="20sp" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#232629" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1px"
-                android:background="#34383e" />
-
-            <Button
-                android:id="@+id/button_main"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dark_gradient"
-                android:gravity="left|center_vertical"
-                android:onClick="toggleSettingsView"
-                android:padding="25sp"
-                android:text="@string/button_main"
-                android:textColor="#fffafafa"
-                android:textSize="20sp" />
+                android:layout_height="1dp"
+                android:background="#212b35" />
         </LinearLayout>
     </com.chalmers.feedlr.ui.CreateFeedView>
 

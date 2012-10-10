@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
@@ -48,6 +49,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -161,15 +163,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
 		updateButton = (Button) findViewById(R.id.button_update);
-		Button cfb = (Button) findViewById(R.id.button_create_feed);
-		Button bm = (Button) findViewById(R.id.button_main);
 		Button s = (Button) findViewById(R.id.button_settings);
+		
+		settingsViewFlipper.getBackground().setDither(true);
 
 		twitterAuthButton.setTypeface(robotoMedium);
 		facebookAuthButton.setTypeface(robotoMedium);
 		updateButton.setTypeface(robotoMedium);
-		cfb.setTypeface(robotoMedium);
-		bm.setTypeface(robotoMedium);
 		s.setTypeface(robotoMedium);
 
 		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
@@ -488,6 +488,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	public void updateFeed(View v) {
 		feedService.updateAll();
+	}
+	
+	@Override
+	public void onAttachedToWindow() {
+	    super.onAttachedToWindow();
+	    Window window = getWindow();
+	    window.setFormat(PixelFormat.RGBA_8888);
 	}
 
 }
