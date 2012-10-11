@@ -385,7 +385,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		feedService.updateUsers();
+//		feedService.updateUsers();
 
 		DatabaseHelper db = new DatabaseHelper(this);
 		Cursor cursor = db.getAllUsers();
@@ -432,6 +432,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// Save user list as a feed in database here
 
 		// Animate switch to new feed view
+		this.adapter.addFeed(feed);
 		feedViewSwiper.setCurrentItem(adapter.getCount());
 
 		// Remove the createFeedView
