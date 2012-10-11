@@ -23,7 +23,7 @@ import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.ClientHandler;
-import com.chalmers.feedlr.database.Database;
+import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
@@ -227,7 +227,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		// Simple feed testing
 		// this.deleteDatabase("feedlrDatabase");
-		Database db = new Database(this);
+		DatabaseHelper db = new DatabaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
 		db.addFeed(testFeed);
 		// db.addFeed(testFeed);
@@ -387,10 +387,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 //		feedService.updateUsers();
 
-		Database db = new Database(this);
+		DatabaseHelper db = new DatabaseHelper(this);
 		Cursor cursor = db.getAllUsers();
 
-		String[] columns = new String[] { Database.USER_COLUMN_USERNAME };
+		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME };
 		int[] to = new int[] { R.id.user_item_text_view };
 
 		UserAdapter userAdapter = new UserAdapter(this,
@@ -425,7 +425,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			if (checked.get(i)) {
 				c = (Cursor) adapter.getItem(i);
 				users.add(c.getString(c
-						.getColumnIndex(Database.USER_COLUMN_USERNAME)));
+						.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME)));
 			}
 		}
 

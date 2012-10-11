@@ -25,7 +25,7 @@ import java.util.List;
 import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
-import com.chalmers.feedlr.database.Database;
+import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.model.FacebookItem;
 import com.chalmers.feedlr.listener.RequestListener;
 
@@ -59,7 +59,7 @@ public class DataService extends Service {
 	private TwitterHelper twitter;
 	private FacebookHelper facebook;
 
-	private Database db;
+	private DatabaseHelper db;
 
 	public class FeedServiceBinder extends Binder {
 		DataService getService() {
@@ -74,7 +74,7 @@ public class DataService extends Service {
 		twitter = new TwitterHelper(ClientStore.getTwitterAccessToken(this));
 		facebook = new FacebookHelper(ClientStore.getFacebookAccessToken(this));
 
-		db = new Database(this);
+		db = new DatabaseHelper(this);
 		return START_STICKY;
 	}
 

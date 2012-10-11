@@ -19,7 +19,7 @@ package com.chalmers.feedlr.ui;
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.adapter.FeedAdapter;
-import com.chalmers.feedlr.database.Database;
+import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.ui.PullToRefreshListView.OnRefreshListener;
@@ -76,7 +76,7 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-		String[] columns = new String[] { Database.ITEM_COLUMN_TEXT };
+		String[] columns = new String[] { DatabaseHelper.ITEM_COLUMN_TEXT };
 		int[] to = new int[] { R.id.feed_item_text };
 
 		adapter = new FeedAdapter(getActivity(),

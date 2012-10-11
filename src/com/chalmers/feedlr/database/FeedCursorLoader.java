@@ -12,13 +12,13 @@ import android.support.v4.content.LocalBroadcastManager;
 public class FeedCursorLoader extends SimpleCursorLoader {
 	
 	private String feedTitle;
-	private Database db;
+	private DatabaseHelper db;
 
 	public FeedCursorLoader(Context context, String feedTitle) {
 		super(context);
 		this.feedTitle = feedTitle;
 		
-		db = new Database(context);
+		db = new DatabaseHelper(context);
 	}
 
 	@Override
