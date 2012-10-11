@@ -22,7 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class Database extends SQLiteOpenHelper {
 
 	// Database static variables
 	private static final int DATABASE_VERSION = 1;
@@ -56,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String ITEM_COLUMN_IMGURL = "imgURL";
 	private static final String ITEM_COLUMN_USER_ID = "user_ID";
 
-	public DatabaseHelper(Context context) {
+	public Database(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
