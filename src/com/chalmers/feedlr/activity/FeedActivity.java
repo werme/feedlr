@@ -24,12 +24,10 @@ import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.ClientHandler;
 import com.chalmers.feedlr.database.DatabaseHelper;
-import com.chalmers.feedlr.database.FeedCursorLoader;
 import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
-import com.chalmers.feedlr.model.User;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -64,7 +62,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	private DataServiceHelper feedService;
 	private ClientHandler clientHandler;
-	
+
 	private DatabaseHelper db;
 
 	// Twitter strings
@@ -83,6 +81,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private Resources res;
 	private LocalBroadcastManager lbm;
 	private LayoutInflater inflater;
+	private IntentFilter intentFilter;
 
 	// Adapters
 	private PageAdapter adapter;
@@ -150,10 +149,21 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		res = getResources();
 		lbm = LocalBroadcastManager.getInstance(this);
 		inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-		// Instanciate database helper
+
+		// add intent filter to be used by broadcast reciever
+		intentFilter = new IntentFilter();
+		intentFilter.addAction(TWITTER_TIMELINE_UPDATED);
+		intentFilter.addAction(TWITTER_USERS_UPDATED);
+		intentFilter.addAction(TWITTER_USER_TWEETS_UPDATED);
+		intentFilter.addAction(FACEBOOK_TIMELINE_UPDATED);
+		intentFilter.addAction(FACEBOOK_USERS_UPDATED);
+		intentFilter.addAction(FACEBOOK_USER_NEWS_UPDATED);
+		intentFilter.addAction(FEED_UPDATED);
+
+		// instanciate database helper
 		db = new DatabaseHelper(this);
 
+		// load typefaces from assets
 		robotoThinItalic = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-ThinItalic.ttf");
 		robotoMedium = Typeface.createFromAsset(getAssets(),
@@ -171,21 +181,23 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		Button bm = (Button) findViewById(R.id.button_main);
 		Button s = (Button) findViewById(R.id.button_settings);
 
+		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
+
+		// Set typefaces manually since Android can't handle custom typefaces in
+		// xml in any way whatsoever. Shame on them.
 		twitterAuthButton.setTypeface(robotoMedium);
 		facebookAuthButton.setTypeface(robotoMedium);
 		updateButton.setTypeface(robotoMedium);
 		cfb.setTypeface(robotoMedium);
 		bm.setTypeface(robotoMedium);
 		s.setTypeface(robotoMedium);
-
-		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
 		feedTitleTextView.setTypeface(robotoMedium);
 
 		// set adapters
 		adapter = new PageAdapter(getSupportFragmentManager(), db, this);
 		feedViewSwiper.setAdapter(adapter);
 
-		// Swipe testing, this is just a stub
+		// swipe testing, this is just a stub
 		feedViewSwiper
 				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -206,7 +218,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 					}
 				});
 
-		// Instanciate client and service helpers
+		// instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
 		feedService = new DataServiceHelper(this);
 		feedService.startService();
@@ -288,33 +300,23 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	protected void onResume() {
 		super.onResume();
 
-		boolean isFacebookAuthorized = clientHandler
-				.isAuthorized(Clients.FACEBOOK);
+		boolean isFacebookAuthorized = Clients.isAuthorized(Clients.FACEBOOK,
+				this);
 		facebookAuthButton.setText(isFacebookAuthorized ? res
 				.getString(R.string.facebook_authorized) : res
 				.getString(R.string.authorize_facebook));
-
 		facebookAuthButton.setEnabled(!isFacebookAuthorized);
 
-		boolean isTwitterAuthorized = clientHandler
-				.isAuthorized(Clients.TWITTER);
+		boolean isTwitterAuthorized = Clients
+				.isAuthorized(Clients.TWITTER, this);
 		twitterAuthButton.setText(isTwitterAuthorized ? res
 				.getString(R.string.twitter_authorized) : res
 				.getString(R.string.authorize_twitter));
-
 		twitterAuthButton.setEnabled(!isTwitterAuthorized);
-		updateButton.setEnabled(isTwitterAuthorized || isFacebookAuthorized);
 
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(TWITTER_TIMELINE_UPDATED);
-		filter.addAction(TWITTER_USERS_UPDATED);
-		filter.addAction(TWITTER_USER_TWEETS_UPDATED);
-		filter.addAction(FACEBOOK_TIMELINE_UPDATED);
-		filter.addAction(FACEBOOK_USERS_UPDATED);
-		filter.addAction(FACEBOOK_USER_NEWS_UPDATED);
-		filter.addAction(FEED_UPDATED);
-		lbm.registerReceiver(receiver, filter);
+		lbm.registerReceiver(receiver, intentFilter);
 
+		// facebook kittens will die if this isn't called onResume
 		clientHandler.extendFacebookAccessTokenIfNeeded();
 	}
 
@@ -332,6 +334,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onBackPressed() {
+		// TODO: Toggle animation for the create feed view. Currently sliding
+		// away in the wring direction.
+
 		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
 			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
 				settingsViewFlipper.showPrevious();
@@ -346,7 +351,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (resultCode == Activity.RESULT_OK) {
-
 			switch (requestCode) {
 			case Clients.TWITTER:
 				clientHandler.onTwitterAuthCallback(data);
@@ -390,9 +394,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.findViewById(R.id.user_list_view);
 
 		Cursor cursor = db.getAllUsers();
-		Log.i(getClass().getName(), ""+cursor.getCount());
+		Log.i(getClass().getName(), "" + cursor.getCount());
 
-		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME, DatabaseHelper.USER_COLUMN_USERID };
+		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
+				DatabaseHelper.USER_COLUMN_USERID };
 		int[] to = new int[] { R.id.user_item_text_view };
 
 		UserAdapter userAdapter = new UserAdapter(this,
@@ -408,7 +413,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	public void createFeed(View button) {
 		// Animate switch to main view
 		toggleSettingsView(null);
-		
+
 		// Extract new feed title
 		EditText titleEditText = (EditText) userListLayout
 				.findViewById(R.id.create_feed_action_bar_title);
@@ -430,12 +435,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			}
 		}
 
-		// Save user list as a feed in database	
+		// Save user list as a feed in database
 		db.addFeed(feed);
 		long feedID = db.getFeedID(feed);
-		for(Integer i : userIDs)
+		for (Integer i : userIDs)
 			db.addFeedUserBridge(feedID, i);
-		Log.i(getClass().getName(), "Added feed \"" + feed.getTitle() + "\" with " + userIDs.size() + " users.");
+		Log.i(getClass().getName(), "Added feed \"" + feed.getTitle()
+				+ "\" with " + userIDs.size() + " users.");
 
 		// Animate switch to new feed view
 		this.adapter.addFeed(feed);
@@ -459,7 +465,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				twitterAuthButton.setText(res
 						.getString(R.string.twitter_authorized));
 				twitterAuthButton.setEnabled(false);
-				updateButton.setEnabled(true);
 			}
 
 			@Override
@@ -481,7 +486,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				facebookAuthButton.setText(res
 						.getString(R.string.facebook_authorized));
 				facebookAuthButton.setEnabled(false);
-				updateButton.setEnabled(true);
 			}
 
 			@Override
@@ -494,8 +498,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void updateFeed(View v) {
-		db.clearUserTable();
-		feedService.updateUsers();
+		// This button is for testing only. Use it for all your testing needs <3
 	}
 
 }
