@@ -42,9 +42,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String TABLE_USER = "user";
 	private static final String USER_COLUMN_ID = "_id";
 	public static final String USER_COLUMN_USERNAME = "username";
-	private static final String USER_COLUMN_USERID = "userid";
-	private static final String USER_COLUMN_IMGURL = "ProfileImageURL";
-	private static final String USER_COLUMN_SOURCE = "source";
+	public static final String USER_COLUMN_USERID = "userid";
+	public static final String USER_COLUMN_IMGURL = "ProfileImageURL";
+	public static final String USER_COLUMN_SOURCE = "source";
 
 	// Declaring item table
 	private static final String TABLE_ITEM = "item";
@@ -280,32 +280,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_ITEM, null, null);
 	}
 
+	public void clearUserTable() {
+		db.delete(TABLE_USER, null, null);
+	}
+
 	public void addUsers(List<? extends User> users) {
 		db.beginTransaction();
 
 		for (User u : users) {
 			ContentValues temp = new ContentValues();
 			temp.put(USER_COLUMN_USERNAME, u.getUserName());
+			temp.put(USER_COLUMN_USERID, u.getId());
+			temp.put(USER_COLUMN_SOURCE, u.getSource());
 			db.insert(TABLE_USER, null, temp);
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
 
-	public Cursor getAllUsers() {
-
-		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
-				USER_COLUMN_USERNAME }, null, null, null, null, null);
+	public Cursor getFeeds() {
+		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_NAME,
+				FEED_COLUMN_ID }, null, null, null, null, null);
 		return c;
 	}
-	
-	public Cursor getItems(Feed feed){
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM 
-				+ " WHERE " + ITEM_COLUMN_USER_ID 
-				+ " IN (SELECT " + FEEDUSER_COLUMN_USER_ID 
-				+ " FROM " +	TABLE_FEEDUSER 
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID 
-				+ " = " + getFeedID(feed) + ")", null);
+
+	public Cursor getAllUsers() {
+		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
+				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
+				null, null);
+		return c;
+	}
+
+	public Cursor getItems(Feed feed) {
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
+				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
+				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed)
+				+ ")", null);
 		return c;
 	}
 }
