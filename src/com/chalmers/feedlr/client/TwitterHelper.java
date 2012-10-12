@@ -59,8 +59,8 @@ public class TwitterHelper {
 		Log.i(TwitterJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-
-		return TwitterJSONParser.parseTweets(response);
+		
+		return new TwitterJSONParser().parseTweets(response);
 	}
 
 	public List<TwitterItem> getUserTweets(long userID) {
@@ -74,7 +74,7 @@ public class TwitterHelper {
 				"User tweets request time in millis: "
 						+ (System.currentTimeMillis() - time));
 
-		return TwitterJSONParser.parseTweets(response);
+		return new TwitterJSONParser().parseTweets(response);
 	}
 
 	public List<User> getFollowing() {
@@ -90,7 +90,7 @@ public class TwitterHelper {
 		Log.i(TwitterJSONParser.class.getName(), "ID request time in millis: "
 				+ (System.currentTimeMillis() - time));
 
-		String[] ids = TwitterJSONParser.parseUserIDs(response);
+		String[] ids = new TwitterJSONParser().parseUserIDs(response);
 		return getTwitterUserNamesFromID(ids);
 	}
 
@@ -102,7 +102,7 @@ public class TwitterHelper {
 		Log.i(TwitterJSONParser.class.getName(), "Credentials request time in millis: "
 				+ (System.currentTimeMillis() - time));
 
-		return TwitterJSONParser.parseCredentials(response);
+		return new TwitterJSONParser().parseCredentials(response);
 	}
 
 	private List<User> getTwitterUserNamesFromID(String[] ids) {
@@ -115,7 +115,7 @@ public class TwitterHelper {
 		for (int i = 1; i < ids.length; i++) {
 			if (i % 100 == 0) {
 				String response = request(url.toString());
-				users.addAll(TwitterJSONParser.parseUserNames(response));
+				users.addAll(new TwitterJSONParser().parseUserNames(response));
 				url = new StringBuilder();
 				url.append(USER_NAMES);
 				url.append(ids[i]);
@@ -124,7 +124,7 @@ public class TwitterHelper {
 			}
 		}
 		String response = request(url.toString());
-		users.addAll(TwitterJSONParser.parseUserNames(response));
+		users.addAll(new TwitterJSONParser().parseUserNames(response));
 		
 		for (User u : users)
 			u.setSource("twitter");

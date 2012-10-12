@@ -47,26 +47,31 @@ import android.util.Log;
 public class TwitterJSONParser {
 
 	private static ObjectMapper mapper;
-	private static ObjectReader reader;
+	private static ObjectReader tweetReader;
+	private static ObjectReader usernameReader;
 
 	private static JsonFactory jfactory;
 	private static JsonParser jParser;
 
-	public static List<TwitterItem> parseTweets(String json) {
-		long time = System.currentTimeMillis();
-
+	public TwitterJSONParser() {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
 					false);
-			reader = mapper.reader(new TypeReference<List<TwitterItem>>() {
-			});
 		}
+	}
+
+	public List<TwitterItem> parseTweets(String json) {
+		long time = System.currentTimeMillis();
+
+		if (tweetReader == null)
+			tweetReader = mapper.reader(new TypeReference<List<TwitterItem>>() {
+			});
 
 		List<TwitterItem> list = null;
 
 		try {
-			list = reader.readValue(json);
+			list = tweetReader.readValue(json);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -92,7 +97,7 @@ public class TwitterJSONParser {
 	 * @param json
 	 *            the JSON response from Twitters RESP API
 	 */
-	private static List<TwitterItem> streamingTwitterParse(String json) {
+	private List<TwitterItem> streamingTwitterParse(String json) {
 		long time = System.currentTimeMillis();
 
 		List<TwitterItem> list = new ArrayList<TwitterItem>();
@@ -143,7 +148,7 @@ public class TwitterJSONParser {
 		return list;
 	}
 
-	public static String[] parseUserIDs(String json) {
+	public String[] parseUserIDs(String json) {
 		long time = System.currentTimeMillis();
 
 		JSONObject wrapperObject;
@@ -168,21 +173,18 @@ public class TwitterJSONParser {
 		return ids;
 	}
 
-	public static List<User> parseUserNames(String json) {
+	public List<User> parseUserNames(String json) {
 		long time = System.currentTimeMillis();
 
-		if (mapper == null) {
-			mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-					false);
-			reader = mapper.reader(new TypeReference<List<User>>() {
+		if (usernameReader == null) {
+			usernameReader = mapper.reader(new TypeReference<List<User>>() {
 			});
 		}
 
 		List<User> list = null;
 
 		try {
-			list = reader.readValue(json);
+			list = usernameReader.readValue(json);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -203,7 +205,7 @@ public class TwitterJSONParser {
 		return list;
 	}
 
-	public static long parseCredentials(String json) {
+	public long parseCredentials(String json) {
 		long time = System.currentTimeMillis();
 
 		JSONObject wrapperObject;
