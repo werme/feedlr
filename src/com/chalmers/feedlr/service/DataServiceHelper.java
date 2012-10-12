@@ -16,6 +16,9 @@
 
 package com.chalmers.feedlr.service;
 
+import java.util.List;
+
+import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.service.DataService.FeedServiceBinder;
 
@@ -24,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 /**
  * Class description
@@ -45,19 +49,58 @@ public class DataServiceHelper {
 	}
 
 	public void updateAll() {
-		dataService.updateTwitterTimeline();
-		// feedService.updateFacebooklbasldbasd();
+		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
+
+		for (Integer client : authorizedClients) {
+			switch (client) {
+			case Clients.TWITTER:
+				dataService.updateTwitterTimeline();
+				break;
+			case Clients.FACEBOOK:
+				dataService.updateFacebookTimeline();
+				break;
+			default:
+				Log.wtf(getClass().getName() + " updateAll",
+						"Client does not exist");
+			}
+		}
 	}
 
 	public void updateUsers() {
-		dataService.updateTwitterUsers();
-		// dataService.updateFacebookUsers();
-		// dataService.updateFacebookTimeline();
-		// feedService.updateFacebookUsers();
+		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
+
+		for (Integer client : authorizedClients) {
+			switch (client) {
+			case Clients.TWITTER:
+				dataService.updateTwitterUsers();
+				break;
+			case Clients.FACEBOOK:
+				dataService.updateFacebookUsers();
+				break;
+			default:
+				Log.wtf(getClass().getName() + " updateUsers",
+						"Client does not exist");
+			}
+		}
 	}
 
 	public void updateFeed(Feed feed) {
-		dataService.updateFeed(feed);
+		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
+
+		for (Integer client : authorizedClients) {
+			switch (client) {
+			case Clients.TWITTER:
+				dataService.updateFeedTwitterItems(feed);
+				break;
+			case Clients.FACEBOOK:
+				dataService.updateFeedFacebookItems(feed);
+				break;
+			default:
+				Log.wtf(getClass().getName() +" updateFeed",
+						"Client does not exist");
+			}
+		}
+		
 	}
 
 	public void startService() {
