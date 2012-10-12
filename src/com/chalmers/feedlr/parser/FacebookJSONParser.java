@@ -17,19 +17,12 @@
 package com.chalmers.feedlr.parser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.chalmers.feedlr.model.FacebookItem;
 import com.chalmers.feedlr.model.User;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -52,9 +45,6 @@ public class FacebookJSONParser {
 	private static ObjectMapper mapper;
 	private static ObjectReader itemReader;
 	private static ObjectReader userReader;
-
-	private static JsonFactory jFactory;
-	private static JsonParser jParser;
 
 	public FacebookJSONParser() {
 		if (mapper == null) {
@@ -86,13 +76,8 @@ public class FacebookJSONParser {
 		}
 
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
-				+ " items.");
-		Log.i(FacebookJSONParser.class.getName(), "Example:     From: "
-				+ list.get(5).getUser().getUserName() + ". Message: "
-				+ list.get(5).getText());
-		Log.i(FacebookJSONParser.class.getName(),
-				"Time in millis: " + (System.currentTimeMillis() - time));
-
+				+ " Facebook items in " + (System.currentTimeMillis() - time)
+				+ " millis.");
 		return list;
 	}
 
@@ -118,8 +103,8 @@ public class FacebookJSONParser {
 		}
 
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
-				+ "Facebook users in " + (System.currentTimeMillis() - time)
-				+ "millis.");
+				+ " Facebook users in " + (System.currentTimeMillis() - time)
+				+ " millis.");
 
 		return list;
 	}
