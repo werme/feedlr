@@ -37,9 +37,9 @@ import android.util.Log;
 
 public class TwitterHelper {
 
-	public static final String CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json&skip_status=true&include_entities=false";
+	public static final String CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
 	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";	
-	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?screen_name=";
+	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?user_id=";
 	public static final String USER_NAMES = "https://api.twitter.com/1.1/users/lookup.json?include_entities=false&user_id=";
 	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
 
@@ -80,10 +80,10 @@ public class TwitterHelper {
 	public List<User> getFollowing() {
 		long time = System.currentTimeMillis();
 
-		String userScreenName = getUserScreenName();
+		long userID = getAuthorizedUserID();
 		
 		StringBuilder url = new StringBuilder();
-		url.append(USER_IDS).append(userScreenName);
+		url.append(USER_IDS).append(userID);
 	
 		String response = request(url.toString());
 
@@ -94,7 +94,7 @@ public class TwitterHelper {
 		return getTwitterUserNamesFromID(ids);
 	}
 
-	private String getUserScreenName() {
+	private long getAuthorizedUserID() {
 		long time = System.currentTimeMillis();
 
 		String response = request(CREDENTIALS);

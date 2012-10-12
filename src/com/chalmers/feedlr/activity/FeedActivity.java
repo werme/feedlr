@@ -84,7 +84,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private IntentFilter intentFilter;
 
 	// Adapters
-	private PageAdapter adapter;
+	private PageAdapter feedAdapter;
+	private UserAdapter userAdapter;
 
 	// Views
 	private ViewFlipper mainViewFlipper;
@@ -119,21 +120,30 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 			if (broadcast.equals(TWITTER_TIMELINE_UPDATED)) {
 				dialog = "Twitter timeline updated!";
+
 			} else if (broadcast.equals(TWITTER_USERS_UPDATED)) {
 				dialog = "Twitter users updated!";
-			} else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED))
+				userAdapter.swapCursor(db.getAllUsers());
+
+			} else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED)) {
 				dialog = "Tweets for Twitter user with ID: "
 						+ b.getInt("userID") + " updated!";
-			else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED))
+
+			} else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED)) {
 				dialog = "Facebook timeline updated!";
-			else if (broadcast.equals(FACEBOOK_USERS_UPDATED))
+
+			} else if (broadcast.equals(FACEBOOK_USERS_UPDATED)) {
 				dialog = "Facebook users updated!";
-			else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED))
+				userAdapter.swapCursor(db.getAllUsers());
+
+			} else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED)) {
 				dialog = "News for Facebook user with ID: "
 						+ b.getInt("userID") + " updated!";
-			else if (broadcast.equals(FEED_UPDATED))
+
+			} else if (broadcast.equals(FEED_UPDATED)) {
 				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
-			else
+
+			} else
 				dialog = "broadcast from unknown intent recieved!";
 
 			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
@@ -194,8 +204,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		feedTitleTextView.setTypeface(robotoMedium);
 
 		// set adapters
-		adapter = new PageAdapter(getSupportFragmentManager(), db, this);
-		feedViewSwiper.setAdapter(adapter);
+		feedAdapter = new PageAdapter(getSupportFragmentManager(), db, this);
+		feedViewSwiper.setAdapter(feedAdapter);
 
 		// swipe testing, this is just a stub
 		feedViewSwiper
@@ -203,7 +213,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 					@Override
 					public void onPageSelected(int feedIndex) {
-						String feedTitle = adapter.getFeedTitle(feedIndex);
+						String feedTitle = feedAdapter.getFeedTitle(feedIndex);
 						feedTitleTextView.setText(feedTitle);
 					}
 
@@ -393,6 +403,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
+		feedService.updateUsers();
+
 		Cursor cursor = db.getAllUsers();
 		Log.i(getClass().getName(), "" + cursor.getCount());
 
@@ -400,9 +412,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				DatabaseHelper.USER_COLUMN_USERID };
 		int[] to = new int[] { R.id.user_item_text_view };
 
-		UserAdapter userAdapter = new UserAdapter(this,
-				R.layout.user_list_item, cursor, columns, to,
-				CursorAdapter.NO_SELECTION);
+		userAdapter = new UserAdapter(this, R.layout.user_list_item, cursor,
+				columns, to, CursorAdapter.NO_SELECTION);
 
 		userListView.setAdapter(userAdapter);
 
@@ -444,7 +455,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				+ "\" with " + userIDs.size() + " users.");
 
 		// Animate switch to new feed view
-		this.adapter.addFeed(feed);
+		this.feedAdapter.addFeed(feed);
 		feedViewSwiper.setCurrentItem(adapter.getCount());
 
 		// Remove the createFeedView
@@ -500,5 +511,4 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	public void testSomething(View v) {
 		// This button is for testing only. Use it for all your testing needs <3
 	}
-
 }

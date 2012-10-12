@@ -203,24 +203,24 @@ public class TwitterJSONParser {
 		return list;
 	}
 
-	public static String parseCredentials(String json) {
+	public static long parseCredentials(String json) {
 		long time = System.currentTimeMillis();
 
 		JSONObject wrapperObject;
-		String userScreenName = null;
+		long userID = 0;
 		try {
 			wrapperObject = new JSONObject(json);
-			userScreenName = wrapperObject.getString("name");
+			userID = wrapperObject.getLong("id");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed user credentials");
-		Log.i(TwitterJSONParser.class.getName(), "Name: " + userScreenName);
+		Log.i(TwitterJSONParser.class.getName(), "User ID: " + userID);
 		Log.i(TwitterJSONParser.class.getName(),
 				"Time in millis: " + (System.currentTimeMillis() - time));
 
-		return userScreenName;
+		return userID;
 	}
 }
