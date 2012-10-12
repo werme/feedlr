@@ -37,6 +37,7 @@ public class FacebookItem implements Item {
 	private String name;
 	private String userId;
 	private String source = "facebook";
+	private long id;
 
 	public FacebookItem() {
 		user = new User();
@@ -162,5 +163,15 @@ public class FacebookItem implements Item {
 	public String getSource() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	@Override
+	public long getId() {
+		return id;
 	}
 }

@@ -25,7 +25,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static final String DATABASE_NAME = "feedlrDatabase";
 
 	// Declaring feed table
@@ -49,6 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// Declaring item table
 	private static final String TABLE_ITEM = "item";
 	public static final String ITEM_COLUMN_ID = "_id";
+	public static final String ITEM_COLUMN_ITEMID = "itemid";
 	public static final String ITEM_COLUMN_TEXT = "text";
 	private static final String ITEM_COLUMN_TIMESTAMP = "timestamp";
 	private static final String ITEM_COLUMN_TYPE = "type";
@@ -84,11 +85,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		// Creating item table
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_TEXT
-				+ " TEXT," + ITEM_COLUMN_TIMESTAMP + " TEXT,"
-				+ ITEM_COLUMN_TYPE + " TEXT," + ITEM_COLUMN_URL + " TEXT,"
-				+ ITEM_COLUMN_IMGURL + " TEXT," + ITEM_COLUMN_USER_ID
-				+ " INT NOT NULL" + ")");
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_ITEMID
+				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
+				+ ITEM_COLUMN_TIMESTAMP + " TEXT," + ITEM_COLUMN_TYPE
+				+ " TEXT," + ITEM_COLUMN_URL + " TEXT," + ITEM_COLUMN_IMGURL
+				+ " TEXT," + ITEM_COLUMN_USER_ID + " INT NOT NULL" + ")");
 		// @formatter:on
 	}
 
@@ -246,18 +247,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.beginTransaction();
 		for (Item i : itemList) {
 			ContentValues temp = new ContentValues();
+			temp.put(ITEM_COLUMN_ITEMID, i.getId());
 			temp.put(ITEM_COLUMN_TEXT, i.getText());
 			temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
 			temp.put(ITEM_COLUMN_TYPE, i.getText());
 			temp.put(ITEM_COLUMN_URL, i.getURL());
 			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
 			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
-			db.insert(TABLE_ITEM, null, temp);
+			db.insertWithOnConflict(TABLE_ITEM, null, temp, SQLiteDatabase.CONFLICT_IGNORE);
 
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
-		// db.close();
 	}
 
 	public List<User> getUsersInFeed(Feed feed) {
@@ -317,7 +318,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			temp.put(USER_COLUMN_USERNAME, u.getUserName());
 			temp.put(USER_COLUMN_USERID, u.getId());
 			temp.put(USER_COLUMN_SOURCE, u.getSource());
-			db.insert(TABLE_USER, null, temp);
+			db.insertWithOnConflict(TABLE_USER, null, temp, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();

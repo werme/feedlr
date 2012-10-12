@@ -115,7 +115,6 @@ public class DataService extends Service {
 				List<TwitterItem> twitterTimeline = twitter.getTimeline();
 
 				// save to database
-				db.clearItemTable(); // for testing purposes only
 				db.addListOfItems(twitterTimeline);
 
 				// Broadcast update to activity
