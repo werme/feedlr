@@ -16,21 +16,14 @@
 
 package com.chalmers.feedlr.client;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-
 import android.os.Bundle;
 import android.util.Log;
 
-import com.chalmers.feedlr.model.FacebookItem;
-import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.FacebookJSONParser;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
-import com.facebook.android.FacebookError;
 
 public class FacebookHelper {
 
@@ -38,14 +31,10 @@ public class FacebookHelper {
 	public static final String FRIENDS = "me/friends";
 	public static final String FRIENDSLISTS = "me/friendslists";
 
-	private String accessToken;
+	private AsyncFacebookRunner asyncFacebookRunner;
 
-	AsyncFacebookRunner asyncFacebookRunner = new AsyncFacebookRunner(
-			Clients.getFacebook());
-
-	public FacebookHelper(String accessToken) {
-		this.accessToken = accessToken;
-
+	public FacebookHelper() {
+		asyncFacebookRunner = new AsyncFacebookRunner(Clients.getFacebook());
 	}
 
 	public void getTimeline(RequestListener listener) {

@@ -30,7 +30,9 @@ import com.chalmers.feedlr.listener.RequestListener;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
+import com.chalmers.feedlr.util.ClientStore;
 
+import android.content.Context;
 import android.util.Log;
 
 public class TwitterHelper {
@@ -44,11 +46,11 @@ public class TwitterHelper {
 	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
 
 	private OAuthService twitter;
-	private Token accessToken;
+	private Context context;
 
-	public TwitterHelper(Token accessToken) {
+	public TwitterHelper(Context context) {
 		twitter = Clients.getTwitter();
-		this.accessToken = accessToken;
+		this.context = context;
 	}
 
 	public List<TwitterItem> getTimeline() {
@@ -143,6 +145,7 @@ public class TwitterHelper {
 	private synchronized String request(String requestURL) {
 		try {
 			OAuthRequest request = new OAuthRequest(Verb.GET, requestURL);
+			Token accessToken = ClientStore.getTwitterAccessToken(context);
 			twitter.signRequest(accessToken, request);
 			Response response = request.send();
 
