@@ -96,45 +96,6 @@ public class FacebookJSONParser {
 		return list;
 	}
 
-	/*
-	 * private static void streamingParse(String json) { long time =
-	 * System.currentTimeMillis();
-	 * 
-	 * List<FacebookItem> list = new ArrayList<FacebookItem>();
-	 * 
-	 * try { if (jFactory == null) jFactory = new JsonFactory();
-	 * 
-	 * jParser = jFactory.createJsonParser(json);
-	 * 
-	 * FacebookItem o = null; while (jParser.nextToken() != null) { if
-	 * ("type".equals(jParser.getCurrentName())) { jParser.nextToken(); o = new
-	 * FacebookItem(); o.setType(jParser.getText());
-	 * System.out.println("Found type:   " + jParser.getText()); } if
-	 * ("from".equals(jParser.getCurrentName())) {
-	 * System.out.println("Found from"); while
-	 * (!"name".equals(jParser.getCurrentName())) { jParser.nextToken(); }
-	 * jParser.nextToken();
-	 * 
-	 * o.getUser().setUserName(jParser.getText());
-	 * System.out.println("Found name:   " + jParser.getText()); } if
-	 * ("message".equals(jParser.getCurrentName())) { jParser.nextToken();
-	 * o.setText(jParser.getText()); System.out.println("Found message:   " +
-	 * jParser.getText()); } if
-	 * ("created_time".equals(jParser.getCurrentName())) { jParser.nextToken();
-	 * o.setTimestamp(jParser.getText());
-	 * System.out.println("Found created_time:   " + jParser.getText());
-	 * list.add(o); } } jParser.close();
-	 * 
-	 * } catch (JsonGenerationException e) { e.printStackTrace(); } catch
-	 * (JsonMappingException e) { e.printStackTrace(); } catch (IOException e) {
-	 * e.printStackTrace(); }
-	 * 
-	 * Log.i(FacebookJSONParser.class.getName(), "Streaming parse");
-	 * Log.i(FacebookJSONParser.class.getName(), "Items: " + list.size());
-	 * Log.i(FacebookJSONParser.class.getName(), "Time in millis: " +
-	 * (System.currentTimeMillis() - time)); }
-	 */
-
 	public List<User> parseUsers(String json) {
 		long time = System.currentTimeMillis();
 
@@ -157,12 +118,8 @@ public class FacebookJSONParser {
 		}
 
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
-				+ " users.");
-		Log.i(FacebookJSONParser.class.getName(), "Name: "
-				+ list.get(30).getUserName() + ". ID: " + list.get(30).getId()
-				+ ". URL: " + list.get(30).getProfileImageURL());
-		Log.i(FacebookJSONParser.class.getName(),
-				"Time in millis: " + (System.currentTimeMillis() - time));
+				+ "Facebook users in " + (System.currentTimeMillis() - time)
+				+ "millis.");
 
 		return list;
 	}

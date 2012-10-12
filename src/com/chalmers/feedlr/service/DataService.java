@@ -242,10 +242,14 @@ public class DataService extends Service {
 			@Override
 			public void onComplete(String response, Object state) {
 				if (response != null) {
-					List<User> facebookUsers = new FacebookJSONParser()
+					List<User> users = new FacebookJSONParser()
 							.parseUsers(response);
 
-					// save to database
+					System.out.println("User nr. 10: "
+							+ users.get(10).getUserName());
+					for (User u : users)
+						u.setSource("facebook");
+					db.addUsers(users);
 
 					// Broadcast update to activity
 					Intent intent = new Intent();
