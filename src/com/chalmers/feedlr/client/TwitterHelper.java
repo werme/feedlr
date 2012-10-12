@@ -38,7 +38,7 @@ import android.util.Log;
 public class TwitterHelper {
 
 	public static final String CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
-	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";	
+	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=100&include_rts=false";
 	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?user_id=";
 	public static final String USER_NAMES = "https://api.twitter.com/1.1/users/lookup.json?include_entities=false&user_id=";
 	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
@@ -51,6 +51,19 @@ public class TwitterHelper {
 		this.context = context;
 	}
 
+	private void runAsync(final Runnable runnable) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					runnable.run();
+				} finally {
+
+				}
+			}
+		}.start();
+	}
+
 	public List<TwitterItem> getTimeline() {
 		long time = System.currentTimeMillis();
 
@@ -59,7 +72,7 @@ public class TwitterHelper {
 		Log.i(TwitterJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-		
+
 		return new TwitterJSONParser().parseTweets(response);
 	}
 
@@ -81,10 +94,10 @@ public class TwitterHelper {
 		long time = System.currentTimeMillis();
 
 		long userID = getAuthorizedUserID();
-		
+
 		StringBuilder url = new StringBuilder();
 		url.append(USER_IDS).append(userID);
-	
+
 		String response = request(url.toString());
 
 		Log.i(TwitterJSONParser.class.getName(), "ID request time in millis: "
@@ -99,8 +112,9 @@ public class TwitterHelper {
 
 		String response = request(CREDENTIALS);
 
-		Log.i(TwitterJSONParser.class.getName(), "Credentials request time in millis: "
-				+ (System.currentTimeMillis() - time));
+		Log.i(TwitterJSONParser.class.getName(),
+				"Credentials request time in millis: "
+						+ (System.currentTimeMillis() - time));
 
 		return new TwitterJSONParser().parseCredentials(response);
 	}
@@ -125,7 +139,7 @@ public class TwitterHelper {
 		}
 		String response = request(url.toString());
 		users.addAll(new TwitterJSONParser().parseUserNames(response));
-		
+
 		for (User u : users)
 			u.setSource("twitter");
 
@@ -134,25 +148,15 @@ public class TwitterHelper {
 
 	public void getTweetsForUsers(List<User> twitterUsersInFeed,
 			final RequestListener listener) {
+		
 		for (final User user : twitterUsersInFeed) {
-
-			new Thread() {
+			runAsync(new Runnable() {
 				@Override
 				public void run() {
-					try {
-						new Runnable() {
-							@Override
-							public void run() {
-								List<TwitterItem> tweets = getUserTweets(user
-										.getId());
-								listener.onComplete(tweets);
-							}
-						}.run();
-					} finally {
-
-					}
+					List<TwitterItem> tweets = getUserTweets(user.getId());
+					listener.onComplete(tweets);
 				}
-			}.start();
+			});
 		}
 	}
 

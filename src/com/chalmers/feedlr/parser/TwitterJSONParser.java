@@ -80,10 +80,10 @@ public class TwitterJSONParser {
 			e.printStackTrace();
 		}
 
-		Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
-		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
-		Log.i(TwitterJSONParser.class.getName(),
-				"Time in millis: " + (System.currentTimeMillis() - time));
+//		Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
+//		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
+//		Log.i(TwitterJSONParser.class.getName(),
+//				"Time in millis: " + (System.currentTimeMillis() - time));
 
 		return list;
 	}
@@ -195,10 +195,6 @@ public class TwitterJSONParser {
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + list.size()
 				+ " users.");
-		Log.i(TwitterJSONParser.class.getName(), "Name: "
-				+ list.get(30).getUserName() + ". ID: " + list.get(30).getId()
-				+ ". URL: " + list.get(30).getProfileImageURL());
-		;
 		Log.i(TwitterJSONParser.class.getName(),
 				"Time in millis: " + (System.currentTimeMillis() - time));
 
