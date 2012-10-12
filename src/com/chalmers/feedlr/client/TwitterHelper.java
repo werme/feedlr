@@ -65,7 +65,6 @@ public class TwitterHelper {
 
 	public List<TwitterItem> getUserTweets(long userID) {
 		long time = System.currentTimeMillis();
-
 		StringBuilder url = new StringBuilder();
 		url.append(USER_TWEETS).append(userID);
 
@@ -119,7 +118,6 @@ public class TwitterHelper {
 
 	public void getTweetsForUsers(List<User> twitterUsersInFeed,
 			final RequestListener listener) {
-		
 		for (final User user : twitterUsersInFeed) {
 
 			new Thread() {
@@ -133,7 +131,7 @@ public class TwitterHelper {
 										.getId());
 								listener.onComplete(tweets);
 							}
-						};
+						}.run();
 					} finally {
 
 					}

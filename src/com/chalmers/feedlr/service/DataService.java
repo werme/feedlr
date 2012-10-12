@@ -335,7 +335,7 @@ public class DataService extends Service {
 			public void run() {
 				final long time = System.currentTimeMillis();
 
-				final List<User> twitterUsersInFeed = feed.getTwitterUsers();
+				final List<User> twitterUsersInFeed = db.getUsersInFeed(feed);
 				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
 
 				twitter.getTweetsForUsers(twitterUsersInFeed,
@@ -356,10 +356,9 @@ public class DataService extends Service {
 
 							private void onAllComplete() {
 
-								// save to database
+								db.addListOfItems(twitterItemsforUsers);
 
 								// Broadcast update to activity
-
 								Intent intent = new Intent();
 								intent.setAction(FeedActivity.FEED_UPDATED);
 								Bundle b = new Bundle();

@@ -1,13 +1,10 @@
 package com.chalmers.feedlr.database;
 
-import com.chalmers.feedlr.activity.FeedActivity;
+import com.chalmers.feedlr.model.Feed;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
-import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 public class FeedCursorLoader extends SimpleCursorLoader {
 	
@@ -23,8 +20,8 @@ public class FeedCursorLoader extends SimpleCursorLoader {
 
 	@Override
 	public Cursor loadInBackground() {
-//		Cursor cursor = db.getFeedItems(feedTitle);
-		Cursor cursor = db.getAllItems();
+		Cursor cursor = db.getItems(new Feed(feedTitle));
+		Log.i("loader", "items: " + cursor.getCount());
 		return cursor;
 	}
 }

@@ -260,6 +260,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// db.close();
 	}
 
+	public List<User> getUsersInFeed(Feed feed) {
+		List<User> users = new ArrayList<User>();
+
+		Cursor c = db
+				.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+						+ USER_COLUMN_USERID + " IN (SELECT "
+						+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+						+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+						+ getFeedID(feed) + ")", null);
+
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			users.add(new User(c.getLong(c.getColumnIndex(USER_COLUMN_USERID)),
+					c.getString(c.getColumnIndex(USER_COLUMN_USERNAME))));
+			c.moveToNext();
+		}
+
+		return users;
+	}
+
 	public Cursor getAllItems() {
 		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
 				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
@@ -284,6 +304,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_USER, null, null);
 	}
 
+	public void clearFeeds() {
+		db.delete(TABLE_FEED, null, null);
+		db.delete(TABLE_FEEDUSER, null, null);
+	}
+
 	public void addUsers(List<? extends User> users) {
 		db.beginTransaction();
 
@@ -296,12 +321,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
-	}
-
-	public Cursor getFeeds() {
-		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_NAME,
-				FEED_COLUMN_ID }, null, null, null, null, null);
-		return c;
 	}
 
 	public Cursor getAllUsers() {

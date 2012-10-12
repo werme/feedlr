@@ -191,20 +191,18 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 					@Override
 					public void onPageSelected(int feedIndex) {
-						// String feedTitle = getFeedTitle(index);
-						feedTitleTextView.setText("Feed: " + (feedIndex + 1));
+						String feedTitle = adapter.getFeedTitle(feedIndex);
+						feedTitleTextView.setText(feedTitle);
 					}
 
 					@Override
 					public void onPageScrolled(int arg0, float arg1, int arg2) {
 						// TODO Auto-generated method stub
-
 					}
 
 					@Override
 					public void onPageScrollStateChanged(int arg0) {
 						// TODO Auto-generated method stub
-
 					}
 				});
 
@@ -366,7 +364,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-		feedService.updateAll();
+		feedService.updateFeed(new Feed(feedTitle));
 	}
 
 	// Methods called on button press below. See xml files.
@@ -391,7 +389,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		DatabaseHelper db = new DatabaseHelper(this);
 		Cursor cursor = db.getAllUsers();
 		Log.i(getClass().getName(), ""+cursor.getCount());
 
@@ -406,7 +403,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		settingsViewFlipper.addView(userListLayout);
 		settingsViewFlipper.showNext();
-
 	}
 
 	public void createFeed(View button) {
