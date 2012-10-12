@@ -70,4 +70,17 @@ public class Clients {
 		asyncFacebookRunner = new AsyncFacebookRunner(facebook);
 		return asyncFacebookRunner;
 	}
+
+	public synchronized static boolean isAuthorized(int client, Context context) {
+		switch (client) {
+		case TWITTER:
+			Token accessToken = ClientStore.getTwitterAccessToken(context);
+			return (accessToken.getToken() != null && accessToken.getSecret() != null);
+		case FACEBOOK:
+			return (facebook.isSessionValid());
+		default:
+			Log.wtf("Client authorization", "Client does not exist");
+			return false;
+		}
+	}
 }
