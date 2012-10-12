@@ -307,8 +307,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.getString(R.string.authorize_facebook));
 		facebookAuthButton.setEnabled(!isFacebookAuthorized);
 
-		boolean isTwitterAuthorized = Clients
-				.isAuthorized(Clients.TWITTER, this);
+		boolean isTwitterAuthorized = Clients.isAuthorized(Clients.TWITTER,
+				this);
 		twitterAuthButton.setText(isTwitterAuthorized ? res
 				.getString(R.string.twitter_authorized) : res
 				.getString(R.string.authorize_twitter));
@@ -497,7 +497,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		});
 	}
 
-	public void updateFeed(View v) {
+	public void testSomething(View v) {
 		// This button is for testing only. Use it for all your testing needs <3
 	}
 

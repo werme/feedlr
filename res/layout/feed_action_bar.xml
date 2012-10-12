@@ -30,8 +30,8 @@
             android:id="@+id/button_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="updateFeed"
-            android:text="@string/update_feed" />
+            android:onClick="testSomething"
+            android:text="@string/test_button" />
 
         <Button
             android:id="@+id/button_settings"

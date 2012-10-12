@@ -186,7 +186,7 @@ public class DataService extends Service {
 			}
 		});
 	}
-	
+
 	public void updateFeedTwitterItems(final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
@@ -227,7 +227,7 @@ public class DataService extends Service {
 								Log.i(TwitterJSONParser.class.getName(),
 										"Time in millis for complete update of feed \""
 												+ feed.getTitle()
-												+ "\" request: "
+												+ "\" twitter items request: "
 												+ (System.currentTimeMillis() - time));
 							}
 						});
@@ -399,6 +399,6 @@ public class DataService extends Service {
 
 	public void updateFeedFacebookItems(Feed feed) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

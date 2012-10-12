@@ -16,7 +16,7 @@
 	<string name="authorize_facebook">Authorize Facebook</string>
 	<string name="facebook_authorized">Facebook is authorized</string>
 
-	<string name="update_feed">Update feed</string>
+	<string name="test_button">Do Something!</string>
 	<string name="button_list_view">Display Items</string>
 	
 	<string name="button_settings">Settings</string>
