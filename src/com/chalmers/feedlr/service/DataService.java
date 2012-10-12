@@ -243,7 +243,7 @@ public class DataService extends Service {
 			@Override
 			public void onComplete(String response, Object state) {
 				if (response != null) {
-					List<User> facebookUsers = FacebookJSONParser
+					List<User> facebookUsers = new FacebookJSONParser()
 							.parseUsers(response);
 
 					// save to database
@@ -293,7 +293,7 @@ public class DataService extends Service {
 			@Override
 			public void onComplete(String response, Object state) {
 				if (response != null) {
-					List<FacebookItem> facebookTimeline = FacebookJSONParser
+					List<FacebookItem> facebookTimeline = new FacebookJSONParser()
 							.parseFeed(response);
 
 					// save to database
@@ -356,7 +356,7 @@ public class DataService extends Service {
 					@Override
 					public void onComplete(String response, Object state) {
 						if (response != null) {
-							List<FacebookItem> facebookUsers = FacebookJSONParser
+							List<FacebookItem> facebookUsers = new FacebookJSONParser()
 									.parseFeed(response);
 
 							// save to database
