@@ -49,6 +49,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -210,7 +211,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// swipe testing, this is just a stub
 		feedViewSwiper
 				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
 					@Override
 					public void onPageSelected(int feedIndex) {
 						String feedTitle = feedAdapter.getFeedTitle(feedIndex);
@@ -454,9 +454,14 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		Log.i(getClass().getName(), "Added feed \"" + feed.getTitle()
 				+ "\" with " + userIDs.size() + " users.");
 
+		// Hide keyboard
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
+
 		// Animate switch to new feed view
 		this.feedAdapter.addFeed(feed);
 		feedViewSwiper.setCurrentItem(adapter.getCount());
+		feedTitleTextView.setText(feedTitle);
 
 		// Remove the createFeedView
 		View v = settingsViewFlipper.getCurrentView();
@@ -510,5 +515,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	public void testSomething(View v) {
 		// This button is for testing only. Use it for all your testing needs <3
+		db.clearItemTable();
 	}
 }
