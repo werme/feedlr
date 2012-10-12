@@ -31,7 +31,7 @@ public class TwitterItem implements Item {
 	private User user;
 	private String timestamp;
 	private String source = "twitter";
-	private long id;
+	private String id;
 
 	public TwitterItem() {
 		user = new User();
@@ -131,12 +131,12 @@ public class TwitterItem implements Item {
 	}
 
 	@Override
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Override
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 }

@@ -96,11 +96,11 @@ public class DataServiceHelper {
 				dataService.updateFeedFacebookItems(feed);
 				break;
 			default:
-				Log.wtf(getClass().getName() +" updateFeed",
+				Log.wtf(getClass().getName() + " updateFeed",
 						"Client does not exist");
 			}
 		}
-		
+
 	}
 
 	public void startService() {

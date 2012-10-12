@@ -37,7 +37,7 @@ public class FacebookItem implements Item {
 	private String name;
 	private String userId;
 	private String source = "facebook";
-	private long id;
+	private String id;
 
 	public FacebookItem() {
 		user = new User();
@@ -96,6 +96,7 @@ public class FacebookItem implements Item {
 	 * @param from an array of strings containing the name and user id
 	 */
 	public void setFrom(String[] from) {
+		System.out.println("Set from: " + from);
 		setName(from[0]);
 		setUserId(from[1]);
 	}
@@ -149,14 +150,12 @@ public class FacebookItem implements Item {
 
 	@Override
 	public String getIMGURL() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setSource(String source) {
-		// TODO Auto-generated method stub
-		
+		this.source = source;
 	}
 
 	@Override
@@ -166,12 +165,12 @@ public class FacebookItem implements Item {
 	}
 
 	@Override
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Override
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 }

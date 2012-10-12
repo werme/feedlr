@@ -136,7 +136,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			} else if (broadcast.equals(FACEBOOK_USERS_UPDATED)) {
 				dialog = "Facebook users updated!";
 				userAdapter.swapCursor(db.getAllUsers());
-				System.out.println("Users in db: " + db.getAllUsers().getCount());
 
 			} else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED)) {
 				dialog = "News for Facebook user with ID: "
