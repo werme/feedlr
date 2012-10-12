@@ -72,7 +72,7 @@ public class FacebookAuthHelper {
 		authListener = listener;
 		setAccessToken();
 
-		if (!isAuthorized()) {
+		if (!Clients.isAuthorized(Clients.FACEBOOK, context)) {
 			facebook.authorize((Activity) context, new String[] {
 					"read_stream", "read_friendlists" }, Clients.FACEBOOK,
 
@@ -98,13 +98,6 @@ public class FacebookAuthHelper {
 			});
 		}
 		authListener.onAuthorizationComplete();
-	}
-
-	/*
-	 * @return true if session is authorized
-	 */
-	public boolean isAuthorized() {
-		return (facebook.isSessionValid());
 	}
 
 	public void authorizeCallback(int requestCode, int resultCode, Intent data) {

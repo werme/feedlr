@@ -33,7 +33,6 @@ public class ClientHandler {
 	private FacebookAuthHelper facebookAuthHelper;
 
 	public ClientHandler(Context context) {
-
 		twitterAuthHelper = new TwitterAuthHelper(context);
 		facebookAuthHelper = new FacebookAuthHelper(context);
 		// For every service...
@@ -50,18 +49,6 @@ public class ClientHandler {
 		default:
 			Log.w(getClass().getName(), "Unknown service");
 		}
-	}
-
-	public boolean isAuthorized(int service) {
-		switch (service) {
-		case Clients.TWITTER:
-			return twitterAuthHelper.isAuthorized();
-		case Clients.FACEBOOK:
-			return facebookAuthHelper.isAuthorized();
-		default:
-			Log.w(getClass().getName(), "Unknown service");
-		}
-		return false;
 	}
 
 	public void onTwitterAuthCallback(Intent data) {

@@ -30,25 +30,25 @@ import com.chalmers.feedlr.listener.RequestListener;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
+import com.chalmers.feedlr.util.ClientStore;
 
+import android.content.Context;
 import android.util.Log;
 
 public class TwitterHelper {
 
-	public static final String VERIFY_CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
-	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";
-	
-	// temp with static username
-	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?screen_name=blueliine";
+	public static final String CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
+	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=200&include_rts=false";	
+	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?user_id=";
 	public static final String USER_NAMES = "https://api.twitter.com/1.1/users/lookup.json?include_entities=false&user_id=";
 	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
 
 	private OAuthService twitter;
-	private Token accessToken;
+	private Context context;
 
-	public TwitterHelper(Token accessToken) {
+	public TwitterHelper(Context context) {
 		twitter = Clients.getTwitter();
-		this.accessToken = accessToken;
+		this.context = context;
 	}
 
 	public List<TwitterItem> getTimeline() {
@@ -59,13 +59,12 @@ public class TwitterHelper {
 		Log.i(TwitterJSONParser.class.getName(),
 				"Timeline request time in millis: "
 						+ (System.currentTimeMillis() - time));
-
-		return TwitterJSONParser.parseTweets(response);
+		
+		return new TwitterJSONParser().parseTweets(response);
 	}
 
 	public List<TwitterItem> getUserTweets(long userID) {
 		long time = System.currentTimeMillis();
-
 		StringBuilder url = new StringBuilder();
 		url.append(USER_TWEETS).append(userID);
 
@@ -75,19 +74,35 @@ public class TwitterHelper {
 				"User tweets request time in millis: "
 						+ (System.currentTimeMillis() - time));
 
-		return TwitterJSONParser.parseTweets(response);
+		return new TwitterJSONParser().parseTweets(response);
 	}
 
 	public List<User> getFollowing() {
 		long time = System.currentTimeMillis();
 
-		String response = request(USER_IDS);
+		long userID = getAuthorizedUserID();
+		
+		StringBuilder url = new StringBuilder();
+		url.append(USER_IDS).append(userID);
+	
+		String response = request(url.toString());
 
 		Log.i(TwitterJSONParser.class.getName(), "ID request time in millis: "
 				+ (System.currentTimeMillis() - time));
 
-		String[] ids = TwitterJSONParser.parseUserIDs(response);
+		String[] ids = new TwitterJSONParser().parseUserIDs(response);
 		return getTwitterUserNamesFromID(ids);
+	}
+
+	private long getAuthorizedUserID() {
+		long time = System.currentTimeMillis();
+
+		String response = request(CREDENTIALS);
+
+		Log.i(TwitterJSONParser.class.getName(), "Credentials request time in millis: "
+				+ (System.currentTimeMillis() - time));
+
+		return new TwitterJSONParser().parseCredentials(response);
 	}
 
 	private List<User> getTwitterUserNamesFromID(String[] ids) {
@@ -100,7 +115,7 @@ public class TwitterHelper {
 		for (int i = 1; i < ids.length; i++) {
 			if (i % 100 == 0) {
 				String response = request(url.toString());
-				users.addAll(TwitterJSONParser.parseUserNames(response));
+				users.addAll(new TwitterJSONParser().parseUserNames(response));
 				url = new StringBuilder();
 				url.append(USER_NAMES);
 				url.append(ids[i]);
@@ -109,7 +124,7 @@ public class TwitterHelper {
 			}
 		}
 		String response = request(url.toString());
-		users.addAll(TwitterJSONParser.parseUserNames(response));
+		users.addAll(new TwitterJSONParser().parseUserNames(response));
 		
 		for (User u : users)
 			u.setSource("twitter");
@@ -119,7 +134,6 @@ public class TwitterHelper {
 
 	public void getTweetsForUsers(List<User> twitterUsersInFeed,
 			final RequestListener listener) {
-		
 		for (final User user : twitterUsersInFeed) {
 
 			new Thread() {
@@ -133,7 +147,7 @@ public class TwitterHelper {
 										.getId());
 								listener.onComplete(tweets);
 							}
-						};
+						}.run();
 					} finally {
 
 					}
@@ -145,6 +159,7 @@ public class TwitterHelper {
 	private synchronized String request(String requestURL) {
 		try {
 			OAuthRequest request = new OAuthRequest(Verb.GET, requestURL);
+			Token accessToken = ClientStore.getTwitterAccessToken(context);
 			twitter.signRequest(accessToken, request);
 			Response response = request.send();
 

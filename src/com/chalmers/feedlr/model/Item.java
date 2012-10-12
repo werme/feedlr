@@ -23,6 +23,8 @@ public interface Item {
 	public void setUser(User user);
 
 	public void setSource(String source);
+	
+	public void setId(long id);
 
 	public String getText();
 
@@ -37,5 +39,7 @@ public interface Item {
 	public String getURL();
 
 	public String getIMGURL();
+	
+	public long getId();
 
 }

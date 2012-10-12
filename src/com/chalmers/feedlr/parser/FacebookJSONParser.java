@@ -50,31 +50,33 @@ import android.util.Log;
 public class FacebookJSONParser {
 
 	private static ObjectMapper mapper;
-	private static ObjectReader reader;
+	private static ObjectReader itemReader;
+	private static ObjectReader userReader;
 
-	// private static JsonFactory jFactory;
-	// private static JsonParser jParser;
+	private static JsonFactory jFactory;
+	private static JsonParser jParser;
 
-	static JSONObject jsonObject;
-	static JSONArray jArray;
-
-	public static List<FacebookItem> parseFeed(String json) {
-		long time = System.currentTimeMillis();
-
-		String data = json.substring(8);
-
+	public FacebookJSONParser() {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
 					false);
-			reader = mapper.reader(new TypeReference<List<FacebookItem>>() {
-			});
 		}
+	}
+
+	public List<FacebookItem> parseFeed(String json) {
+		long time = System.currentTimeMillis();
+
+		String data = json.substring(8);
+
+		if (itemReader == null)
+			itemReader = mapper.reader(new TypeReference<List<FacebookItem>>() {
+			});
 
 		List<FacebookItem> list = null;
 
 		try {
-			list = reader.readValue(data);
+			list = itemReader.readValue(data);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -133,23 +135,19 @@ public class FacebookJSONParser {
 	 * (System.currentTimeMillis() - time)); }
 	 */
 
-	public static List<User> parseUsers(String json) {
+	public List<User> parseUsers(String json) {
 		long time = System.currentTimeMillis();
 
 		String data = json.substring(8);
 
-		if (mapper == null) {
-			mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-					false);
-			reader = mapper.reader(new TypeReference<List<User>>() {
+		if (userReader == null)
+			userReader = mapper.reader(new TypeReference<List<User>>() {
 			});
-		}
 
 		List<User> list = null;
 
 		try {
-			list = reader.readValue(data);
+			list = userReader.readValue(data);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

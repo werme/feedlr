@@ -53,11 +53,6 @@ public class TwitterAuthHelper {
 		new GetTwitterRequestTokenTask().execute();
 	}
 
-	public boolean isAuthorized() {
-		Token accessToken = ClientStore.getTwitterAccessToken(context);
-		return (accessToken.getToken() != null && accessToken.getSecret() != null);
-	}
-
 	public void onAuthCallback(Intent data) {
 		String verifier = (String) data.getExtras().get("oauth_verifier");
 		new GetTwitterAccessTokenTask().execute(verifier);

@@ -35,6 +35,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,8 +89,8 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
         loader = getLoaderManager().initLoader(0, null, this);
         
         listView = (PullToRefreshListView) getListView();
+        
         listView.setOnRefreshListener(new OnRefreshListener() {
-
             @Override
             public void onRefresh() {
                 listener.onFeedUpdateRequest(feedTitle);

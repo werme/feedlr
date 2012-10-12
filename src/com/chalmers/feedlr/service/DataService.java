@@ -22,7 +22,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.scribe.model.Token;
+
 import com.chalmers.feedlr.activity.FeedActivity;
+import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.database.DatabaseHelper;
@@ -71,10 +74,11 @@ public class DataService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		lbm = LocalBroadcastManager.getInstance(DataService.this);
 
-		twitter = new TwitterHelper(ClientStore.getTwitterAccessToken(this));
-		facebook = new FacebookHelper(ClientStore.getFacebookAccessToken(this));
+		twitter = new TwitterHelper(this);
+		facebook = new FacebookHelper();
 
 		db = new DatabaseHelper(this);
+
 		return START_STICKY;
 	}
 
@@ -96,6 +100,12 @@ public class DataService extends Service {
 		}.start();
 	}
 
+	/**
+	 * Populates application database ITEM table with the most recent tweets
+	 * from the registered users timeline.
+	 * 
+	 * This method is currently not in use.
+	 */
 	public void updateTwitterTimeline() {
 		runAsync(new Runnable() {
 			@Override
@@ -105,7 +115,6 @@ public class DataService extends Service {
 				List<TwitterItem> twitterTimeline = twitter.getTimeline();
 
 				// save to database
-				db.clearItemTable(); // for testing purposes only
 				db.addListOfItems(twitterTimeline);
 
 				// Broadcast update to activity
@@ -120,6 +129,10 @@ public class DataService extends Service {
 		});
 	}
 
+	/**
+	 * Updates application database USER table with the registered users
+	 * "following users" also known as "friends".
+	 */
 	public void updateTwitterUsers() {
 		runAsync(new Runnable() {
 			@Override
@@ -142,6 +155,12 @@ public class DataService extends Service {
 		});
 	}
 
+	/**
+	 * Populates application database ITEM table with the most recent tweets
+	 * from the user with the given userID.
+	 * 
+	 * This method is currently not in use.
+	 */
 	public void updateTweetsByUser(final int userID) {
 		runAsync(new Runnable() {
 			@Override
@@ -167,6 +186,54 @@ public class DataService extends Service {
 		});
 	}
 
+	public void updateFeedTwitterItems(final Feed feed) {
+		runAsync(new Runnable() {
+			@Override
+			public void run() {
+				final long time = System.currentTimeMillis();
+
+				final List<User> twitterUsersInFeed = db.getUsersInFeed(feed);
+				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
+
+				twitter.getTweetsForUsers(twitterUsersInFeed,
+						new RequestListener() {
+							private int responses = 0;
+
+							@SuppressWarnings("unchecked")
+							@Override
+							public void onComplete(Object response) {
+								if (response != null)
+									twitterItemsforUsers
+											.addAll((List<TwitterItem>) response);
+
+								responses++;
+								if (responses == twitterUsersInFeed.size())
+									onAllComplete();
+							}
+
+							private void onAllComplete() {
+
+								db.addListOfItems(twitterItemsforUsers);
+
+								// Broadcast update to activity
+								Intent intent = new Intent();
+								intent.setAction(FeedActivity.FEED_UPDATED);
+								Bundle b = new Bundle();
+								b.putString("feedTitle", feed.getTitle());
+								intent.putExtras(b);
+								lbm.sendBroadcast(intent);
+
+								Log.i(TwitterJSONParser.class.getName(),
+										"Time in millis for complete update of feed \""
+												+ feed.getTitle()
+												+ "\" twitter items request: "
+												+ (System.currentTimeMillis() - time));
+							}
+						});
+			}
+		});
+	}
+
 	public void updateFacebookUsers() {
 		final long time = System.currentTimeMillis();
 
@@ -175,7 +242,7 @@ public class DataService extends Service {
 			@Override
 			public void onComplete(String response, Object state) {
 				if (response != null) {
-					List<User> facebookUsers = FacebookJSONParser
+					List<User> facebookUsers = new FacebookJSONParser()
 							.parseUsers(response);
 
 					// save to database
@@ -225,7 +292,7 @@ public class DataService extends Service {
 			@Override
 			public void onComplete(String response, Object state) {
 				if (response != null) {
-					List<FacebookItem> facebookTimeline = FacebookJSONParser
+					List<FacebookItem> facebookTimeline = new FacebookJSONParser()
 							.parseFeed(response);
 
 					// save to database
@@ -288,7 +355,7 @@ public class DataService extends Service {
 					@Override
 					public void onComplete(String response, Object state) {
 						if (response != null) {
-							List<FacebookItem> facebookUsers = FacebookJSONParser
+							List<FacebookItem> facebookUsers = new FacebookJSONParser()
 									.parseFeed(response);
 
 							// save to database
@@ -329,52 +396,8 @@ public class DataService extends Service {
 				});
 	}
 
-	public void updateFeed(final Feed feed) {
-		runAsync(new Runnable() {
-			@Override
-			public void run() {
-				final long time = System.currentTimeMillis();
+	public void updateFeedFacebookItems(Feed feed) {
+		// TODO Auto-generated method stub
 
-				final List<User> twitterUsersInFeed = feed.getTwitterUsers();
-				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
-
-				twitter.getTweetsForUsers(twitterUsersInFeed,
-						new RequestListener() {
-							private int responses = 0;
-
-							@SuppressWarnings("unchecked")
-							@Override
-							public void onComplete(Object response) {
-								if (response != null)
-									twitterItemsforUsers
-											.addAll((List<TwitterItem>) response);
-
-								responses++;
-								if (responses == twitterUsersInFeed.size())
-									onAllComplete();
-							}
-
-							private void onAllComplete() {
-
-								// save to database
-
-								// Broadcast update to activity
-
-								Intent intent = new Intent();
-								intent.setAction(FeedActivity.FEED_UPDATED);
-								Bundle b = new Bundle();
-								b.putString("feedTitle", feed.getTitle());
-								intent.putExtras(b);
-								lbm.sendBroadcast(intent);
-
-								Log.i(TwitterJSONParser.class.getName(),
-										"Time in millis for complete update of feed \""
-												+ feed.getTitle()
-												+ "\" request: "
-												+ (System.currentTimeMillis() - time));
-							}
-						});
-			}
-		});
 	}
 }

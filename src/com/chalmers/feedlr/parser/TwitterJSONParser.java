@@ -47,31 +47,31 @@ import android.util.Log;
 public class TwitterJSONParser {
 
 	private static ObjectMapper mapper;
-	private static ObjectReader reader;
+	private static ObjectReader tweetReader;
+	private static ObjectReader usernameReader;
 
-	// private static JsonFactory jfactory;
-	// private static JsonParser jParser;
+	private static JsonFactory jfactory;
+	private static JsonParser jParser;
 
-	public static List<TwitterItem> parseTweets(String json) {
-		return dataBindingParse(json);
-		// streamingParse(json);
-	}
-
-	private static List<TwitterItem> dataBindingParse(String json) {
-		long time = System.currentTimeMillis();
-
+	public TwitterJSONParser() {
 		if (mapper == null) {
 			mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
 					false);
-			reader = mapper.reader(new TypeReference<List<TwitterItem>>() {
-			});
 		}
+	}
+
+	public List<TwitterItem> parseTweets(String json) {
+		long time = System.currentTimeMillis();
+
+		if (tweetReader == null)
+			tweetReader = mapper.reader(new TypeReference<List<TwitterItem>>() {
+			});
 
 		List<TwitterItem> list = null;
 
 		try {
-			list = reader.readValue(json);
+			list = tweetReader.readValue(json);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -88,56 +88,67 @@ public class TwitterJSONParser {
 		return list;
 	}
 
-	// private static void streamingParse(String json) {
-	// long time = System.currentTimeMillis();
-	//
-	// List<TwitterItem> list = new ArrayList<TwitterItem>();
-	//
-	// try {
-	//
-	// if (jfactory == null)
-	// jfactory = new JsonFactory();
-	//
-	// jParser = jfactory.createJsonParser(json);
-	//
-	// TwitterItem o = null;
-	// while (jParser.nextToken() != null) {
-	// if ("created_at".equals(jParser.getCurrentName())) {
-	// jParser.nextToken();
-	// o = new TwitterItem();
-	// o.setTimestamp(jParser.getText());
-	// }
-	// if ("text".equals(jParser.getCurrentName())) {
-	// jParser.nextToken();
-	// o.setText(jParser.getText());
-	// }
-	// if ("name".equals(jParser.getCurrentName())) {
-	// jParser.nextToken();
-	// o.getUser().setUserName(jParser.getText());
-	// }
-	// if ("profile_image_url".equals(jParser.getCurrentName())) {
-	// jParser.nextToken();
-	// o.getUser().setProfileImageURL(jParser.getText());
-	// list.add(o);
-	// }
-	// }
-	// jParser.close();
-	//
-	// } catch (JsonGenerationException e) {
-	// e.printStackTrace();
-	// } catch (JsonMappingException e) {
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// Log.i(TwitterJSONParser.class.getName(), "Streaming parse");
-	// Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
-	// Log.i(TwitterJSONParser.class.getName(),
-	// "Time in millis: " + (System.currentTimeMillis() - time));
-	// }
+	/**
+	 * Parse a JSON response for a list of "tweets" from Twitters REST API with
+	 * Jacksons streaming parse method. Although this is a sligthly faster
+	 * alternative the current build uses the databinding parse, favoring a
+	 * simplier implementation. This method is thus currently not in use.
+	 * 
+	 * @param json
+	 *            the JSON response from Twitters RESP API
+	 */
+	private List<TwitterItem> streamingTwitterParse(String json) {
+		long time = System.currentTimeMillis();
 
-	public static String[] parseUserIDs(String json) {
+		List<TwitterItem> list = new ArrayList<TwitterItem>();
+
+		try {
+
+			if (jfactory == null)
+				jfactory = new JsonFactory();
+
+			jParser = jfactory.createJsonParser(json);
+
+			TwitterItem o = null;
+			while (jParser.nextToken() != null) {
+				if ("created_at".equals(jParser.getCurrentName())) {
+					jParser.nextToken();
+					o = new TwitterItem();
+					o.setTimestamp(jParser.getText());
+				}
+				if ("text".equals(jParser.getCurrentName())) {
+					jParser.nextToken();
+					o.setText(jParser.getText());
+				}
+				if ("name".equals(jParser.getCurrentName())) {
+					jParser.nextToken();
+					o.getUser().setUserName(jParser.getText());
+				}
+				if ("profile_image_url".equals(jParser.getCurrentName())) {
+					jParser.nextToken();
+					o.getUser().setProfileImageURL(jParser.getText());
+					list.add(o);
+				}
+			}
+			jParser.close();
+
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Log.i(TwitterJSONParser.class.getName(), "Streaming parse");
+		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
+		Log.i(TwitterJSONParser.class.getName(),
+				"Time in millis: " + (System.currentTimeMillis() - time));
+
+		return list;
+	}
+
+	public String[] parseUserIDs(String json) {
 		long time = System.currentTimeMillis();
 
 		JSONObject wrapperObject;
@@ -162,21 +173,18 @@ public class TwitterJSONParser {
 		return ids;
 	}
 
-	public static List<User> parseUserNames(String json) {
+	public List<User> parseUserNames(String json) {
 		long time = System.currentTimeMillis();
 
-		if (mapper == null) {
-			mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-					false);
-			reader = mapper.reader(new TypeReference<List<User>>() {
+		if (usernameReader == null) {
+			usernameReader = mapper.reader(new TypeReference<List<User>>() {
 			});
 		}
 
 		List<User> list = null;
 
 		try {
-			list = reader.readValue(json);
+			list = usernameReader.readValue(json);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -195,5 +203,26 @@ public class TwitterJSONParser {
 				"Time in millis: " + (System.currentTimeMillis() - time));
 
 		return list;
+	}
+
+	public long parseCredentials(String json) {
+		long time = System.currentTimeMillis();
+
+		JSONObject wrapperObject;
+		long userID = 0;
+		try {
+			wrapperObject = new JSONObject(json);
+			userID = wrapperObject.getLong("id");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Log.i(TwitterJSONParser.class.getName(), "Parsed user credentials");
+		Log.i(TwitterJSONParser.class.getName(), "User ID: " + userID);
+		Log.i(TwitterJSONParser.class.getName(),
+				"Time in millis: " + (System.currentTimeMillis() - time));
+
+		return userID;
 	}
 }

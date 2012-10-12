@@ -1,41 +1,38 @@
 package com.chalmers.feedlr.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.ui.FeedFragment;
 
 public class PageAdapter extends FragmentPagerAdapter {
 
-	private static final String TAG_TEXT = "text";
+	private int numberOfFeeds = 0;
 
-	private int numberOfFeeds = 1;
-
-	private List<Feed> feeds;
+	private List<String> feedTitles;
 
 	private FeedListener listener;
 
-	public PageAdapter(FragmentManager fm, FeedListener listener /* ,List<Feed> feeds */) {
+	public PageAdapter(FragmentManager fm, DatabaseHelper db, FeedListener listener) {
 		super(fm);
 		this.listener = listener;
 		
-		feeds = new ArrayList<Feed>();
-		feeds.add(new Feed("Yeah buddy"));
+		db.clearFeeds();
+		feedTitles = db.listFeeds();
+		numberOfFeeds = feedTitles.size();
 	}
 
 	@Override
 	public Fragment getItem(int index) {
 		Bundle bundle = new Bundle();
-		bundle.putString("title", feeds.get(index).getTitle());
+		bundle.putString("title", feedTitles.get(index));
 		FeedFragment f = FeedFragment.newInstance(bundle);
 		f.setUpdateRequestListener(listener);
 		return f;
@@ -48,6 +45,10 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	public void addFeed(Feed feed) {
 		numberOfFeeds++;
-		feeds.add(feed);
+		feedTitles.add(feed.getTitle());
+	}
+	
+	public String getFeedTitle(int index) {
+		return feedTitles.get(index);
 	}
 }
