@@ -95,7 +95,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	private Button facebookAuthButton;
 	private Button twitterAuthButton;
-	private Button updateButton;
 
 	private TextView feedTitleTextView;
 
@@ -162,15 +161,12 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		facebookAuthButton = (Button) findViewById(R.id.button_facebook);
 		twitterAuthButton = (Button) findViewById(R.id.button_twitter);
-		updateButton = (Button) findViewById(R.id.button_update);
 		Button s = (Button) findViewById(R.id.button_settings);
 		
 		settingsViewFlipper.getBackground().setDither(true);
 
 		twitterAuthButton.setTypeface(robotoMedium);
 		facebookAuthButton.setTypeface(robotoMedium);
-		updateButton.setTypeface(robotoMedium);
-		s.setTypeface(robotoMedium);
 
 		feedTitleTextView = (TextView) findViewById(R.id.feed_action_bar_title);
 		feedTitleTextView.setTypeface(robotoMedium);
@@ -299,7 +295,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.getString(R.string.authorize_twitter));
 
 		twitterAuthButton.setEnabled(!isTwitterAuthorized);
-		updateButton.setEnabled(isTwitterAuthorized || isFacebookAuthorized);
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(TWITTER_TIMELINE_UPDATED);
@@ -452,7 +447,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				twitterAuthButton.setText(res
 						.getString(R.string.twitter_authorized));
 				twitterAuthButton.setEnabled(false);
-				updateButton.setEnabled(true);
 			}
 
 			@Override
@@ -474,7 +468,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				facebookAuthButton.setText(res
 						.getString(R.string.facebook_authorized));
 				facebookAuthButton.setEnabled(false);
-				updateButton.setEnabled(true);
 			}
 
 			@Override

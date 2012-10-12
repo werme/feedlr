@@ -6,18 +6,6 @@
     android:background="#333333"
     android:padding="5sp" >
 
-    <EditText
-        android:id="@+id/create_feed_action_bar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:gravity="center"
-        android:hint="@string/default_feed_name"
-        android:inputType="text"
-        android:padding="5sp"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp" >
-    </EditText>
-
     <Button
         android:id="@+id/button_create_feed"
         android:layout_width="wrap_content"
@@ -26,5 +14,33 @@
         android:gravity="center"
         android:onClick="createFeed"
         android:text="@string/button_create_feed" />
+
+    <EditText
+        android:id="@+id/create_feed_action_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignTop="@+id/button_create_feed"
+        android:layout_toLeftOf="@+id/button_create_feed"
+        android:layout_toRightOf="@+id/textView1"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/default_feed_name"
+        android:inputType="text"
+        android:padding="5sp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/create_feed_action_bar_title"
+        android:layout_alignBottom="@+id/create_feed_action_bar_title"
+        android:layout_alignParentLeft="true"
+        android:text="Feed name:"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

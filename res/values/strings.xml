@@ -23,6 +23,6 @@
 	<string name="button_main">Main</string>
 	
 	<string name="button_create_feed">Create feed</string>
-	<string name="default_feed_name">My feed</string>
+	<string name="default_feed_name">Feed name</string>
 	
 </resources>
