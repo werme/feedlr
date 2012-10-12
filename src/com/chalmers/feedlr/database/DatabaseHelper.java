@@ -87,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_ITEMID
 				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
-				+ ITEM_COLUMN_TIMESTAMP + " TEXT," + ITEM_COLUMN_TYPE
+				+ ITEM_COLUMN_TIMESTAMP + " DATETIME," + ITEM_COLUMN_TYPE
 				+ " TEXT," + ITEM_COLUMN_URL + " TEXT," + ITEM_COLUMN_IMGURL
 				+ " TEXT," + ITEM_COLUMN_USER_ID + " INT NOT NULL" + ")");
 		// @formatter:on
@@ -332,11 +332,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public Cursor getItems(Feed feed) {
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
-				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
-				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed)
-				+ ")", null);
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM 
+				+ " WHERE "	+ ITEM_COLUMN_USER_ID 
+				+ " IN (SELECT " + FEEDUSER_COLUMN_USER_ID 
+				+ " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID 
+				+ " = " + getFeedID(feed)
+				+ ") ORDER BY " + ITEM_COLUMN_TIMESTAMP + " DESC", null);
 		return c;
 	}
 }
