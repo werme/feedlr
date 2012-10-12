@@ -16,10 +16,18 @@
 
 package com.chalmers.feedlr.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.TwitterApi;
+import org.scribe.model.Token;
 import org.scribe.oauth.OAuthService;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.chalmers.feedlr.util.ClientStore;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
@@ -32,14 +40,14 @@ public class Clients {
 	private static final String TWITTER_CONSUMER_SECRET = "ERXqbK72CCGgZ4hR96PkSoe6ZciSd14VwQ2vsDdEtM";
 	private static final String TWITTER_CALLBACK_URL = "feedlr://twitter";
 
-	// Facebook constants here
+	// Facebook constants
 	private static final String FACEBOOK_APP_ID = "477102822323129";
 
 	private static OAuthService twitter;
 	private static Facebook facebook;
 	private static AsyncFacebookRunner asyncFacebookRunner;
 
-	public static String[] getServices() {
+	public static String[] getClients() {
 		return new String[] { "Twitter", "Facebook" };
 	}
 
@@ -83,4 +91,16 @@ public class Clients {
 			return false;
 		}
 	}
+
+	public static List<Integer> getAuthorizedClients(Context context) {
+		List<Integer> authorizedClients = new ArrayList<Integer>();
+		
+		if(isAuthorized(TWITTER, context))
+			authorizedClients.add(TWITTER);
+		else if (isAuthorized(FACEBOOK, context))
+			authorizedClients.add(FACEBOOK);
+		
+		return authorizedClients;
+	}
+
 }
