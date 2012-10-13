@@ -363,8 +363,6 @@ public class DataService extends Service {
 					@Override
 					public void onComplete(String response, Object state) {
 
-						System.out.println("Response " + responses + " = "
-								+ response);
 						if (response != null) {
 							facebookItemsForUsers
 									.addAll(new FacebookJSONParser()
@@ -378,9 +376,6 @@ public class DataService extends Service {
 
 					private void onAllComplete() {
 
-						System.out.println(facebookItemsForUsers.size());
-						System.out.println(facebookItemsForUsers.get(3)
-								.getText());
 						db.addListOfItems(facebookItemsForUsers);
 
 						// Broadcast update to activity

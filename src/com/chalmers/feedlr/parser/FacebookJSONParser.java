@@ -57,7 +57,7 @@ public class FacebookJSONParser {
 	public List<FacebookItem> parseFeed(String json) {
 		long time = System.currentTimeMillis();
 
-		String data = json.substring(json.indexOf("feed") + 14);
+		String data = json.substring(json.indexOf("statuses") + 18);
 
 		if (itemReader == null)
 			itemReader = mapper.reader(new TypeReference<List<FacebookItem>>() {
@@ -78,7 +78,6 @@ public class FacebookJSONParser {
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
 				+ " Facebook items in " + (System.currentTimeMillis() - time)
 				+ " millis.");
-		System.out.println("Items: " + list);
 		return list;
 	}
 

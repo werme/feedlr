@@ -82,7 +82,7 @@ public class FacebookHelper {
 
 		Bundle params = new Bundle();
 		params.putString("uid", userID + "");
-		params.putString("fields", "feed");
+		params.putString("fields", "statuses");
 		request(FRIENDS, params, listener);
 
 		Log.i(FacebookJSONParser.class.getName(),
