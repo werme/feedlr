@@ -192,7 +192,7 @@ public class DataService extends Service {
 			public void run() {
 				final long time = System.currentTimeMillis();
 
-				final List<User> twitterUsersInFeed = db.getUsersInFeed(feed);
+				final List<User> twitterUsersInFeed = db.getUsers(feed);
 				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
 
 				twitter.getTweetsForUsers(twitterUsersInFeed,
