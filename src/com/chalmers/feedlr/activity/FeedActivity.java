@@ -248,13 +248,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
 
-		// testDatabase();
+		//testDatabase();
 	}
 
 	public void testDatabase() {
 
 		// Simple feed testing
-		// this.deleteDatabase("feedlrDatabase");
+		this.deleteDatabase("feedlrDatabase");
 		DatabaseHelper db = new DatabaseHelper(this);
 		Feed testFeed = new Feed("testfeed");
 		db.addFeed(testFeed);

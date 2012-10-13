@@ -242,10 +242,14 @@ public class DataService extends Service {
 			@Override
 			public void onComplete(String response, Object state) {
 				if (response != null) {
-					List<User> facebookUsers = new FacebookJSONParser()
+					List<User> users = new FacebookJSONParser()
 							.parseUsers(response);
 
-					// save to database
+					System.out.println("User nr. 10: "
+							+ users.get(10).getUserName());
+					for (User u : users)
+						u.setSource("facebook");
+					db.addUsers(users);
 
 					// Broadcast update to activity
 					Intent intent = new Intent();
@@ -346,29 +350,47 @@ public class DataService extends Service {
 
 	}
 
-	public void updateFacebookUserFeed(final long userID) {
+	public void updateFeedFacebookItems(final Feed feed) {
 		final long time = System.currentTimeMillis();
 
-		facebook.getUserFeed(userID,
+		final List<User> facebookUsersInFeed = db.getUsersInFeed(feed);
+		final List<FacebookItem> facebookItemsForUsers = new ArrayList<FacebookItem>();
+
+		facebook.getFeedsForUsers(facebookUsersInFeed,
 				new com.facebook.android.AsyncFacebookRunner.RequestListener() {
+					private int responses = 0;
 
 					@Override
 					public void onComplete(String response, Object state) {
+
 						if (response != null) {
-							List<FacebookItem> facebookUsers = new FacebookJSONParser()
-									.parseFeed(response);
-
-							// save to database
-
-							// Broadcast update to activity
-							Intent intent = new Intent();
-							intent.setAction(FeedActivity.FACEBOOK_USERS_UPDATED);
-							lbm.sendBroadcast(intent);
-
-							Log.i(FacebookJSONParser.class.getName(),
-									"Time in millis for complete Facebook user feed request: "
-											+ (System.currentTimeMillis() - time));
+							facebookItemsForUsers
+									.addAll(new FacebookJSONParser()
+											.parseFeed(response));
+							responses++;
 						}
+
+						if (responses == facebookUsersInFeed.size())
+							onAllComplete();
+					}
+
+					private void onAllComplete() {
+
+						db.addListOfItems(facebookItemsForUsers);
+
+						// Broadcast update to activity
+						Intent intent = new Intent();
+						intent.setAction(FeedActivity.FEED_UPDATED);
+						Bundle b = new Bundle();
+						b.putString("feedTitle", feed.getTitle());
+						intent.putExtras(b);
+						lbm.sendBroadcast(intent);
+
+						Log.i(TwitterJSONParser.class.getName(),
+								"Time in millis for complete update of feed \""
+										+ feed.getTitle()
+										+ "\" facebook items request: "
+										+ (System.currentTimeMillis() - time));
 					}
 
 					@Override
@@ -394,10 +416,5 @@ public class DataService extends Service {
 						Log.e("Parse", "Invalid URL:" + e.getMessage());
 					}
 				});
-	}
-
-	public void updateFeedFacebookItems(Feed feed) {
-		// TODO Auto-generated method stub
-
 	}
 }

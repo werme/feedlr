@@ -16,8 +16,11 @@
 
 package com.chalmers.feedlr.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.AnnotationIntrospector.ReferenceProperty.Type;
 
 /**
  * Class description
@@ -31,7 +34,7 @@ public class TwitterItem implements Item {
 	private User user;
 	private String timestamp;
 	private String source = "twitter";
-	private long id;
+	private String id;
 
 	public TwitterItem() {
 		user = new User();
@@ -74,7 +77,18 @@ public class TwitterItem implements Item {
 	 */
 	@JsonProperty("created_at")
 	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
+		dateFormat.setLenient(false);
+		Date created = null;
+		try {
+			created = dateFormat.parse(timestamp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.timestamp = d.format(created);
 	}
 	
 	/*
@@ -131,12 +145,12 @@ public class TwitterItem implements Item {
 	}
 
 	@Override
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Override
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 }

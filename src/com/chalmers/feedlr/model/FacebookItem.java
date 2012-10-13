@@ -31,16 +31,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class FacebookItem implements Item {
 
 	private String message;
-	private User user;
 	private String timestamp;
 	private String type;
-	private String name;
-	private String userId;
 	private String source = "facebook";
-	private long id;
+	private String id;
+	private From from;
 
 	public FacebookItem() {
-		user = new User();
+		from = new From();
 	}
 
 	/*
@@ -52,32 +50,6 @@ public class FacebookItem implements Item {
 	@JsonProperty("message")
 	public void setText(String message) {
 		this.message = message;
-		System.out.println("Set message: " + message);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chalmers.feedlr.model.Item#setUser(com.chalmers.feedlr.model.User)
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	/*
-	 * @param userId the user id of a user
-	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
-	/*
-	 * @param name the name of the user
-	 */
-	public void setName(String name) {
-		this.name = name;
-		System.out.println("Set name: " + name);
 	}
 
 	/*
@@ -88,26 +60,8 @@ public class FacebookItem implements Item {
 		this.timestamp = timestamp;
 	}
 
-	/*
-	 * Sets the users name and user ID
-	 * 
-	 * @see setName, setUserId
-	 * 
-	 * @param from an array of strings containing the name and user id
-	 */
-	public void setFrom(String[] from) {
-		setName(from[0]);
-		setUserId(from[1]);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#getUser()
-	 */
-	@Override
-	public User getUser() {
-		return user;
+	public void setFrom(From from) {
+		this.from = from;
 	}
 
 	/*
@@ -149,29 +103,68 @@ public class FacebookItem implements Item {
 
 	@Override
 	public String getIMGURL() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setSource(String source) {
-		// TODO Auto-generated method stub
-		
+		this.source = source;
 	}
 
 	@Override
 	public String getSource() {
-		// TODO Auto-generated method stub
-		return null;
+		return source;
 	}
 
 	@Override
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Override
-	public long getId() {
+	public String getId() {
 		return id;
+	}
+
+	public From getFrom() {
+		return from;
+	}
+
+	class From extends User {
+		private String userName;
+		private long id;
+
+		public From() {
+		}
+
+		/*
+		 * @param userId the user id of a user
+		 */
+		public void setId(long id) {
+			this.id = id;
+		}
+
+		@JsonProperty("name")
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}
+
+		public String getUserName() {
+			return userName;
+		}
+
+		public long getId() {
+			return id;
+		}
+	}
+
+	@Override
+	public void setUser(User user) {
+		this.from = (From) user;
+	}
+
+	@Override
+	public User getUser() {
+		return from;
 	}
 }

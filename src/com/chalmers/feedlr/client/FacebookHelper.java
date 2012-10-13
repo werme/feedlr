@@ -18,9 +18,12 @@ package com.chalmers.feedlr.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+
 import android.os.Bundle;
 import android.util.Log;
 
+import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.FacebookJSONParser;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
@@ -77,15 +80,21 @@ public class FacebookHelper {
 	public void getUserFeed(long userID, RequestListener listener) {
 		long time = System.currentTimeMillis();
 
-		// Can this be done smoother?
-		String values = "uid(" + userID + "), feed";
 		Bundle params = new Bundle();
-		params.putString("fields", values);
+		params.putString("uid", userID + "");
+		params.putString("fields", "statuses");
 		request(FRIENDS, params, listener);
 
 		Log.i(FacebookJSONParser.class.getName(),
-				"Friendslists request time in millis: "
+				"User feed request time in millis: "
 						+ (System.currentTimeMillis() - time));
+	}
+
+	public void getFeedsForUsers(List<User> facebookUsersInFeed,
+			final RequestListener listener) {
+		for (final User user : facebookUsersInFeed) {
+			getUserFeed(user.getId(), listener);
+		}
 	}
 
 	private void request(String requestURL, Bundle params,

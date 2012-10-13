@@ -24,7 +24,7 @@ public interface Item {
 
 	public void setSource(String source);
 	
-	public void setId(long id);
+	public void setId(String id);
 
 	public String getText();
 
@@ -40,6 +40,6 @@ public interface Item {
 
 	public String getIMGURL();
 	
-	public long getId();
+	public String getId();
 
 }
