@@ -28,6 +28,7 @@ import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -203,7 +204,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		bm.setTypeface(robotoMedium);
 		s.setTypeface(robotoMedium);
 		feedTitleTextView.setTypeface(robotoMedium);
-
+		
+		
 		// set adapters
 		feedAdapter = new PageAdapter(getSupportFragmentManager(), db, this);
 		feedViewSwiper.setAdapter(feedAdapter);
@@ -227,6 +229,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 						// TODO Auto-generated method stub
 					}
 				});
+
+		TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+		titleIndicator.setViewPager(feedViewSwiper);
 
 		// instanciate client and service helpers
 		clientHandler = new ClientHandler(this);

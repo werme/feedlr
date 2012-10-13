@@ -318,7 +318,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			temp.put(USER_COLUMN_USERNAME, u.getUserName());
 			temp.put(USER_COLUMN_USERID, u.getId());
 			temp.put(USER_COLUMN_SOURCE, u.getSource());
-			db.insertWithOnConflict(TABLE_USER, null, temp, SQLiteDatabase.CONFLICT_IGNORE);
+//			db.insertWithOnConflict(TABLE_USER, null, temp, SQLiteDatabase.CONFLICT_IGNORE);
+			db.insert(TABLE_USER, null, temp);
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
