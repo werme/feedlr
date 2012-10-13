@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/feed_action_bar"
     android:layout_width="fill_parent"
-    android:layout_height="60sp"
+    android:layout_height="60dp"
     android:layout_gravity="center_vertical"
     android:background="@drawable/red_gradient" >
 
@@ -19,24 +19,16 @@
         android:id="@+id/feed_action_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:text="@string/default_feed_name"
-        android:textAppearance="?android:attr/textAppearanceLarge" >
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <Button
-            android:id="@+id/button_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="testSomething"
-            android:text="@string/test_button" />
-
-        <com.viewpagerindicator.TitlePageIndicator
-            android:id="@+id/titles"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-    </TextView>
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/titles"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/feed_action_bar"
+        android:paddingBottom="5dp" />
 
 </RelativeLayout>

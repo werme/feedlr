@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/settings_background_gradient"
             android:orientation="vertical" >
-
+
             <Button
                 android:id="@+id/button_twitter"
                 android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="1dp"
                 android:background="#212b35" />
-
+
             <Button
                 android:id="@+id/button_facebook"
                 android:layout_width="match_parent"
@@ -49,6 +49,28 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:onClick="authorizeFacebook"
                 android:text="@string/authorize_facebook"
+                android:textColor="#fffafafa"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#11171c" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#212b35" />
+
+            <Button
+                android:id="@+id/button_create_feed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@layout/add_facebook_button"
+                android:gravity="center_vertical|center_horizontal"
+                android:onClick="initCreateFeedView"
+                android:text="@string/button_create_feed"
                 android:textColor="#fffafafa"
                 android:textSize="20sp" />
 

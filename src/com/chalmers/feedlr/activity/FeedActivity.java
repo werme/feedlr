@@ -28,6 +28,7 @@ import com.chalmers.feedlr.service.DataServiceHelper;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
+import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import android.os.Bundle;
@@ -232,8 +233,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 					}
 				});
 
-		TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-		titleIndicator.setViewPager(feedViewSwiper);
+		CirclePageIndicator circleIndicator = (CirclePageIndicator)findViewById(R.id.titles);
+		circleIndicator.setViewPager(feedViewSwiper);
 
 		// instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
