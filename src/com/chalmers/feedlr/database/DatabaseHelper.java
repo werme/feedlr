@@ -249,7 +249,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			ContentValues temp = new ContentValues();
 			temp.put(ITEM_COLUMN_ITEMID, i.getId());
 			temp.put(ITEM_COLUMN_TEXT, i.getText());
-//			temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
+			temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
 			temp.put(ITEM_COLUMN_TYPE, i.getText());
 			temp.put(ITEM_COLUMN_URL, i.getURL());
 			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
