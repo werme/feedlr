@@ -42,7 +42,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		assertTrue(true);
 		try{
 			db.removeFeed(new Feed("testFeed"));
-			fail("Removed feed that does not exist");
+			fail("Removed a feed which does not exist");
 		}
 		catch(IllegalArgumentException e){
 			assertTrue(true);
@@ -59,10 +59,15 @@ public class DatabaseHelperTest extends AndroidTestCase {
 			fail("ListFeeds not showing correct feeds");
 		}
 	}
-/*
+
 	public void testAddUser() {
 		User u1 = new User(1, "Olle");
-		fail("Not yet implemented");
+		User u2 = new User(2, "David");
+		User u3 = new User(1, "Daniel");
+		db.addUser(u1);
+		db.addUser(u2);
+		db.addUser(u3);
+		Log.i("a:", "" + db.listUsers());
 	}
 /*
 	public void testAddFeedUserBridge() {

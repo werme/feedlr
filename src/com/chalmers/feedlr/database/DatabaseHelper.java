@@ -159,7 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (c.moveToNext()) {
 			userID = Long.parseLong(c.getString(0));
 		} else {
-			throw (new IllegalArgumentException("Feed does not exist!"));
+			throw (new IllegalArgumentException("User does not exist!"));
 		}
 		c.close();
 		return userID;
@@ -188,18 +188,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public long addUser(User user) {
-		ContentValues temp = new ContentValues();
-
-		temp.put(USER_COLUMN_USERNAME, user.getUserName());
-		temp.put(USER_COLUMN_USERID, user.getId());
-		temp.put(USER_COLUMN_IMGURL, user.getProfileImageURL());
-		temp.put(USER_COLUMN_SOURCE, "Twitter");
-		// TODO If user already exists?
-
-		long userID = db.insert(TABLE_USER, null, temp);
+		Long userID;
+		try{
+			Log.i("A", "Before getUserID");
+			userID = getUserID(user);
+			Log.i("B", "after getUserID");
+			updateUser(user);
+		} catch(IllegalArgumentException e){
+		userID = db.insert(TABLE_USER, null, userCV(user));
+		}
 		return userID;
 	}
 
+	private ContentValues userCV(User user){
+		ContentValues cv = new ContentValues();
+
+		cv.put(USER_COLUMN_USERNAME, user.getUserName());
+		cv.put(USER_COLUMN_USERID, user.getId());
+		cv.put(USER_COLUMN_IMGURL, user.getProfileImageURL());
+		cv.put(USER_COLUMN_SOURCE, "Twitter");
+		return cv;
+	}
+	
 	public void addFeedUserBridge(long feedID, long userID) {
 		ContentValues temp = new ContentValues();
 
@@ -242,8 +252,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				new String[] { id + "" });
 	}
 
-	public void updateUser(long userID) {
-		// TODO implement this method
+	public long updateUser(User user) {
+
+
+		return db.update(TABLE_USER, userCV(user), USER_COLUMN_ID + " = " + user.getId(), null);
 	}
 
 	public void addListOfItems(List<? extends Item> itemList) {
@@ -344,4 +356,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ ") ORDER BY " + ITEM_COLUMN_TIMESTAMP + " DESC", null);
 		return c;
 	}
+
 }
