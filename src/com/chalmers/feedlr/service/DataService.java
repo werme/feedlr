@@ -42,6 +42,7 @@ import com.facebook.android.FacebookError;
 
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -192,8 +193,21 @@ public class DataService extends Service {
 			public void run() {
 				final long time = System.currentTimeMillis();
 
-				final List<User> twitterUsersInFeed = db.getUsersInFeed(feed);
+				final List<User> twitterUsersInFeed = new ArrayList<User>();
 				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
+
+				Cursor c = db.getUsers(feed, "twitter");
+
+				c.moveToFirst();
+				while (!c.isAfterLast()) {
+					twitterUsersInFeed
+							.add(new User(
+									c.getLong(c
+											.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
+									c.getString(c
+											.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME))));
+					c.moveToNext();
+				}
 
 				twitter.getTweetsForUsers(twitterUsersInFeed,
 						new RequestListener() {
@@ -247,7 +261,8 @@ public class DataService extends Service {
 
 					for (User u : users) {
 						u.setSource("facebook");
-						u.setProfileImageURL(facebook.getProfileImageURL(u.getId()));
+						u.setProfileImageURL(facebook.getProfileImageURL(u
+								.getId()));
 					}
 					db.addUsers(users);
 
@@ -353,8 +368,21 @@ public class DataService extends Service {
 	public void updateFeedFacebookItems(final Feed feed) {
 		final long time = System.currentTimeMillis();
 
-		final List<User> facebookUsersInFeed = db.getUsersInFeed(feed);
+		final List<User> facebookUsersInFeed = new ArrayList<User>();
 		final List<FacebookItem> facebookItemsForUsers = new ArrayList<FacebookItem>();
+
+		Cursor c = db.getUsers(feed, "twitter");
+
+		c.moveToFirst();
+		while (!c.isAfterLast()) {
+			facebookUsersInFeed
+					.add(new User(
+							c.getLong(c
+									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
+							c.getString(c
+									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME))));
+			c.moveToNext();
+		}
 
 		facebook.getFeedsForUsers(facebookUsersInFeed,
 				new com.facebook.android.AsyncFacebookRunner.RequestListener() {

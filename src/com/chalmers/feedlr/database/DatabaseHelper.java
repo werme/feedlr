@@ -19,27 +19,30 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
+
 	private static final int DATABASE_VERSION = 6;
+
 	private static final String DATABASE_NAME = "feedlrDatabase";
 
 	// Declaring feed table
-	private static final String TABLE_FEED = "feed";
-	private static final String FEED_COLUMN_ID = "_id";
-	private static final String FEED_COLUMN_NAME = "name";
+	public static final String TABLE_FEED = "feed";
+	public static final String FEED_COLUMN_ID = "_id";
+	public static final String FEED_COLUMN_NAME = "name";
 
 	// Declaring feed-user bridge table
-	private static final String TABLE_FEEDUSER = "feeduser";
-	private static final String FEEDUSER_COLUMN_FEED_ID = "feed_ID";
-	private static final String FEEDUSER_COLUMN_USER_ID = "user_ID";
+	public static final String TABLE_FEEDUSER = "feeduser";
+	public static final String FEEDUSER_COLUMN_FEED_ID = "feed_ID";
+	public static final String FEEDUSER_COLUMN_USER_ID = "user_ID";
 
 	// Declaring user table
-	private static final String TABLE_USER = "user";
+	public static final String TABLE_USER = "user";
 	private static final String USER_COLUMN_ID = "_id";
 	public static final String USER_COLUMN_USERNAME = "username";
 	public static final String USER_COLUMN_USERID = "userid";
@@ -47,8 +50,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String USER_COLUMN_SOURCE = "source";
 
 	// Declaring item table
-	private static final String TABLE_ITEM = "item";
-	public static final String ITEM_COLUMN_ID = "_id";
+	public static final String TABLE_ITEM = "item";
+	private static final String ITEM_COLUMN_ID = "_id";
 	public static final String ITEM_COLUMN_ITEMID = "itemid";
 	public static final String ITEM_COLUMN_TEXT = "text";
 	public static final String ITEM_COLUMN_TIMESTAMP = "timestamp";
@@ -88,10 +91,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_ITEMID
 				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
-				+ ITEM_COLUMN_TIMESTAMP + " INT," + ITEM_COLUMN_TYPE
-				+ " TEXT," + ITEM_COLUMN_URL + " TEXT," + ITEM_COLUMN_IMGURL
-				+ " TEXT," + ITEM_COLUMN_USER_ID + " INT NOT NULL,"
-				+ ITEM_COLUMN_USERNAME + " TEXT" + ")");
+				+ ITEM_COLUMN_TIMESTAMP + " INT," + ITEM_COLUMN_TYPE + " TEXT,"
+				+ ITEM_COLUMN_URL + " TEXT," + ITEM_COLUMN_IMGURL + " TEXT,"
+				+ ITEM_COLUMN_USER_ID + " INT NOT NULL," + ITEM_COLUMN_USERNAME
+				+ " TEXT" + ")");
 		// @formatter:on
 	}
 
@@ -105,26 +108,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	public void addFeed(Feed feed) {
-		ContentValues temp = new ContentValues();
+	// Feed related methods:
 
-		temp.put(FEED_COLUMN_NAME, feed.getTitle());
-		try {
-			db.insertOrThrow(TABLE_FEED, null, temp);
-		} catch (SQLiteConstraintException e) {
-			Log.d("ERROR", "Inserted feed is not UNIQUE!");
-			// TODO Apply listener to notify the user that the feed name already
-			// exists!
-		}
+	public void addFeed(Feed feed) throws SQLiteException {
+		db.insertOrThrow(TABLE_FEED, null, feedCV(feed));
 	}
 
-	public void removeFeed(Feed feed) {
+	public void removeFeed(Feed feed) throws IllegalArgumentException {
 		String title = feed.getTitle();
 		long id = getFeedID(feed);
 
 		removeFeedBridge(id);
 
 		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
+	}
+
+	public void clearFeeds() {
+		db.delete(TABLE_FEED, null, null);
+		db.delete(TABLE_FEEDUSER, null, null);
 	}
 
 	public ArrayList<String> listFeeds() {
@@ -139,28 +140,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return feeds;
 	}
 
-	public long getFeedID(Feed feed) {
+	public long getFeedID(Feed feed) throws IllegalArgumentException {
 		String feedTitle = feed.getTitle();
+		Long id;
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_ID },
 				FEED_COLUMN_NAME + "=?", new String[] { feedTitle }, null,
 				null, null);
-		c.moveToNext();
-		Long id = Long.parseLong(c.getString(0));
+
+		if (c.moveToNext()) {
+			id = Long.parseLong(c.getString(0));
+		} else {
+			throw (new IllegalArgumentException("Feed does not exist!"));
+		}
 		c.close();
 		return id;
 	}
 
-	public long getUserID(User user) {
+	// User related methods
+
+	public long addUser(User user) {
+		Long userID;
+		try {
+			userID = getUserID(user);
+			updateUser(user);
+		} catch (IllegalArgumentException e) {
+			userID = db.insert(TABLE_USER, null, userCV(user));
+		}
+		return userID;
+	}
+
+	public void addUsers(List<? extends User> users) {
+
+		db.beginTransaction();
+
+		for (User u : users) {
+			db.insertWithOnConflict(TABLE_USER, null, userCV(u),
+					SQLiteDatabase.CONFLICT_IGNORE);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+
+	public long updateUser(User user) {
+		return db.update(TABLE_USER, userCV(user), USER_COLUMN_ID + " = "
+				+ user.getId(), null);
+	}
+
+	private void removeUser(User user) {
 		long id = user.getId();
-		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
-				USER_COLUMN_ID + "=?", new String[] { id + "" }, null, null,
-				null);
-		c.moveToNext();
-		Long id1 = Long.parseLong(c.getString(0));
-		c.close();
-		return id1;
+		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
+	}
+
+	public void clearUserTable() {
+		db.delete(TABLE_USER, null, null);
 	}
 
 	public ArrayList<String> listUsers() {
@@ -175,6 +208,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return users;
 	}
 
+	private long getUserID(User user) throws IllegalArgumentException {
+		long id = user.getId();
+		long userID;
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
+				USER_COLUMN_ID + "=?", new String[] { id + "" }, null, null,
+				null);
+		if (c.moveToNext()) {
+			userID = Long.parseLong(c.getString(0));
+		} else {
+			throw (new IllegalArgumentException("User does not exist!"));
+		}
+		c.close();
+		return userID;
+	}
+
+	// Item related methods
+
+	public long addItem(Item item) {
+
+		return db.insert(TABLE_ITEM, null, itemCV(item));
+	}
+
+	public void addListOfItems(List<? extends Item> itemList) {
+		db.beginTransaction();
+		for (Item i : itemList) {
+			addItem(i);
+		}
+		db.setTransactionSuccessful();
+		db.endTransaction();
+	}
+
+	public void clearItemTable() {
+		db.delete(TABLE_ITEM, null, null);
+	}
+
+	// Bridge methods:
+
 	public void addUserToFeed(User user, Feed feed) {
 		long FeedID = getFeedID(feed);
 		long UserID = addUser(user);
@@ -185,18 +256,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	public long addUser(User user) {
-		// TODO Check if the user already exists!!
-		ContentValues temp = new ContentValues();
+	public void removeUserFromFeed(Feed feed, User user) {
+		long feedID = getFeedID(feed);
+		long userID = getUserID(user);
 
-		temp.put(USER_COLUMN_USERNAME, user.getUserName());
-		temp.put(USER_COLUMN_USERID, user.getId());
-		temp.put(USER_COLUMN_IMGURL, user.getProfileImageURL());
-		temp.put(USER_COLUMN_SOURCE, "Twitter");
-		// TODO implement source on user?
-
-		long userID = db.insert(TABLE_USER, null, temp);
-		return userID;
+		removeFeedUserBridge(feedID, userID);
 	}
 
 	public void addFeedUserBridge(long feedID, long userID) {
@@ -208,32 +272,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.insert(TABLE_FEEDUSER, null, temp);
 	}
 
-	public void removeUserFromFeed(Feed feed, User user) {
-		long feedID = getFeedID(feed);
-		long userID = getUserID(user);
-
-		removeFeedUserBridge(feedID, userID);
-	}
-
-	private void removeUser(User user) {
-		long id = user.getId();
-		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
-	}
-
 	private void removeFeedUserBridge(long feedID, long userID) {
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?" + " and "
 				+ FEEDUSER_COLUMN_USER_ID + "=?", new String[] { feedID + "",
 				userID + "" });
-	}
-
-	public ArrayList<String> listFeedUser() {
-		final ArrayList<String> feeduser = new ArrayList<String>();
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_FEEDUSER, null);
-		while (c.moveToNext()) {
-			feeduser.add(c.getString(0) + " " + c.getString(1));
-		}
-		c.close();
-		return feeduser;
 	}
 
 	private void removeFeedBridge(Long id) {
@@ -241,49 +283,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				new String[] { id + "" });
 	}
 
-	public void updateUser(long userID) {
-		// TODO implement this method
+	public Cursor getUsers(Feed feed, String source) {
+
+		Cursor c;
+		if (source.equals(null))
+			c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+					+ USER_COLUMN_USERID + " IN (SELECT "
+					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+					+ getFeedID(feed) + ")", null);
+		else {
+			c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+					+ USER_COLUMN_SOURCE + " = ?" + " AND "
+					+ USER_COLUMN_USERID + " IN (SELECT "
+					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+					+ getFeedID(feed) + ")", new String[] { "source" });
+		}
+		return c;
 	}
 
-	public void addListOfItems(List<? extends Item> itemList) {
-		db.beginTransaction();
-		for (Item i : itemList) {
-			ContentValues temp = new ContentValues();
-			temp.put(ITEM_COLUMN_ITEMID, i.getId());
-			temp.put(ITEM_COLUMN_TEXT, i.getText());
-			temp.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
-			temp.put(ITEM_COLUMN_TYPE, i.getText());
-			temp.put(ITEM_COLUMN_URL, i.getURL());
-			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
-			temp.put(ITEM_COLUMN_USERNAME, i.getUser().getUserName());
-			Log.i("ölsdfökljsae", i.getUser().getUserName());
-			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
-//			db.insertWithOnConflict(TABLE_ITEM, null, temp,SQLiteDatabase.CONFLICT_IGNORE);
-			db.insert(TABLE_ITEM, null, temp);
-
-		}
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
-
-	public List<User> getUsersInFeed(Feed feed) {
-		List<User> users = new ArrayList<User>();
-
-		Cursor c = db
-				.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-						+ USER_COLUMN_USERID + " IN (SELECT "
-						+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-						+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-						+ getFeedID(feed) + ")", null);
-
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			users.add(new User(c.getLong(c.getColumnIndex(USER_COLUMN_USERID)),
-					c.getString(c.getColumnIndex(USER_COLUMN_USERNAME))));
-			c.moveToNext();
-		}
-
-		return users;
+	public Cursor getItems(Feed feed) {
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
+				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
+				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed)
+				+ ") ORDER BY " + ITEM_COLUMN_TIMESTAMP + " DESC", null);
+		return c;
 	}
 
 	public Cursor getAllItems() {
@@ -295,42 +321,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return c;
 	}
 
-	public long getItemTableSize() {
-		SQLiteDatabase database = this.getReadableDatabase();
-		long l = DatabaseUtils.queryNumEntries(database, TABLE_ITEM);
-		// database.close();
-		return l;
-	}
-
-	public void clearItemTable() {
-		db.delete(TABLE_ITEM, null, null);
-	}
-
-	public void clearUserTable() {
-		db.delete(TABLE_USER, null, null);
-	}
-
-	public void clearFeeds() {
-		db.delete(TABLE_FEED, null, null);
-		db.delete(TABLE_FEEDUSER, null, null);
-	}
-
-	public void addUsers(List<? extends User> users) {
-		db.beginTransaction();
-
-		for (User u : users) {
-			ContentValues temp = new ContentValues();
-			temp.put(USER_COLUMN_USERNAME, u.getUserName());
-			temp.put(USER_COLUMN_USERID, u.getId());
-			temp.put(USER_COLUMN_SOURCE, u.getSource());
-			db.insertWithOnConflict(TABLE_USER, null, temp,
-					SQLiteDatabase.CONFLICT_IGNORE);
-
-		}
-		db.setTransactionSuccessful();
-		db.endTransaction();
-	}
-
 	public Cursor getAllUsers() {
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
 				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
@@ -338,12 +328,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return c;
 	}
 
-	public Cursor getItems(Feed feed) {
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
-				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
-				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed)
-				+ ") ORDER BY " + ITEM_COLUMN_TIMESTAMP + " DESC", null);
-		return c;
+	public long getItemTableSize() {
+		SQLiteDatabase database = this.getReadableDatabase();
+		long l = DatabaseUtils.queryNumEntries(database, TABLE_ITEM);
+		// database.close();
+		return l;
+	}
+
+	// Contentvalue creaters for each table
+
+	private ContentValues feedCV(Feed feed) {
+		ContentValues cv = new ContentValues();
+		cv.put(FEED_COLUMN_NAME, feed.getTitle());
+		return cv;
+	}
+
+	private ContentValues userCV(User user) {
+		ContentValues cv = new ContentValues();
+
+		cv.put(USER_COLUMN_USERNAME, user.getUserName());
+		cv.put(USER_COLUMN_USERID, user.getId());
+		cv.put(USER_COLUMN_IMGURL, user.getProfileImageURL());
+		cv.put(USER_COLUMN_SOURCE, user.getSource());
+		return cv;
+	}
+
+	private ContentValues itemCV(Item i) {
+		ContentValues cv = new ContentValues();
+		cv.put(ITEM_COLUMN_ITEMID, i.getId());
+		cv.put(ITEM_COLUMN_TEXT, i.getText());
+		cv.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
+		cv.put(ITEM_COLUMN_TYPE, i.getText());
+		cv.put(ITEM_COLUMN_URL, i.getURL());
+		cv.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
+		cv.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
+		return cv;
 	}
 }
