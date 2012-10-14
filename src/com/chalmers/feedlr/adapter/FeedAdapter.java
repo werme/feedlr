@@ -16,12 +16,19 @@
 
 package com.chalmers.feedlr.adapter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.database.DatabaseHelper;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -43,6 +50,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// convertView = View.inflate(context, R.layout.feed_item, null);
 
 		TextView text = (TextView) v.findViewById(R.id.feed_item_text);
+		TextView author = (TextView) v.findViewById(R.id.feed_item_author);
 
 		Typeface robotoThinItalic = Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
@@ -50,5 +58,34 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		text.setTypeface(robotoThinItalic);
 
 		return v;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.support.v4.widget.SimpleCursorAdapter#bindView(android.view.View,
+	 * android.content.Context, android.database.Cursor)
+	 */
+	@Override
+	public void bindView(View v, Context context, Cursor c) {
+
+		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
+		Date timestampDate = new Date(c.getLong(colNum));
+		System.out.println("Timestamp before parsing: " + timestampDate);
+
+		String parsedTimestamp = DateUtils.getRelativeDateTimeString(context,
+				timestampDate.getTime(), DateUtils.SECOND_IN_MILLIS,
+				DateUtils.WEEK_IN_MILLIS, 0).toString();
+		System.out.println("Timestamp after parsing: " + parsedTimestamp);
+
+		TextView textview = (TextView) v.findViewById(R.id.feed_item_timestamp);
+		if (parsedTimestamp.contains(",")) {
+			textview.setText(parsedTimestamp.substring(0,
+					parsedTimestamp.indexOf(',')));
+		} else {
+			textview.setText(parsedTimestamp);
+		}
+		super.bindView(v, context, c);
 	}
 }

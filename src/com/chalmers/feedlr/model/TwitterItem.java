@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -125,8 +127,17 @@ public class TwitterItem implements Item {
 	/*
 	 * @return timestamp the time the Twitter item was created
 	 */
-	public String getTimestamp() {
-		return timestamp;
+	public Long getTimestamp() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		Date d = null;
+		try {
+			d = format.parse(timestamp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return d.getTime();
 	}
 
 	@Override

@@ -4,7 +4,8 @@
 
     <RelativeLayout
         android:id="@+id/ptr_id_header"
-        style="@style/ptr_header" >
+        style="@style/ptr_header"
+        android:background="#ffffff" >
 
         <ImageView
             android:id="@+id/ptr_id_image"
@@ -21,12 +22,12 @@
             <TextView
                 android:id="@+id/ptr_id_text"
                 style="@style/ptr_text"
-                android:textColor="#ffffff" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/ptr_id_last_updated"
                 style="@style/ptr_last_updated"
-                android:textColor="#ffffff" />
+                android:textColor="#000000" />
         </LinearLayout>
     </RelativeLayout>
 

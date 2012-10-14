@@ -34,7 +34,7 @@ public interface Item {
 	
 	public String getType();
 
-	public String getTimestamp();
+	public Long getTimestamp();
 
 	public String getURL();
 

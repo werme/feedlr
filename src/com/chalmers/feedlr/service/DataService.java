@@ -376,6 +376,9 @@ public class DataService extends Service {
 
 					private void onAllComplete() {
 
+						for(FacebookItem item : facebookItemsForUsers) {
+							System.out.println("Timestamp: " + item.getTimestamp());
+						}
 						db.addListOfItems(facebookItemsForUsers);
 
 						// Broadcast update to activity

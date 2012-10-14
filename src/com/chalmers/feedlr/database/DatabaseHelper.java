@@ -25,7 +25,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
 	private static final String DATABASE_NAME = "feedlrDatabase";
 
 	// Declaring feed table
@@ -51,11 +51,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String ITEM_COLUMN_ID = "_id";
 	public static final String ITEM_COLUMN_ITEMID = "itemid";
 	public static final String ITEM_COLUMN_TEXT = "text";
-	private static final String ITEM_COLUMN_TIMESTAMP = "timestamp";
+	public static final String ITEM_COLUMN_TIMESTAMP = "timestamp";
 	private static final String ITEM_COLUMN_TYPE = "type";
 	private static final String ITEM_COLUMN_URL = "URL";
 	private static final String ITEM_COLUMN_IMGURL = "imgURL";
-	private static final String ITEM_COLUMN_USER_ID = "user_ID";
+	public static final String ITEM_COLUMN_USER_ID = "user_ID";
 	private static final String ITEM_COLUMN_USERNAME = "username";
 
 	private SQLiteDatabase db = this.getWritableDatabase();
@@ -88,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_ITEMID
 				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
-				+ ITEM_COLUMN_TIMESTAMP + " DATETIME," + ITEM_COLUMN_TYPE
+				+ ITEM_COLUMN_TIMESTAMP + " INT," + ITEM_COLUMN_TYPE
 				+ " TEXT," + ITEM_COLUMN_URL + " TEXT," + ITEM_COLUMN_IMGURL
 				+ " TEXT," + ITEM_COLUMN_USER_ID + " INT NOT NULL,"
 				+ ITEM_COLUMN_USERNAME + " TEXT" + ")");
