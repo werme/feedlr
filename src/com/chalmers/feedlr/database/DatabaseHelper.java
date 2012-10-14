@@ -25,7 +25,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	private static final String DATABASE_NAME = "feedlrDatabase";
 
 	// Declaring feed table
@@ -56,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String ITEM_COLUMN_URL = "URL";
 	private static final String ITEM_COLUMN_IMGURL = "imgURL";
 	private static final String ITEM_COLUMN_USER_ID = "user_ID";
+	private static final String ITEM_COLUMN_USERNAME = "username";
 
 	private SQLiteDatabase db = this.getWritableDatabase();
 
@@ -89,7 +90,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
 				+ ITEM_COLUMN_TIMESTAMP + " DATETIME," + ITEM_COLUMN_TYPE
 				+ " TEXT," + ITEM_COLUMN_URL + " TEXT," + ITEM_COLUMN_IMGURL
-				+ " TEXT," + ITEM_COLUMN_USER_ID + " INT NOT NULL" + ")");
+				+ " TEXT," + ITEM_COLUMN_USER_ID + " INT NOT NULL,"
+				+ ITEM_COLUMN_USERNAME + " TEXT" + ")");
 		// @formatter:on
 	}
 
@@ -253,6 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			temp.put(ITEM_COLUMN_TYPE, i.getText());
 			temp.put(ITEM_COLUMN_URL, i.getURL());
 			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
+			temp.put(ITEM_COLUMN_USERNAME, i.getUser().getUserName());
 			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
 			db.insertWithOnConflict(TABLE_ITEM, null, temp,
 					SQLiteDatabase.CONFLICT_IGNORE);
@@ -285,8 +288,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public Cursor getAllItems() {
 		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
 				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
-				ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID },
-				null, null, null, null, null);
+				ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID,
+				ITEM_COLUMN_USERNAME }, null, null, null, null, null);
 		// db.close();
 		return c;
 	}
@@ -335,12 +338,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public Cursor getItems(Feed feed) {
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM 
-				+ " WHERE "	+ ITEM_COLUMN_USER_ID 
-				+ " IN (SELECT " + FEEDUSER_COLUMN_USER_ID 
-				+ " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID 
-				+ " = " + getFeedID(feed)
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
+				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
+				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed)
 				+ ") ORDER BY " + ITEM_COLUMN_TIMESTAMP + " DESC", null);
 		return c;
 	}
