@@ -18,6 +18,7 @@ package com.chalmers.feedlr.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -60,7 +61,19 @@ public class FacebookItem implements Item {
 	 */
 	@JsonProperty("updated_time")
 	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm:ss+SSSS");
+		dateFormat.setLenient(false);
+		Date created = null;
+		try {
+			created = dateFormat.parse(timestamp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.timestamp = d.format(created);
 	}
 
 	public void setFrom(From from) {
@@ -83,14 +96,14 @@ public class FacebookItem implements Item {
 	public Long getTimestamp() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		Date timestamp = null;
+		Date d = null;
 		try {
-			timestamp = format.parse(this.timestamp);
+			d = format.parse(this.timestamp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return timestamp.getTime();
+
+		return d.getTime();
 	}
 
 	/*

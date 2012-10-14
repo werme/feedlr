@@ -77,7 +77,7 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	@Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-		String[] columns = new String[] { DatabaseHelper.ITEM_COLUMN_TEXT, DatabaseHelper.ITEM_COLUMN_USER_ID };
+		String[] columns = new String[] { DatabaseHelper.ITEM_COLUMN_TEXT, DatabaseHelper.ITEM_COLUMN_USERNAME };
 		int[] to = new int[] { R.id.feed_item_text, R.id.feed_item_author };
 
 		adapter = new FeedAdapter(getActivity(),

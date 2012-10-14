@@ -41,7 +41,7 @@ public class TwitterHelper {
 	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=100&include_rts=false";
 	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?user_id=";
 	public static final String USER_NAMES = "https://api.twitter.com/1.1/users/lookup.json?include_entities=false&user_id=";
-	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=true&count=100&user_id=";
+	public static final String USER_TWEETS = "https://api.twitter.com/1.1/statuses/user_timeline.json?contributor_details=false&exclude_replies=true&trim_user=false&count=100&user_id=";
 
 	private OAuthService twitter;
 	private Context context;
@@ -148,7 +148,7 @@ public class TwitterHelper {
 
 	public void getTweetsForUsers(List<User> twitterUsersInFeed,
 			final RequestListener listener) {
-		
+
 		for (final User user : twitterUsersInFeed) {
 			runAsync(new Runnable() {
 				@Override

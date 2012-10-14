@@ -97,7 +97,7 @@ public class Clients {
 		
 		if(isAuthorized(TWITTER, context))
 			authorizedClients.add(TWITTER);
-		else if (isAuthorized(FACEBOOK, context))
+		if (isAuthorized(FACEBOOK, context))
 			authorizedClients.add(FACEBOOK);
 		
 		return authorizedClients;

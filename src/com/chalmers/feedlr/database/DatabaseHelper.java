@@ -25,7 +25,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 6;
 	private static final String DATABASE_NAME = "feedlrDatabase";
 
 	// Declaring feed table
@@ -55,8 +55,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String ITEM_COLUMN_TYPE = "type";
 	private static final String ITEM_COLUMN_URL = "URL";
 	private static final String ITEM_COLUMN_IMGURL = "imgURL";
-	public static final String ITEM_COLUMN_USER_ID = "user_ID";
-	private static final String ITEM_COLUMN_USERNAME = "username";
+	private static final String ITEM_COLUMN_USER_ID = "user_ID";
+	public static final String ITEM_COLUMN_USERNAME = "username";
 
 	private SQLiteDatabase db = this.getWritableDatabase();
 
@@ -256,9 +256,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			temp.put(ITEM_COLUMN_URL, i.getURL());
 			temp.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
 			temp.put(ITEM_COLUMN_USERNAME, i.getUser().getUserName());
+			Log.i("ölsdfökljsae", i.getUser().getUserName());
 			temp.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
-			db.insertWithOnConflict(TABLE_ITEM, null, temp,
-					SQLiteDatabase.CONFLICT_IGNORE);
+//			db.insertWithOnConflict(TABLE_ITEM, null, temp,SQLiteDatabase.CONFLICT_IGNORE);
+			db.insert(TABLE_ITEM, null, temp);
 
 		}
 		db.setTransactionSuccessful();

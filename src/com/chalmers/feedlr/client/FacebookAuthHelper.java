@@ -74,7 +74,7 @@ public class FacebookAuthHelper {
 
 		if (!Clients.isAuthorized(Clients.FACEBOOK, context)) {
 			facebook.authorize((Activity) context, new String[] {
-					"read_stream", "read_friendlists" }, Clients.FACEBOOK,
+					"read_stream", "read_friendlists" }, Facebook.FORCE_DIALOG_AUTH,
 
 			new DialogListener() {
 				@Override

@@ -368,6 +368,9 @@ public class DataService extends Service {
 									.addAll(new FacebookJSONParser()
 											.parseFeed(response));
 							responses++;
+							System.out.println("Timestamppppppp: "
+									+ facebookItemsForUsers.get(responses)
+											.getTimestamp());
 						}
 
 						if (responses == facebookUsersInFeed.size())
@@ -376,8 +379,9 @@ public class DataService extends Service {
 
 					private void onAllComplete() {
 
-						for(FacebookItem item : facebookItemsForUsers) {
-							System.out.println("Timestamp: " + item.getTimestamp());
+						for (FacebookItem item : facebookItemsForUsers) {
+							System.out.println("Timestamp: "
+									+ item.getTimestamp());
 						}
 						db.addListOfItems(facebookItemsForUsers);
 

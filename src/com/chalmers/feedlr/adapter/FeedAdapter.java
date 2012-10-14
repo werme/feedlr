@@ -72,12 +72,10 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
 		Date timestampDate = new Date(c.getLong(colNum));
-		System.out.println("Timestamp before parsing: " + timestampDate);
 
 		String parsedTimestamp = DateUtils.getRelativeDateTimeString(context,
 				timestampDate.getTime(), DateUtils.SECOND_IN_MILLIS,
 				DateUtils.WEEK_IN_MILLIS, 0).toString();
-		System.out.println("Timestamp after parsing: " + parsedTimestamp);
 
 		TextView textview = (TextView) v.findViewById(R.id.feed_item_timestamp);
 		if (parsedTimestamp.contains(",")) {
