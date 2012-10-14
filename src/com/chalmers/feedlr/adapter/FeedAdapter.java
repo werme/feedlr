@@ -16,6 +16,9 @@
 
 package com.chalmers.feedlr.adapter;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,12 +28,16 @@ import com.chalmers.feedlr.database.DatabaseHelper;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FeedAdapter extends SimpleCursorAdapter {
@@ -69,7 +76,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 	 */
 	@Override
 	public void bindView(View v, Context context, Cursor c) {
-
+		super.bindView(v, context, c);
 		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
 		Date timestampDate = new Date(c.getLong(colNum));
 
@@ -84,6 +91,42 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		} else {
 			textview.setText(parsedTimestamp);
 		}
-		super.bindView(v, context, c);
+
+		ImageView profilePicture;
+		profilePicture = (ImageView) v
+				.findViewById(R.id.feed_item_author_image);
+		colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_IMGURL);
+		System.out.println("URL::::::::::: " + c.getString(colNum));
+		// new DownloadImageTask(profilePicture).execute(c.getString(colNum));
+	}
+
+	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+
+		private ImageView profilePicture;
+
+		public DownloadImageTask(ImageView profilePicture) {
+			this.profilePicture = profilePicture;
+		}
+
+		protected Bitmap doInBackground(String... strings) {
+			try {
+				System.out.println("URL::::::::::: " + strings[0]);
+				URL imgValue = new URL(strings[0]);
+				Bitmap thumbNail = BitmapFactory.decodeStream(imgValue
+						.openConnection().getInputStream());
+				return thumbNail;
+			} catch (MalformedURLException e) {
+
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		protected void onPostExecute(Bitmap result) {
+			profilePicture.setImageBitmap(result);
+		}
 	}
 }

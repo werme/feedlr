@@ -245,10 +245,10 @@ public class DataService extends Service {
 					List<User> users = new FacebookJSONParser()
 							.parseUsers(response);
 
-					System.out.println("User nr. 10: "
-							+ users.get(10).getUserName());
-					for (User u : users)
+					for (User u : users) {
 						u.setSource("facebook");
+						u.setProfileImageURL(facebook.getProfileImageURL(u.getId()));
+					}
 					db.addUsers(users);
 
 					// Broadcast update to activity

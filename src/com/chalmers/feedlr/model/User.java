@@ -16,6 +16,8 @@
 
 package com.chalmers.feedlr.model;
 
+import java.net.URL;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -63,8 +65,8 @@ public class User {
 	 *            the url to set
 	 */
 	@JsonProperty("profile_image_url")
-	public void setProfileImageURL(String profileImageURL) {
-		this.profileImageURL = profileImageURL;
+	public void setProfileImageURL(String url) {
+		this.profileImageURL = url;
 	}
 
 	/**

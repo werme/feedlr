@@ -3,7 +3,7 @@
     android:id="@+id/main_view_flipper"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ffffff" >
+    android:background="#aaaaaa" >
 
     <include layout="@layout/main_layout" />
 

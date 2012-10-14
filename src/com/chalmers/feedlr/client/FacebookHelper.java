@@ -103,19 +103,7 @@ public class FacebookHelper {
 	}
 
 	// Gets small version of profile picture. Add ?type=large for big version
-	public URL getProfileImageURL(String userId) {
-		long time = System.currentTimeMillis();
-
-		URL url = null;
-		try {
-			url = new URL("http://graph.facebook.com/" + userId + "/picture");
-			Log.i(FacebookJSONParser.class.getName(),
-					"Profile image URL request time in millis: "
-							+ (System.currentTimeMillis() - time));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return url;
-
+	public String getProfileImageURL(long id) {
+		return ("http://graph.facebook.com/" + id + "/picture");
 	}
 }
