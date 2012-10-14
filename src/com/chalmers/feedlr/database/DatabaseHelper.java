@@ -173,7 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void addUsers(List<? extends User> users) {
 
 		db.beginTransaction();
-
+		//TODO Make sure addUsers are using addUser method instead of a insert to db.
 		for (User u : users) {
 			db.insertWithOnConflict(TABLE_USER, null, userCV(u),
 					SQLiteDatabase.CONFLICT_IGNORE);
@@ -298,7 +298,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ USER_COLUMN_USERID + " IN (SELECT "
 					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
 					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-					+ getFeedID(feed) + ")", new String[] { "source" });
+					+ getFeedID(feed) + ")", new String[] { source });
 		}
 		return c;
 	}

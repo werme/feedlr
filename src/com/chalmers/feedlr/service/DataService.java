@@ -141,8 +141,12 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<User> users = twitter.getFollowing();
-
+				
+				for(User u : users){
+					u.setSource("twitter");
+				}
 				db.addUsers(users);
+				
 
 				// Broadcast update to activity
 				Intent intent = new Intent();
@@ -197,7 +201,6 @@ public class DataService extends Service {
 				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
 
 				Cursor c = db.getUsers(feed, "twitter");
-
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
 					twitterUsersInFeed
