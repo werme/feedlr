@@ -374,7 +374,7 @@ public class DataService extends Service {
 		final List<User> facebookUsersInFeed = new ArrayList<User>();
 		final List<FacebookItem> facebookItemsForUsers = new ArrayList<FacebookItem>();
 
-		Cursor c = db.getUsers(feed, "twitter");
+		Cursor c = db.getUsers(feed, "facebook");
 
 		c.moveToFirst();
 		while (!c.isAfterLast()) {
@@ -399,9 +399,6 @@ public class DataService extends Service {
 									.addAll(new FacebookJSONParser()
 											.parseFeed(response));
 							responses++;
-							System.out.println("Timestamppppppp: "
-									+ facebookItemsForUsers.get(responses)
-											.getTimestamp());
 						}
 
 						if (responses == facebookUsersInFeed.size())
@@ -410,10 +407,6 @@ public class DataService extends Service {
 
 					private void onAllComplete() {
 
-						for (FacebookItem item : facebookItemsForUsers) {
-							System.out.println("Timestamp: "
-									+ item.getTimestamp());
-						}
 						db.addListOfItems(facebookItemsForUsers);
 
 						// Broadcast update to activity

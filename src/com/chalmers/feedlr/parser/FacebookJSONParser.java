@@ -60,6 +60,7 @@ public class FacebookJSONParser {
 	public List<FacebookItem> parseFeed(String json) {
 		long time = System.currentTimeMillis();
 
+		System.out.println(json);
 		String data = json.substring(json.indexOf("statuses") + 18);
 
 		if (itemReader == null)

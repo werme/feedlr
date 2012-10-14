@@ -206,8 +206,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		s.setTypeface(robotoMedium);
 
 		feedTitleTextView.setTypeface(robotoMedium);
-		
-		
+
 		// set adapters
 		feedAdapter = new PageAdapter(getSupportFragmentManager(), db, this);
 		feedViewSwiper.setAdapter(feedAdapter);
@@ -232,7 +231,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 					}
 				});
 
-		CirclePageIndicator circleIndicator = (CirclePageIndicator)findViewById(R.id.titles);
+		CirclePageIndicator circleIndicator = (CirclePageIndicator) findViewById(R.id.titles);
 		circleIndicator.setViewPager(feedViewSwiper);
 
 		// instanciate client and service helpers
@@ -484,11 +483,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// This button is for testing only. Use it for all your testing needs <3
 		db.clearItemTable();
 	}
-	
+
 	@Override
 	public void onAttachedToWindow() {
-	    super.onAttachedToWindow();
-	    Window window = getWindow();
-	    window.setFormat(PixelFormat.RGBA_8888);
+		super.onAttachedToWindow();
+		Window window = getWindow();
+		window.setFormat(PixelFormat.RGBA_8888);
 	}
 }

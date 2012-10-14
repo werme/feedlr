@@ -45,6 +45,7 @@ public class FacebookAuthHelper {
 	public FacebookAuthHelper(Context context) {
 		this.context = context;
 		facebook = Clients.getFacebook();
+		// setAccessToken();
 	}
 
 	/*
