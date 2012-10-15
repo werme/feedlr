@@ -172,7 +172,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @throws IllegalArgumentException
 	 *             if no such feed exists in the database.
 	 */
-
 	public long getFeed_id(Feed feed) throws IllegalArgumentException {
 		String feedTitle = feed.getTitle();
 		Long feed_id;
@@ -216,7 +215,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            the lists of users to be added in the database.
 	 */
 	public void addUsers(List<? extends User> users) {
-
 		db.beginTransaction();
 		// TODO Make sure addUsers are using addUser method instead of a insert
 		// to db.
@@ -248,8 +246,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            the user to be removed from the database.
 	 */
 	private void removeUser(User user) {
-		long id = user.getId();
-		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
+		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { user.getId() + "" });
 	}
 
 	/**
@@ -265,8 +262,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return
 	 */
 	public Cursor listUsers() {
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
-		return c;
+		return db.rawQuery("SELECT * FROM " + TABLE_USER, null);
 	}
 
 	/**
@@ -281,7 +277,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private long getUser_id(User user) throws IllegalArgumentException {
 		long id = user.getId();
 		long user_id;
-		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
 				USER_COLUMN_ID + "=?", new String[] { id + "" }, null, null,
 				null);
@@ -382,6 +377,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				new String[] { id + "" });
 	}
 
+	/**
+	 * Returns all users in a feed.
+	 * 
+	 * @param feed
+	 *            the feed which the users are part of.
+	 * @return a cursor with all the users in the feed.
+	 */
+
 	public Cursor getUsers(Feed feed) {
 		return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
 				+ USER_COLUMN_USERID + " IN (SELECT " + FEEDUSER_COLUMN_USER_ID
@@ -391,12 +394,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Returns all Users in a feed or in the database.
+	 * Returns all Users in a feed from a certain source.
 	 * 
 	 * @param feed
+	 *            the feed which the users are part of.
 	 * 
 	 * @param source
-	 * @return
+	 *            which source the users in the feed come from.
+	 * @return a cursor with all the selected users.
 	 */
 	public Cursor getUsers(Feed feed, String source) {
 		return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
@@ -406,42 +411,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ getFeed_id(feed) + ")", new String[] { source });
 	}
 
-	public Cursor getItems(Feed feed) {
-		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
-				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
+	/**
+	 * Returns all the items in a feed.
+	 * 
+	 * @param feed
+	 * @return
+	 */
+	public Cursor getItems(Feed feed, int amount) {
+		return db.query(TABLE_ITEM, null, ITEM_COLUMN_USER_ID + " IN (SELECT "
 				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
 				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-				+ getFeed_id(feed) + ") ORDER BY " + ITEM_COLUMN_TIMESTAMP
-				+ " DESC", null);
-		return c;
+				+ getFeed_id(feed) + ")", null, null, null,
+				ITEM_COLUMN_TIMESTAMP + " DESC", amount + "");
 	}
 
 	public Cursor getAllItems() {
-		Cursor c = db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
+		return db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
 				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
 				ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID,
 				ITEM_COLUMN_USERNAME }, null, null, null, null, null);
-		return c;
 	}
 
 	public Cursor getAllUsers() {
-		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
+		return db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
 				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
 				null, null);
-		return c;
 	}
 
 	public Cursor getUser(String userID) {
-		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERNAME,
+		return db.query(TABLE_USER, new String[] { USER_COLUMN_USERNAME,
 				USER_COLUMN_USERID, USER_COLUMN_IMGURL, USER_COLUMN_SOURCE },
 				USER_COLUMN_USERID + " = ?", new String[] { userID }, null,
 				null, null);
-		return c;
 	}
 
 	public long getItemTableSize() {
-		long l = DatabaseUtils.queryNumEntries(db, TABLE_ITEM);
-		return l;
+		return DatabaseUtils.queryNumEntries(db, TABLE_ITEM);
 	}
 
 	// Contentvalue creaters for each table
