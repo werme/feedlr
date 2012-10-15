@@ -40,11 +40,13 @@ import android.widget.TextView;
 public class FeedAdapter extends SimpleCursorAdapter {
 
 	Context context;
+	DatabaseHelper db;
 
 	public FeedAdapter(Context context, int layout, Cursor c, String[] from,
 			int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		this.context = context;
+		this.db = new DatabaseHelper(context);
 	}
 
 	@Override
@@ -92,7 +94,8 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		ImageView profilePicture;
 		profilePicture = (ImageView) v
 				.findViewById(R.id.feed_item_author_image);
-		colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_IMGURL);
+		colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
+		
 		System.out.println("URL::::::::::: " + c.getString(colNum));
 		// new DownloadImageTask(profilePicture).execute(c.getString(colNum));
 	}

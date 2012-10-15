@@ -58,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String ITEM_COLUMN_TYPE = "type";
 	private static final String ITEM_COLUMN_URL = "URL";
 	public static final String ITEM_COLUMN_IMGURL = "imgURL";
-	private static final String ITEM_COLUMN_USER_ID = "user_ID";
+	public static final String ITEM_COLUMN_USER_ID = "user_ID";
 	public static final String ITEM_COLUMN_USERNAME = "username";
 
 	private SQLiteDatabase db = this.getWritableDatabase();
