@@ -95,9 +95,13 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		profilePicture = (ImageView) v
 				.findViewById(R.id.feed_item_author_image);
 		colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
-		
-		System.out.println("URL::::::::::: " + c.getString(colNum));
-		// new DownloadImageTask(profilePicture).execute(c.getString(colNum));
+		Cursor cursor = db.getUser(c.getInt(colNum) + "");
+		cursor.moveToFirst();
+
+		int colNum2 = cursor.getColumnIndex(DatabaseHelper.USER_COLUMN_IMGURL);
+		String b = cursor.getString(colNum2);
+
+		new DownloadImageTask(profilePicture).execute(b);
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -110,7 +114,6 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 		protected Bitmap doInBackground(String... strings) {
 			try {
-				System.out.println("URL::::::::::: " + strings[0]);
 				URL imgValue = new URL(strings[0]);
 				Bitmap thumbNail = BitmapFactory.decodeStream(imgValue
 						.openConnection().getInputStream());

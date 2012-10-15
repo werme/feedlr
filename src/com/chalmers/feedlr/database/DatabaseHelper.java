@@ -21,13 +21,12 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Database static variables
 
-	private static final int DATABASE_VERSION = 7;
+	private static final int DATABASE_VERSION = 9;
 
 	private static final String DATABASE_NAME = "feedlrDatabase";
 
@@ -46,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String USER_COLUMN_ID = "_id";
 	public static final String USER_COLUMN_USERNAME = "username";
 	public static final String USER_COLUMN_USERID = "userid";
-	public static final String USER_COLUMN_IMGURL = "ProfileImageURL";
+	public static final String USER_COLUMN_IMGURL = "profile_image_URL";
 	public static final String USER_COLUMN_SOURCE = "source";
 
 	// Declaring item table

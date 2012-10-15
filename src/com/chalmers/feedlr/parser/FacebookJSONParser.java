@@ -79,6 +79,7 @@ public class FacebookJSONParser {
 			e.printStackTrace();
 		}
 
+		// Får nullpointer här ibland. LÖS
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
 				+ " Facebook items in " + (System.currentTimeMillis() - time)
 				+ " millis.");
