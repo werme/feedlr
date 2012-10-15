@@ -384,24 +384,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				new String[] { id + "" });
 	}
 
-	public Cursor getUsers(Feed feed, String source) {
+	public Cursor getUsers(Feed feed) {
+		return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+				+ USER_COLUMN_USERID + " IN (SELECT " + FEEDUSER_COLUMN_USER_ID
+				+ " FROM " + TABLE_FEEDUSER + " WHERE "
+				+ FEEDUSER_COLUMN_FEED_ID + " = " + getFeed_id(feed) + ")",
+				null);
+	}
 
-		Cursor c;
-		if (source == null)
-			c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-					+ USER_COLUMN_USERID + " IN (SELECT "
-					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-					+ getFeed_id(feed) + ")", null);
-		else {
-			c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-					+ USER_COLUMN_SOURCE + " = ?" + " AND "
-					+ USER_COLUMN_USERID + " IN (SELECT "
-					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-					+ getFeed_id(feed) + ")", new String[] { source });
-		}
-		return c;
+	/**
+	 * Returns all Users in a feed or in the database.
+	 * 
+	 * @param feed
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public Cursor getUsers(Feed feed, String source) {
+	Cursor c;
+	if (source == null)
+		c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+				+ USER_COLUMN_USERID + " IN (SELECT "
+				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+				+ getFeed_id(feed) + ")", null);
+	else {
+		c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+				+ USER_COLUMN_SOURCE + " = ?" + " AND "
+				+ USER_COLUMN_USERID + " IN (SELECT "
+				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+				+ getFeed_id(feed) + ")", new String[] { source });
+	}
+	return c;
 	}
 
 	public Cursor getItems(Feed feed) {
