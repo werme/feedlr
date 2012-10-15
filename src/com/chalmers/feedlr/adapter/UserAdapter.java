@@ -24,21 +24,6 @@ public class UserAdapter extends SimpleCursorAdapter {
 		// TODO Auto-generated constructor stub
 	}
 
-//	@Override
-//	public View getView(int position, View convertView, ViewGroup parent) {
-//		View v = convertView;
-//		if (v == null) {
-//			LayoutInflater vi = (LayoutInflater) context
-//					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//			v = vi.inflate(R.layout.user_list_item, null);
-//		}
-//
-//		User user = users.get(position);
-//		if (user != null) {
-//			CheckedTextView ctv = (CheckedTextView) v.findViewById(R.id.checked_text_view);
-//			if (ctv != null)
-//				ctv.setText(user.getUserName());	
-//		}
-//		return v;
-//	}
+	
+	
 }
