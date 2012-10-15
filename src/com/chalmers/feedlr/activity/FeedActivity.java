@@ -146,8 +146,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			} else if (broadcast.equals(FEED_UPDATED)) {
 				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
 
-			} else
+			} else {
 				dialog = "broadcast from unknown intent recieved!";
+			}
 
 			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
 		}
@@ -313,13 +314,15 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// TODO: Toggle animation for the create feed view. Currently sliding
 		// away in the wring direction.
 
-		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
-			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
+		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout) {
+			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout) {
 				settingsViewFlipper.showPrevious();
-			else
+			} else {
 				toggleSettingsView(null);
-		else
+			}
+		} else {
 			super.onBackPressed();
+		}
 	}
 
 	@Override

@@ -19,9 +19,7 @@ package com.chalmers.feedlr.adapter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.DatabaseHelper;
@@ -34,7 +32,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;

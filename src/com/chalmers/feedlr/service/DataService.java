@@ -22,10 +22,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.scribe.model.Token;
-
 import com.chalmers.feedlr.activity.FeedActivity;
-import com.chalmers.feedlr.client.Clients;
 import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.database.DatabaseHelper;
@@ -37,7 +34,6 @@ import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 import com.chalmers.feedlr.parser.FacebookJSONParser;
 import com.chalmers.feedlr.parser.TwitterJSONParser;
-import com.chalmers.feedlr.util.ClientStore;
 import com.facebook.android.FacebookError;
 
 import android.app.Service;
@@ -50,7 +46,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**
- * The DataService class handles requests, response parsing and database storage of client data. On call from an Activity the service makes the necessary requests to client APIs, parses the received JSON response and stores all relevant data to the application database. When a complete request has been made and all data has successfully been saved to the database a broadcast is made to inform listeners that new data is avalable for display. 
+ * The DataService class handles requests, response parsing and database storage
+ * of client data. On call from an Activity the service makes the necessary
+ * requests to client APIs, parses the received JSON response and stores all
+ * relevant data to the application database. When a complete request has been
+ * made and all data has successfully been saved to the database a broadcast is
+ * made to inform listeners that new data is avalable for display.
  * 
  * @author Olle Werme
  */
@@ -87,7 +88,7 @@ public class DataService extends Service {
 	public IBinder onBind(Intent arg0) {
 		return binder;
 	}
-	
+
 	private void runAsync(final Runnable runnable) {
 		new Thread() {
 			@Override
@@ -128,7 +129,8 @@ public class DataService extends Service {
 
 	/**
 	 * Updates application database USER table with the registered users
-	 * "following users" from his or her Twitter account, also known as "friends".
+	 * "following users" from his or her Twitter account, also known as
+	 * "friends".
 	 */
 	public void updateTwitterUsers() {
 		runAsync(new Runnable() {
@@ -137,12 +139,11 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<User> users = twitter.getFollowing();
-				
-				for(User u : users){
+
+				for (User u : users) {
 					u.setSource("twitter");
 				}
 				db.addUsers(users);
-				
 
 				// Broadcast update to activity
 				Intent intent = new Intent();
@@ -215,13 +216,15 @@ public class DataService extends Service {
 							@SuppressWarnings("unchecked")
 							@Override
 							public void onComplete(Object response) {
-								if (response != null)
+								if (response != null) {
 									twitterItemsforUsers
 											.addAll((List<TwitterItem>) response);
+								}
 
 								responses++;
-								if (responses == twitterUsersInFeed.size())
+								if (responses == twitterUsersInFeed.size()) {
 									onAllComplete();
+								}
 							}
 
 							private void onAllComplete() {

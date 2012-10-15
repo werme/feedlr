@@ -136,8 +136,9 @@ public class TwitterHelper {
 		String response = request(url.toString());
 		users.addAll(new TwitterJSONParser().parseUserNames(response));
 
-		for (User u : users)
+		for (User u : users) {
 			u.setSource("twitter");
+		}
 
 		return users;
 	}
@@ -163,10 +164,11 @@ public class TwitterHelper {
 			twitter.signRequest(accessToken, request);
 			Response response = request.send();
 
-			if (response.isSuccessful())
+			if (response.isSuccessful()) {
 				return response.getBody();
-			else
+			} else {
 				Log.e(getClass().getName(), "Unsuccessful response returned");
+			}
 		} catch (OAuthException e) {
 			Log.e(getClass().getName(), "Problem establishing connection");
 		}

@@ -83,6 +83,7 @@ public class TwitterItem implements Item {
 				"EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
 		dateFormat.setLenient(false);
 		Date created = null;
+		
 		try {
 			created = dateFormat.parse(timestamp);
 		} catch (Exception e) {
