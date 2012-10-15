@@ -17,7 +17,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -65,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
-
+	
 	public void onCreate(SQLiteDatabase database) {
 		// @formatter:off
 		// Creating feed table
@@ -107,6 +106,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
+	//
+	//
+	// Feed related methods
+	//
+	
 	/**
 	 * Adds a feed to the database.
 	 * 
@@ -187,8 +191,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		c.close();
 		return feed_id;
 	}
-
+	
+	//
+	//
 	// User related methods
+	//
+	
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -289,7 +297,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return user_id;
 	}
 
+	//
+	//
 	// Item related methods
+	//
+
 	/**
 	 * Adds a item to the database.
 	 * 
@@ -324,7 +336,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_ITEM, null, null);
 	}
 
+	//
+	//
 	// Bridge methods:
+	//
+
 	/**
 	 * Adds a connection with a user to a feed.
 	 * 
@@ -359,24 +375,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		removeFeedUserBridge(feedID, userID);
 	}
 
+	/**
+	 * Adds a connection with a user to a feed.
+	 * 
+	 * @param feedID
+	 *            the feedID which the userID will be connected with.
+	 * @param userID
+	 *            the userID to be connected with a feedID
+	 * 
+	 */
 	public void addFeedUserBridge(long feedID, long userID) {
-		ContentValues temp = new ContentValues();
-
-		temp.put(FEEDUSER_COLUMN_FEED_ID, feedID);
-		temp.put(FEEDUSER_COLUMN_USER_ID, userID);
-
-		db.insert(TABLE_FEEDUSER, null, temp);
+		ContentValues cv = new ContentValues();
+		cv.put(FEEDUSER_COLUMN_FEED_ID, feedID);
+		cv.put(FEEDUSER_COLUMN_USER_ID, userID);
+		db.insert(TABLE_FEEDUSER, null, cv);
 	}
 
+	/**
+	 * Removes the connection with a feed and user.
+	 * 
+	 * @param feedID
+	 *            the feedID which userID is connected with.
+	 * @param userID
+	 *            the userID which connection will be removed.
+	 */
 	private void removeFeedUserBridge(long feedID, long userID) {
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?" + " and "
 				+ FEEDUSER_COLUMN_USER_ID + "=?", new String[] { feedID + "",
 				userID + "" });
 	}
 
-	private void removeFeedBridge(Long id) {
+	/**
+	 * Removes the connection with a feed and users.
+	 * 
+	 * @param feed
+	 *            the feed which user is connected with.
+	 * 
+	 *            the user which connection will be removed.
+	 */
+	private void removeFeedBridge(Long feedID) {
 		db.delete(TABLE_FEEDUSER, FEEDUSER_COLUMN_FEED_ID + "=?",
-				new String[] { id + "" });
+				new String[] { feedID + "" });
 	}
 
 	/**
@@ -396,7 +435,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Returns all Users in a feed from a certain source.
+	 * Returns a cursor with all users in a feed from a certain source.
 	 * 
 	 * @param feed
 	 *            the feed which the users are part of.
@@ -425,10 +464,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Returns all the items in a feed.
+	 * Returns a cursor with all the items in a feed.
 	 * 
 	 * @param feed
-	 * @return
+	 *            which feed's items that will be returned.
+	 * @param int the amount of items returned.
+	 * @return a cursor with the requested items.
 	 */
 	public Cursor getItems(Feed feed, int amount) {
 		return db.query(TABLE_ITEM, null, ITEM_COLUMN_USER_ID + " IN (SELECT "
@@ -438,6 +479,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				ITEM_COLUMN_TIMESTAMP + " DESC", amount + "");
 	}
 
+	/**
+	 * Returns a cursor with all the items in the database.
+	 * 
+	 * @return a cursor with all items.
+	 */
 	public Cursor getAllItems() {
 		return db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
 				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
@@ -445,6 +491,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				ITEM_COLUMN_USERNAME }, null, null, null, null, null);
 	}
 
+	/**
+	 * Returns a cursor with all the users in the database.
+	 * 
+	 * @return a cursor with all users.
+	 */
 	public Cursor getAllUsers() {
 		return db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
 				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
@@ -452,9 +503,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	/**
-	 * Return a user
+	 * Return a cursor pointing at the requested user.
+	 * 
 	 * @param userID
-	 * @return
+	 *            the userID of the user that is requested.
+	 * @return a cursor pointing at the requested user.
 	 */
 	public Cursor getUser(String userID) {
 		return db.query(TABLE_USER, null, USER_COLUMN_USERID + " = ?",
@@ -465,14 +518,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return DatabaseUtils.queryNumEntries(db, TABLE_ITEM);
 	}
 
-	// Contentvalue creaters for each table
+	//
+	//
+	// ContentValue creaters for each table
+	//
 
+	/**
+	 * Convenience method for loading values of a feed.
+	 * 
+	 * @param feed
+	 *            the feed to be made a ContentValues object.
+	 * @return ContentValues object created
+	 */
 	private ContentValues feedCV(Feed feed) {
 		ContentValues cv = new ContentValues();
 		cv.put(FEED_COLUMN_NAME, feed.getTitle());
 		return cv;
 	}
 
+	/**
+	 * Convenience method for loading values of a user.
+	 * 
+	 * @param user
+	 *            the user to be made a ContentValues object.
+	 * @return ContentValues object created
+	 */
 	private ContentValues userCV(User user) {
 		ContentValues cv = new ContentValues();
 
@@ -483,15 +553,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return cv;
 	}
 
-	private ContentValues itemCV(Item i) {
+	/**
+	 * Convenience method for loading values of a item.
+	 * 
+	 * @param item
+	 *            the feed to be made a ContentValues object.
+	 * @return ContentValues object created
+	 */
+	private ContentValues itemCV(Item item) {
 		ContentValues cv = new ContentValues();
-		cv.put(ITEM_COLUMN_ITEMID, i.getId());
-		cv.put(ITEM_COLUMN_TEXT, i.getText());
-		cv.put(ITEM_COLUMN_TIMESTAMP, i.getTimestamp());
-		cv.put(ITEM_COLUMN_TYPE, i.getText());
-		cv.put(ITEM_COLUMN_URL, i.getURL());
-		cv.put(ITEM_COLUMN_IMGURL, i.getIMGURL());
-		cv.put(ITEM_COLUMN_USER_ID, i.getUser().getId());
+		cv.put(ITEM_COLUMN_ITEMID, item.getId());
+		cv.put(ITEM_COLUMN_TEXT, item.getText());
+		cv.put(ITEM_COLUMN_TIMESTAMP, item.getTimestamp());
+		cv.put(ITEM_COLUMN_TYPE, item.getText());
+		cv.put(ITEM_COLUMN_URL, item.getURL());
+		cv.put(ITEM_COLUMN_IMGURL, item.getIMGURL());
+		cv.put(ITEM_COLUMN_USER_ID, item.getUser().getId());
 		return cv;
 	}
 }
