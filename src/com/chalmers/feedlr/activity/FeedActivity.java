@@ -109,10 +109,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private Animation slideInLeft;
 	private Animation slideInRight;
 
-	// Typefaces
-	private Typeface robotoThinItalic;
-	private Typeface robotoMedium;
-
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -178,11 +174,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		db = new DatabaseHelper(this);
 
 		// load typefaces from assets
-		robotoThinItalic = Typeface.createFromAsset(getAssets(),
+		Typeface robotoThinItalic = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-ThinItalic.ttf");
-		robotoMedium = Typeface.createFromAsset(getAssets(),
+		Typeface robotoMedium = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-Medium.ttf");
-
+		
 		// find views inflated from xml
 		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
