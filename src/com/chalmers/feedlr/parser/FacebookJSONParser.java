@@ -60,7 +60,6 @@ public class FacebookJSONParser {
 	public List<FacebookItem> parseFeed(String json) {
 		long time = System.currentTimeMillis();
 
-		System.out.println(json);
 		String data = json.substring(json.indexOf("statuses") + 18);
 
 		if (itemReader == null)
@@ -69,20 +68,22 @@ public class FacebookJSONParser {
 
 		List<FacebookItem> list = null;
 
-		try {
-			list = itemReader.readValue(data);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (data.contains("statuses")) {
+			try {
+				list = itemReader.readValue(data);
+				Log.i(FacebookJSONParser.class.getName(),
+						"Parsed " + list.size() + " Facebook items in "
+								+ (System.currentTimeMillis() - time)
+								+ " millis.");
+			} catch (JsonParseException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
-		// Får nullpointer här ibland. LÖS
-		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()
-				+ " Facebook items in " + (System.currentTimeMillis() - time)
-				+ " millis.");
 		return list;
 	}
 

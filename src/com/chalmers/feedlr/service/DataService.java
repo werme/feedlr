@@ -142,6 +142,7 @@ public class DataService extends Service {
 				Intent intent = new Intent();
 
 				List<User> users = twitter.getFollowing();
+
 				if (users != null) {
 					for (User u : users) {
 						u.setSource("twitter");
