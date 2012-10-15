@@ -51,12 +51,11 @@ public class TwitterItem implements Item {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.chalmers.feedlr.model.Item#setSource(java.lang.String)
+	 * @see com.chalmers.feedlr.model.Item#setSource(java.lang.String)
 	 */
 	@Override
 	public void setSource(String source) {
@@ -83,17 +82,17 @@ public class TwitterItem implements Item {
 				"EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
 		dateFormat.setLenient(false);
 		Date created = null;
-		
+
 		try {
 			created = dateFormat.parse(timestamp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.timestamp = d.format(created);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -103,7 +102,6 @@ public class TwitterItem implements Item {
 	public String getSource() {
 		return source;
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -137,7 +135,7 @@ public class TwitterItem implements Item {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return d.getTime();
 	}
 

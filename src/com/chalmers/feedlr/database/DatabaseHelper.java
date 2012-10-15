@@ -227,8 +227,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// Item related methods
 
 	public long addItem(Item item) {
-
-		return db.insert(TABLE_ITEM, null, itemCV(item));
+//		return db.insert(TABLE_ITEM, null, itemCV(item));
+		return db.insertWithOnConflict(TABLE_ITEM, null, itemCV(item), SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	public void addListOfItems(List<? extends Item> itemList) {

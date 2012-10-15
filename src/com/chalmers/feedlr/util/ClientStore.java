@@ -32,6 +32,7 @@ public class ClientStore {
 	private static final String TWITTER_ACCESS_SECRET = "twitter_access_secret";
 	private static final String TWITTER_REQUEST_TOKEN = "twitter_request_token";
 	private static final String TWITTER_REQUEST_SECRET = "twitter_request_secret";
+	private static final String TWITTER_USER_ID = "twitter_user_id";
 
 	private static final String FACEBOOK_ACCESS_TOKEN = "access_token";
 	private static final String FACEBOOK_ACCESS_TOKEN_EXPIRES = "access_expires";
@@ -39,7 +40,6 @@ public class ClientStore {
 	/*
 	 * Save the Twitter access token and secret to shared preferences.
 	 */
-
 	public static boolean saveTwitterAccessToken(Token token, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE).edit();
@@ -51,7 +51,6 @@ public class ClientStore {
 	/*
 	 * Save the Twitter request token and secret to shared preferences.
 	 */
-
 	public static boolean saveTwitterRequestToken(Token token, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
 				Context.MODE_PRIVATE).edit();
@@ -85,11 +84,31 @@ public class ClientStore {
 		String requestSecret = settings.getString(TWITTER_REQUEST_SECRET, null);
 		return new Token(requestToken, requestSecret);
 	}
+	
+	/*
+	 * Save the registered users Twitter id to shared preferences.
+	 */
+	public static boolean saveTwitterUserID(long id, Context context) {
+		Editor editor = context.getSharedPreferences(APP_NAME,
+				Context.MODE_PRIVATE).edit();
+		editor.putLong(TWITTER_USER_ID, id);
+		return editor.commit();
+	}
+
+	/*
+	 * Get registered Twitter user id from shared preferences.
+	 * 
+	 * @return registered Twitter user id
+	 */
+	public static long getTwitterUserID(Context context) {
+		SharedPreferences settings = context.getSharedPreferences(APP_NAME,
+				Context.MODE_PRIVATE);
+		return settings.getLong(TWITTER_USER_ID, 0);
+	}
 
 	/*
 	 * Save the Facebook OAuth 2.0 access token to shared preferences.
 	 */
-
 	public static boolean saveFacebookAccessToken(Facebook facebook,
 			Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,

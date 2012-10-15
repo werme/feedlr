@@ -111,13 +111,15 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<TwitterItem> twitterTimeline = twitter.getTimeline();
-
-				// save to database
-				db.addListOfItems(twitterTimeline);
+				
+				if (twitterTimeline != null) {
+					// Save to database
+					db.addListOfItems(twitterTimeline);
+				}
 
 				// Broadcast update to activity
 				Intent intent = new Intent();
-				intent.setAction(FeedActivity.TWITTER_TIMELINE_UPDATED);
+				intent.setAction(FeedActivity.FEED_UPDATED);
 				lbm.sendBroadcast(intent);
 
 				Log.i(TwitterJSONParser.class.getName(),
@@ -137,17 +139,21 @@ public class DataService extends Service {
 			@Override
 			public void run() {
 				long time = System.currentTimeMillis();
+				Intent intent = new Intent();
 
 				List<User> users = twitter.getFollowing();
-
-				for (User u : users) {
-					u.setSource("twitter");
+				if (users != null) {
+					for (User u : users) {
+						u.setSource("twitter");
+					}
+					// Save to database
+					db.addUsers(users);
+					intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
+				} else {					
+					intent.setAction(FeedActivity.TWITTER_USERS_PROBLEM_UPDATING);
 				}
-				db.addUsers(users);
 
 				// Broadcast update to activity
-				Intent intent = new Intent();
-				intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
 				lbm.sendBroadcast(intent);
 
 				Log.i(TwitterJSONParser.class.getName(),
@@ -163,21 +169,24 @@ public class DataService extends Service {
 	 * 
 	 * This method is currently not in use.
 	 */
-	public void updateTweetsByUser(final int userID) {
+	public void updateTweetsByUser(final long userID, final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
 				long time = System.currentTimeMillis();
+				Intent intent = new Intent();
 
 				List<TwitterItem> userTweets = twitter.getUserTweets(userID);
-
-				// save to database
+				if (userTweets != null) {
+					db.addListOfItems(userTweets);
+					intent.setAction(FeedActivity.FEED_UPDATED);
+				} else {
+					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);					
+				}
 
 				// Broadcast update to activity
-				Intent intent = new Intent();
-				intent.setAction(FeedActivity.TWITTER_USER_TWEETS_UPDATED);
 				Bundle b = new Bundle();
-				b.putInt("userID", userID);
+				b.putString("feedTitle", feed.getTitle());
 				intent.putExtras(b);
 				lbm.sendBroadcast(intent);
 
@@ -192,60 +201,23 @@ public class DataService extends Service {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
-				final long time = System.currentTimeMillis();
-
 				final List<User> twitterUsersInFeed = new ArrayList<User>();
-				final List<TwitterItem> twitterItemsforUsers = new ArrayList<TwitterItem>();
 
 				Cursor c = db.getUsers(feed, "twitter");
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
-					twitterUsersInFeed
-							.add(new User(
-									c.getLong(c
-											.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
-									c.getString(c
-											.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME))));
+					User u = new User(
+							c.getLong(c
+									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
+							c.getString(c
+									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME)));
+					twitterUsersInFeed.add(u);
 					c.moveToNext();
 				}
 
-				twitter.getTweetsForUsers(twitterUsersInFeed,
-						new RequestListener() {
-							private int responses = 0;
-
-							@SuppressWarnings("unchecked")
-							@Override
-							public void onComplete(Object response) {
-								if (response != null) {
-									twitterItemsforUsers
-											.addAll((List<TwitterItem>) response);
-								}
-
-								responses++;
-								if (responses == twitterUsersInFeed.size()) {
-									onAllComplete();
-								}
-							}
-
-							private void onAllComplete() {
-
-								db.addListOfItems(twitterItemsforUsers);
-
-								// Broadcast update to activity
-								Intent intent = new Intent();
-								intent.setAction(FeedActivity.FEED_UPDATED);
-								Bundle b = new Bundle();
-								b.putString("feedTitle", feed.getTitle());
-								intent.putExtras(b);
-								lbm.sendBroadcast(intent);
-
-								Log.i(TwitterJSONParser.class.getName(),
-										"Time in millis for complete update of feed \""
-												+ feed.getTitle()
-												+ "\" twitter items request: "
-												+ (System.currentTimeMillis() - time));
-							}
-						});
+				for (User u : twitterUsersInFeed) {
+					updateTweetsByUser(u.getId(), feed);
+				}
 			}
 		});
 	}

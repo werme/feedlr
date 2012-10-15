@@ -68,6 +68,7 @@ public class FeedFragment extends ListFragment implements
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(FeedActivity.FEED_UPDATED);
+		filter.addAction(FeedActivity.FEED_PROBLEM_UPDATING);
 		filter.addAction(FeedActivity.NO_CONNECTION);
 		lbm.registerReceiver(receiver, filter);
 	}
