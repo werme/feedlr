@@ -286,7 +286,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public Cursor getUsers(Feed feed, String source) {
 
 		Cursor c;
-		if (source.equals(null))
+		if (source == null)
 			c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
 					+ USER_COLUMN_USERID + " IN (SELECT "
 					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER

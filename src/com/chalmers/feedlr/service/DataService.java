@@ -50,7 +50,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**
- * Class description
+ * The DataService class handles requests, response parsing and database storage of client data. On call from an Activity the service makes the necessary requests to client APIs, parses the received JSON response and stores all relevant data to the application database. When a complete request has been made and all data has successfully been saved to the database a broadcast is made to inform listeners that new data is avalable for display. 
  * 
  * @author Olle Werme
  */
@@ -87,22 +87,18 @@ public class DataService extends Service {
 	public IBinder onBind(Intent arg0) {
 		return binder;
 	}
-
+	
 	private void runAsync(final Runnable runnable) {
 		new Thread() {
 			@Override
 			public void run() {
-				try {
-					runnable.run();
-				} finally {
-
-				}
+				runnable.run();
 			}
 		}.start();
 	}
 
 	/**
-	 * Populates application database ITEM table with the most recent tweets
+	 * Populates the application database ITEM table with the most recent tweets
 	 * from the registered users timeline.
 	 * 
 	 * This method is currently not in use.
@@ -132,7 +128,7 @@ public class DataService extends Service {
 
 	/**
 	 * Updates application database USER table with the registered users
-	 * "following users" also known as "friends".
+	 * "following users" from his or her Twitter account, also known as "friends".
 	 */
 	public void updateTwitterUsers() {
 		runAsync(new Runnable() {

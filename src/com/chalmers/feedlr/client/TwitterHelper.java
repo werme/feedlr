@@ -55,11 +55,7 @@ public class TwitterHelper {
 		new Thread() {
 			@Override
 			public void run() {
-				try {
-					runnable.run();
-				} finally {
-
-				}
+				runnable.run();
 			}
 		}.start();
 	}
