@@ -40,6 +40,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
@@ -276,6 +277,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.getString(R.string.facebook_authorized) : res
 				.getString(R.string.authorize_facebook));
 		facebookAuthButton.setEnabled(!isFacebookAuthorized);
+		if (isFacebookAuthorized) {
+			facebookAuthButton.setTextColor(Color.parseColor("#919191"));
+			facebookAuthButton
+					.setBackgroundResource(R.drawable.facebook_logo_disabled);
+		}
 
 		boolean isTwitterAuthorized = Clients.isAuthorized(Clients.TWITTER,
 				this);
@@ -283,6 +289,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.getString(R.string.twitter_authorized) : res
 				.getString(R.string.authorize_twitter));
 		twitterAuthButton.setEnabled(!isTwitterAuthorized);
+		if (isTwitterAuthorized) {
+			twitterAuthButton.setTextColor(Color.parseColor("#919191"));
+			twitterAuthButton
+					.setBackgroundResource(R.drawable.twitter_logo_disabled);
+		}
 
 		lbm.registerReceiver(receiver, intentFilter);
 
@@ -465,6 +476,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				twitterAuthButton.setText(res
 						.getString(R.string.twitter_authorized));
 				twitterAuthButton.setEnabled(false);
+				twitterAuthButton.setTextColor(Color.parseColor("#919191"));
+				twitterAuthButton
+						.setBackgroundResource(R.drawable.twitter_logo_disabled);
 			}
 
 			@Override
@@ -486,6 +500,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				facebookAuthButton.setText(res
 						.getString(R.string.facebook_authorized));
 				facebookAuthButton.setEnabled(false);
+				facebookAuthButton.setTextColor(Color.parseColor("#919191"));
+				facebookAuthButton
+						.setBackgroundResource(R.drawable.facebook_logo_disabled);
 			}
 
 			@Override

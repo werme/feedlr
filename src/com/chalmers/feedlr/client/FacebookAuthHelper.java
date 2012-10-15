@@ -58,10 +58,10 @@ public class FacebookAuthHelper {
 		String accessToken = ClientStore.getFacebookAccessToken(context);
 		Long accessTokenExpires = ClientStore
 				.getFacebookAccessTokenExpires(context);
-		
+
 		if (accessToken != null)
 			facebook.setAccessToken(accessToken);
-		
+
 		if (accessTokenExpires != 0)
 			facebook.setAccessExpires(accessTokenExpires);
 	}
@@ -75,28 +75,30 @@ public class FacebookAuthHelper {
 
 		if (!Clients.isAuthorized(Clients.FACEBOOK, context)) {
 			facebook.authorize((Activity) context, new String[] {
-					"read_stream", "read_friendlists" }, Facebook.FORCE_DIALOG_AUTH,
+					"read_stream", "read_friendlists" },
+					Facebook.FORCE_DIALOG_AUTH,
 
-			new DialogListener() {
-				@Override
-				public void onComplete(Bundle values) {
-					ClientStore.saveFacebookAccessToken(facebook, context);
-					ClientStore.saveFacebookAccessTokenExpires(facebook,
-							context);
-				}
+					new DialogListener() {
+						@Override
+						public void onComplete(Bundle values) {
+							ClientStore.saveFacebookAccessToken(facebook,
+									context);
+							ClientStore.saveFacebookAccessTokenExpires(
+									facebook, context);
+						}
 
-				@Override
-				public void onFacebookError(FacebookError error) {
-				}
+						@Override
+						public void onFacebookError(FacebookError error) {
+						}
 
-				@Override
-				public void onError(DialogError e) {
-				}
+						@Override
+						public void onError(DialogError e) {
+						}
 
-				@Override
-				public void onCancel() {
-				}
-			});
+						@Override
+						public void onCancel() {
+						}
+					});
 		}
 		authListener.onAuthorizationComplete();
 	}

@@ -5,8 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <include layout="@layout/feed_action_bar" />
+    <include
+        layout="@layout/feed_action_bar"
+        android:tag="action_bar" />
 
-    <include layout="@layout/feed_view_pager" />
+    <include
+        layout="@layout/feed_view_pager"
+        android:tag="feed" />
 
 </LinearLayout>
