@@ -245,7 +245,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            the user to be removed from the database.
 	 */
 	private void removeUser(User user) {
-		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { user.getId() + "" });
+		db.delete(TABLE_USER, USER_COLUMN_ID + "=?",
+				new String[] { user.getId() + "" });
 	}
 
 	/**
@@ -450,11 +451,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				null, null);
 	}
 
+	/**
+	 * Return a user
+	 * @param userID
+	 * @return
+	 */
 	public Cursor getUser(String userID) {
-		return db.query(TABLE_USER, new String[] { USER_COLUMN_USERNAME,
-				USER_COLUMN_USERID, USER_COLUMN_IMGURL, USER_COLUMN_SOURCE },
-				USER_COLUMN_USERID + " = ?", new String[] { userID }, null,
-				null, null);
+		return db.query(TABLE_USER, null, USER_COLUMN_USERID + " = ?",
+				new String[] { userID }, null, null, null);
 	}
 
 	public long getItemTableSize() {
