@@ -425,9 +425,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		// Save user list as a feed in database
 		db.addFeed(feed);
-		long feedID = db.getFeedID(feed);
+		long feed_id = db.getFeed_id(feed);
 		for (Integer i : userIDs)
-			db.addFeedUserBridge(feedID, i);
+			db.addFeedUserBridge(feed_id, i);
 		Log.i(getClass().getName(), "Added feed \"" + feed.getTitle()
 				+ "\" with " + userIDs.size() + " users.");
 
