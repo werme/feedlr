@@ -30,6 +30,8 @@ import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -80,6 +82,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	public static final String FACEBOOK_USER_NEWS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USER_NEWS_UPDATED";
 
 	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
+	public static final String NO_CONNECTION = "com.chalmers.feedlr.NO_CONNECTION";
 
 	// Android system helpers
 	private Resources res;
@@ -178,7 +181,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				"fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-Medium.ttf");
-		
+
 		// find views inflated from xml
 		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
@@ -343,7 +346,22 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-		feedService.updateFeed(new Feed(feedTitle));
+		if (isOnline()) {
+			feedService.updateFeed(new Feed(feedTitle));
+		} else {
+			Intent intent = new Intent();
+			intent.setAction(NO_CONNECTION);
+			lbm.sendBroadcast(intent);
+		}
+	}
+
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
 	}
 
 	// Methods called on button press below. See xml files.
@@ -368,10 +386,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		feedService.updateUsers();
+		if(isOnline()) {
+			feedService.updateUsers();
+		} else {
+			Toast.makeText(this, "No connection available", Toast.LENGTH_LONG).show();
+		}
 
 		Cursor cursor = db.getAllUsers();
-		Log.i(getClass().getName(), "" + cursor.getCount());
 
 		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
 				DatabaseHelper.USER_COLUMN_USERID };
