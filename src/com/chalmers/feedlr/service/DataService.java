@@ -141,12 +141,11 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<User> users = twitter.getFollowing();
-				
-				for(User u : users){
+
+				for (User u : users) {
 					u.setSource("twitter");
 				}
 				db.addUsers(users);
-				
 
 				// Broadcast update to activity
 				Intent intent = new Intent();

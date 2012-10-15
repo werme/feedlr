@@ -76,7 +76,6 @@ public class DataServiceHelper {
 				break;
 			case Clients.FACEBOOK:
 				dataService.updateFacebookUsers();
-				System.out.println("KJHDSKGJSDLGKSDJGÖSKDGJLSDK");
 				break;
 			default:
 				Log.wtf(getClass().getName() + " updateUsers",
