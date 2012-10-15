@@ -43,6 +43,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 	Context context;
 	DatabaseHelper db;
+	private int numberOfItems; // Used for tagging ImageViews
 
 	public FeedAdapter(Context context, int layout, Cursor c, String[] from,
 			int[] to, int flags) {
@@ -94,6 +95,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		}
 
 		ImageView profilePicture;
+
 		profilePicture = (ImageView) v
 				.findViewById(R.id.feed_item_author_image);
 		colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
@@ -103,15 +105,19 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		int colNum2 = cursor.getColumnIndex(DatabaseHelper.USER_COLUMN_IMGURL);
 		String b = cursor.getString(colNum2);
 
+		profilePicture.setTag(numberOfItems++);
+		System.out.println(numberOfItems);
 		new DownloadImageTask(profilePicture).execute(b);
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
 		private ImageView profilePicture;
+		private String tag;
 
 		public DownloadImageTask(ImageView profilePicture) {
 			this.profilePicture = profilePicture;
+			this.tag = profilePicture.getTag().toString();
 		}
 
 		protected Bitmap doInBackground(String... strings) {
@@ -131,7 +137,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		}
 
 		protected void onPostExecute(Bitmap result) {
-			profilePicture.setImageBitmap(result);
+			if (profilePicture.getTag().toString().equals(tag)) {
+				profilePicture.setImageBitmap(result);
+			}
 		}
 	}
 }
