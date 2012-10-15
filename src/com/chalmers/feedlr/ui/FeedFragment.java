@@ -40,7 +40,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor> {
+public class FeedFragment extends ListFragment implements
+		LoaderCallbacks<Cursor> {
 
 	public static FeedFragment newInstance(Bundle args) {
 		FeedFragment pageFragment = new FeedFragment();
@@ -57,11 +58,12 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		Bundle arg = getArguments();
 		feedTitle = arg.getString("title");
-		
-		LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(getActivity());
+
+		LocalBroadcastManager lbm = LocalBroadcastManager
+				.getInstance(getActivity());
 
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(FeedActivity.TWITTER_TIMELINE_UPDATED);
@@ -73,32 +75,33 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 		filter.addAction(FeedActivity.FEED_UPDATED);
 		lbm.registerReceiver(receiver, filter);
 	}
-	
-	@Override public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
 
-		String[] columns = new String[] { DatabaseHelper.ITEM_COLUMN_TEXT, DatabaseHelper.ITEM_COLUMN_USERNAME };
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		String[] columns = new String[] { DatabaseHelper.ITEM_COLUMN_TEXT,
+				DatabaseHelper.ITEM_COLUMN_USERNAME };
 		int[] to = new int[] { R.id.feed_item_text, R.id.feed_item_author };
 
-		adapter = new FeedAdapter(getActivity(),
-				R.layout.feed_item, null, columns, to,
-				CursorAdapter.NO_SELECTION);
+		adapter = new FeedAdapter(getActivity(), R.layout.feed_item, null,
+				columns, to, CursorAdapter.NO_SELECTION);
 
 		setListAdapter(adapter);
 
-        loader = getLoaderManager().initLoader(0, null, this);
-        
-        listView = (PullToRefreshListView) getListView();
-        
-        listView.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                listener.onFeedUpdateRequest(feedTitle);
-            }
-        });
+		loader = getLoaderManager().initLoader(0, null, this);
 
-    }
-	
+		listView = (PullToRefreshListView) getListView();
+
+		listView.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				listener.onFeedUpdateRequest(feedTitle);
+			}
+		});
+
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -108,13 +111,12 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	}
 
 	@Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new FeedCursorLoader(getActivity(), feedTitle);
-    }
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new FeedCursorLoader(getActivity(), feedTitle);
+	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> arg0,
-			Cursor data) {
+	public void onLoadFinished(Loader<Cursor> arg0, Cursor data) {
 		adapter.swapCursor(data);
 	}
 
@@ -122,15 +124,15 @@ public class FeedFragment extends ListFragment implements LoaderCallbacks<Cursor
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		adapter.swapCursor(null);
 	}
-	
+
 	public void update() {
 		getLoaderManager().restartLoader(0, null, this);
 	}
-	
+
 	public void setUpdateRequestListener(FeedListener listener) {
 		this.listener = listener;
 	}
-	
+
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
