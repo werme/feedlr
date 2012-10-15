@@ -108,26 +108,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	// Feed related methods:
-
+	/**
+	 * Adds a feed to the database.
+	 * 
+	 * @param feed
+	 *            the feed to be added to the database.
+	 * @throws SQLiteException
+	 *             If the name already exists within the database.
+	 */
 	public void addFeed(Feed feed) throws SQLiteException {
 		db.insertOrThrow(TABLE_FEED, null, feedCV(feed));
 	}
 
+	/**
+	 * Removes a feed from the database.
+	 * 
+	 * @param feed
+	 *            the feed that will be removed from the database.
+	 * @throws IllegalArgumentException
+	 *             if the feed to remove does not exist.
+	 */
 	public void removeFeed(Feed feed) throws IllegalArgumentException {
 		String title = feed.getTitle();
-		long id = getFeedID(feed);
+		long id = getFeed_id(feed);
 
 		removeFeedBridge(id);
 
 		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
 	}
 
+	/**
+	 * Removes all feeds from the database.
+	 */
 	public void clearFeeds() {
 		db.delete(TABLE_FEED, null, null);
 		db.delete(TABLE_FEEDUSER, null, null);
 	}
 
+	/**
+	 * Lists all the feeds in the database.
+	 * 
+	 * @return A ArrayList of string with all the names of the feeds in the
+	 *         database.
+	 */
 	public ArrayList<String> listFeeds() {
 		final ArrayList<String> feeds = new ArrayList<String>();
 
@@ -140,29 +163,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return feeds;
 	}
 
-	public long getFeedID(Feed feed) throws IllegalArgumentException {
+	/**
+	 * Returns the ID of the feed.
+	 * 
+	 * @param feed
+	 *            whose ID is searched for
+	 * @return the id of the searched feed.
+	 * @throws IllegalArgumentException
+	 *             if no such feed exists in the database.
+	 */
+
+	public long getFeed_id(Feed feed) throws IllegalArgumentException {
 		String feedTitle = feed.getTitle();
-		Long id;
+		Long feed_id;
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_ID },
 				FEED_COLUMN_NAME + "=?", new String[] { feedTitle }, null,
 				null, null);
 
 		if (c.moveToNext()) {
-			id = Long.parseLong(c.getString(0));
+			feed_id = Long.parseLong(c.getString(0));
 		} else {
 			throw (new IllegalArgumentException("Feed does not exist!"));
 		}
 		c.close();
-		return id;
+		return feed_id;
 	}
 
 	// User related methods
-
+	/**
+	 * Adds a user to the database.
+	 * 
+	 * @param user
+	 *            the user to be added in the database.
+	 * @return the database ID of the user.
+	 */
 	public long addUser(User user) {
 		Long userID;
 		try {
-			userID = getUserID(user);
+			userID = getUser_id(user);
 			updateUser(user);
 		} catch (IllegalArgumentException e) {
 			userID = db.insert(TABLE_USER, null, userCV(user));
@@ -170,10 +209,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return userID;
 	}
 
+	/**
+	 * Adds a list of users to the database.
+	 * 
+	 * @param users
+	 *            the lists of users to be added in the database.
+	 */
 	public void addUsers(List<? extends User> users) {
 
 		db.beginTransaction();
-		//TODO Make sure addUsers are using addUser method instead of a insert to db.
+		// TODO Make sure addUsers are using addUser method instead of a insert
+		// to db.
 		for (User u : users) {
 			db.insertWithOnConflict(TABLE_USER, null, userCV(u),
 					SQLiteDatabase.CONFLICT_IGNORE);
@@ -182,55 +228,91 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.endTransaction();
 	}
 
+	/**
+	 * Updates the representation of user in the database.
+	 * 
+	 * @param user
+	 *            the user to be updated.
+	 * @return the database ID of the user added.
+	 */
+
 	public long updateUser(User user) {
 		return db.update(TABLE_USER, userCV(user), USER_COLUMN_ID + " = "
 				+ user.getId(), null);
 	}
 
+	/**
+	 * Removes a user from the database.
+	 * 
+	 * @param user
+	 *            the user to be removed from the database.
+	 */
 	private void removeUser(User user) {
 		long id = user.getId();
 		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
 	}
 
+	/**
+	 * Removes all the users from the database.
+	 */
 	public void clearUserTable() {
 		db.delete(TABLE_USER, null, null);
 	}
 
-	public ArrayList<String> listUsers() {
-		final ArrayList<String> users = new ArrayList<String>();
-
+	/**
+	 * Returns a cursor of all the users in the database.
+	 * 
+	 * @return
+	 */
+	public Cursor listUsers() {
 		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
-
-		while (c.moveToNext()) {
-			String s = c.getString(1);
-			users.add(s);
-		}
-		return users;
+		return c;
 	}
 
-	private long getUserID(User user) throws IllegalArgumentException {
+	/**
+	 * Returns the database ID of a user.
+	 * 
+	 * @param user
+	 *            the user which ID is searched for.
+	 * @return the database ID of the user.
+	 * @throws IllegalArgumentException
+	 *             if the user does not exists within the database.
+	 */
+	private long getUser_id(User user) throws IllegalArgumentException {
 		long id = user.getId();
-		long userID;
+		long user_id;
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
 				USER_COLUMN_ID + "=?", new String[] { id + "" }, null, null,
 				null);
 		if (c.moveToNext()) {
-			userID = Long.parseLong(c.getString(0));
+			user_id = Long.parseLong(c.getString(0));
 		} else {
 			throw (new IllegalArgumentException("User does not exist!"));
 		}
 		c.close();
-		return userID;
+		return user_id;
 	}
 
 	// Item related methods
-
+	/**
+	 * Adds a item to the database.
+	 * 
+	 * @param the
+	 *            item to be added.
+	 */
 	public long addItem(Item item) {
 //		return db.insert(TABLE_ITEM, null, itemCV(item));
 		return db.insertWithOnConflict(TABLE_ITEM, null, itemCV(item), SQLiteDatabase.CONFLICT_IGNORE);
+
 	}
 
+	/**
+	 * Adds a list of items in the database in a fast manner.
+	 * 
+	 * @param itemList
+	 *            the list of items to be added.
+	 */
 	public void addListOfItems(List<? extends Item> itemList) {
 		db.beginTransaction();
 		for (Item i : itemList) {
@@ -240,14 +322,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.endTransaction();
 	}
 
+	/**
+	 * Removes all the items from the table.
+	 */
 	public void clearItemTable() {
 		db.delete(TABLE_ITEM, null, null);
 	}
 
 	// Bridge methods:
-
-	public void addUserToFeed(User user, Feed feed) {
-		long FeedID = getFeedID(feed);
+	/**
+	 * Adds a connection with a user to a feed.
+	 * 
+	 * @param feed
+	 *            the feed which the user will be connected with.
+	 * @param user
+	 *            the user to be connected with a feed
+	 * 
+	 */
+	public void addUserToFeed(Feed feed, User user) {
+		long FeedID = getFeed_id(feed);
 		long UserID = addUser(user);
 
 		// Add bridge connection
@@ -256,9 +349,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 
+	/**
+	 * Removes the connection with a feed and user.
+	 * 
+	 * @param feed
+	 *            the feed which user is connected with.
+	 * @param user
+	 *            the user which connection will be removed.
+	 */
 	public void removeUserFromFeed(Feed feed, User user) {
-		long feedID = getFeedID(feed);
-		long userID = getUserID(user);
+		long feedID = getFeed_id(feed);
+		long userID = getUser_id(user);
 
 		removeFeedUserBridge(feedID, userID);
 	}
@@ -291,14 +392,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ USER_COLUMN_USERID + " IN (SELECT "
 					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
 					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-					+ getFeedID(feed) + ")", null);
+					+ getFeed_id(feed) + ")", null);
 		else {
 			c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
 					+ USER_COLUMN_SOURCE + " = ?" + " AND "
 					+ USER_COLUMN_USERID + " IN (SELECT "
 					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
 					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-					+ getFeedID(feed) + ")", new String[] { source });
+					+ getFeed_id(feed) + ")", new String[] { source });
 		}
 		return c;
 	}
@@ -307,8 +408,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_ITEM + " WHERE "
 				+ ITEM_COLUMN_USER_ID + " IN (SELECT "
 				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed)
-				+ ") ORDER BY " + ITEM_COLUMN_TIMESTAMP + " DESC", null);
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+				+ getFeed_id(feed) + ") ORDER BY " + ITEM_COLUMN_TIMESTAMP
+				+ " DESC", null);
 		return c;
 	}
 
@@ -317,7 +419,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
 				ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID,
 				ITEM_COLUMN_USERNAME }, null, null, null, null, null);
-		// db.close();
 		return c;
 	}
 
@@ -328,10 +429,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return c;
 	}
 
+	public Cursor getUser(String userID) {
+		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERNAME,
+				USER_COLUMN_USERID, USER_COLUMN_IMGURL, USER_COLUMN_SOURCE },
+				USER_COLUMN_USERID + " = ?", new String[] { userID }, null,
+				null, null);
+		return c;
+	}
+
 	public long getItemTableSize() {
-		SQLiteDatabase database = this.getReadableDatabase();
-		long l = DatabaseUtils.queryNumEntries(database, TABLE_ITEM);
-		// database.close();
+		long l = DatabaseUtils.queryNumEntries(db, TABLE_ITEM);
 		return l;
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.User;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteException;
 import android.test.AndroidTestCase;
@@ -67,7 +68,13 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addUser(u3);
-		Log.i("a:", "" + db.listUsers());
+		Cursor c =  db.listUsers();
+		final ArrayList<String> users = new ArrayList<String>();
+		while (c.moveToNext()) {
+			String s = c.getString(1);
+			users.add(s);
+		}
+		Log.i("a:", "" + users);
 	}
 /*
 	public void testAddFeedUserBridge() {
