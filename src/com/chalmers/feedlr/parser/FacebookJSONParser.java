@@ -89,7 +89,6 @@ public class FacebookJSONParser {
 
 	public List<User> parseUsers(String json) {
 		long time = System.currentTimeMillis();
-
 		String data = json.substring(8);
 
 		if (userReader == null)
