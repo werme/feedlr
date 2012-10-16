@@ -59,6 +59,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		public TextView text;
 		public TextView author;
 		public TextView timeStamp;
+		public ImageView profilePicture;
 	}
 
 	@Override
@@ -84,6 +85,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Avarage time: 100 ms for first view, 10ms for the rest.
 		super.bindView(v, context, c);
 
+		ImageView profilePicture;
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
 
 		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
@@ -99,8 +101,6 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		} else {
 			viewHolder.timeStamp.setText(parsedTimestamp);
 		}
-
-		ImageView profilePicture;
 
 		profilePicture = (ImageView) v
 				.findViewById(R.id.feed_item_author_image);
@@ -133,6 +133,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		viewHolder.text = (TextView) tempView.findViewById(R.id.feed_item_text);
 		viewHolder.author = (TextView) tempView
 				.findViewById(R.id.feed_item_author);
+
 		viewHolder.timeStamp = (TextView) tempView
 				.findViewById(R.id.feed_item_timestamp);
 		Typeface robotoThinItalic = Typeface.createFromAsset(
