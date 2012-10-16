@@ -26,6 +26,7 @@ import java.util.Locale;
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.DatabaseHelper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -34,6 +35,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -52,20 +54,15 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		this.db = new DatabaseHelper(context);
 	}
 
+	static class ViewHolder {
+		public TextView text;
+		public TextView author;
+		public TextView timeStamp;
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = super.getView(position, convertView, parent);
-		// if (convertView == null)
-		// convertView = View.inflate(context, R.layout.feed_item, null);
-
-		TextView text = (TextView) v.findViewById(R.id.feed_item_text);
-		TextView author = (TextView) v.findViewById(R.id.feed_item_author);
-
-		Typeface robotoThinItalic = Typeface.createFromAsset(
-				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
-
-		text.setTypeface(robotoThinItalic);
-
 		return v;
 	}
 
@@ -79,6 +76,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 	@Override
 	public void bindView(View v, Context context, Cursor c) {
 		super.bindView(v, context, c);
+		ViewHolder viewHolder = (ViewHolder) v.getTag();
 		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
 		Date timestampDate = new Date(c.getLong(colNum));
 
@@ -86,12 +84,11 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				timestampDate.getTime(), DateUtils.SECOND_IN_MILLIS,
 				DateUtils.WEEK_IN_MILLIS, 0).toString();
 
-		TextView textview = (TextView) v.findViewById(R.id.feed_item_timestamp);
 		if (parsedTimestamp.contains(",")) {
-			textview.setText(parsedTimestamp.substring(0,
+			viewHolder.timeStamp.setText(parsedTimestamp.substring(0,
 					parsedTimestamp.indexOf(',')));
 		} else {
-			textview.setText(parsedTimestamp);
+			viewHolder.timeStamp.setText(parsedTimestamp);
 		}
 
 		ImageView profilePicture;
@@ -103,11 +100,37 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		cursor.moveToFirst();
 
 		int colNum2 = cursor.getColumnIndex(DatabaseHelper.USER_COLUMN_IMGURL);
-		String b = cursor.getString(colNum2);
+		String imgURL = cursor.getString(colNum2);
 
 		profilePicture.setTag(numberOfItems++);
 		System.out.println(numberOfItems);
-		new DownloadImageTask(profilePicture).execute(b);
+		new DownloadImageTask(profilePicture).execute(imgURL);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.support.v4.widget.ResourceCursorAdapter#newView(android.content
+	 * .Context, android.database.Cursor, android.view.ViewGroup)
+	 */
+	@Override
+	public View newView(Context context, Cursor cursor, ViewGroup parent) {
+		super.newView(context, cursor, parent);
+		LayoutInflater inflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View tempView = inflater.inflate(R.layout.feed_item, null);
+		ViewHolder viewHolder = new ViewHolder();
+		viewHolder.text = (TextView) tempView.findViewById(R.id.feed_item_text);
+		viewHolder.author = (TextView) tempView
+				.findViewById(R.id.feed_item_author);
+		viewHolder.timeStamp = (TextView) tempView
+				.findViewById(R.id.feed_item_timestamp);
+		Typeface robotoThinItalic = Typeface.createFromAsset(
+				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
+		viewHolder.text.setTypeface(robotoThinItalic);
+		tempView.setTag(viewHolder);
+		return tempView;
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
