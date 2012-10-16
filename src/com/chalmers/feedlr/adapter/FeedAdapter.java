@@ -26,6 +26,7 @@ import com.chalmers.feedlr.database.DatabaseHelper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,7 +61,12 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		// Avarage time:
+		// 135 ms for first view.
+		// 40 ms for new views.
+		// 13 ms for recycled views.
 		View v = super.getView(position, convertView, parent);
+
 		return v;
 	}
 
@@ -73,8 +79,11 @@ public class FeedAdapter extends SimpleCursorAdapter {
 	 */
 	@Override
 	public void bindView(View v, Context context, Cursor c) {
+		// Avarage time: 100 ms for first view, 10ms for the rest.
 		super.bindView(v, context, c);
+
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
+
 		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
 		Date timestampDate = new Date(c.getLong(colNum));
 
@@ -101,7 +110,6 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		String imgURL = cursor.getString(colNum2);
 
 		profilePicture.setTag(numberOfItems++);
-		System.out.println(numberOfItems);
 		new DownloadImageTask(profilePicture).execute(imgURL);
 	}
 
@@ -114,6 +122,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 	 */
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
+		// Avarage time: 30 ms
 		super.newView(context, cursor, parent);
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -133,12 +142,15 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
+		// Avarage time: 270 ms
+
 		private ImageView profilePicture;
 		private String tag;
 
 		public DownloadImageTask(ImageView profilePicture) {
 			this.profilePicture = profilePicture;
 			this.tag = profilePicture.getTag().toString();
+
 		}
 
 		protected Bitmap doInBackground(String... strings) {
