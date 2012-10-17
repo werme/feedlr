@@ -44,13 +44,14 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 	Context context;
 	DatabaseHelper db;
-	private int numberOfItems; // Used for tagging ImageViews
+	private int numberOfViews; // Used for tagging ImageViews
 
 	public FeedAdapter(Context context, int layout, Cursor c, String[] from,
 			int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		this.context = context;
 		this.db = new DatabaseHelper(context);
+		System.out.println(DatabaseHelper.ITEM_COLUMN_USERNAME);
 	}
 
 	static class ViewHolder {
@@ -83,29 +84,36 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Avarage time: 100 ms for first view, 10ms for the rest.
 		super.bindView(v, context, c);
 
-		ImageView profilePicture;
+		// Holds the views, so that a recycled view does not have to find its
+		// XML view
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
 
-		int colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
-		Date timestampDate = new Date(c.getLong(colNum));
+		// Get user id
+		int colNumUserId = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
+		Cursor cursor = db.getUser(c.getInt(colNumUserId) + "");
+		cursor.moveToFirst();
 
+		// Display profile picture
+		int colNumURL = cursor
+				.getColumnIndex(DatabaseHelper.USER_COLUMN_IMGURL);
+		String imgURL = cursor.getString(colNumURL);
+		viewHolder.profilePicture.setTag(numberOfViews++);
+		new DownloadImageTask(viewHolder.profilePicture).execute(imgURL);
+
+		// Display username
+		int colNumUsername = cursor
+				.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME);
+		viewHolder.author.setText(cursor.getString(colNumUsername));
+
+		// Display timestamp
+		int colNumTimestamp = c
+				.getColumnIndex(DatabaseHelper.ITEM_COLUMN_TIMESTAMP);
+		Date timestampDate = new Date(c.getLong(colNumTimestamp));
 		String parsedTimestamp = DateUtils.getRelativeDateTimeString(context,
 				timestampDate.getTime(), DateUtils.SECOND_IN_MILLIS,
 				DateUtils.WEEK_IN_MILLIS, 0).toString();
-
 		viewHolder.timestamp.setText(stripTimestamp(parsedTimestamp));
 
-		profilePicture = (ImageView) v
-				.findViewById(R.id.feed_item_author_image);
-		colNum = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
-		Cursor cursor = db.getUser(c.getInt(colNum) + "");
-		cursor.moveToFirst();
-
-		int colNum2 = cursor.getColumnIndex(DatabaseHelper.USER_COLUMN_IMGURL);
-		String imgURL = cursor.getString(colNum2);
-
-		profilePicture.setTag(numberOfItems++);
-		new DownloadImageTask(profilePicture).execute(imgURL);
 	}
 
 	/*
@@ -126,12 +134,18 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		viewHolder.text = (TextView) tempView.findViewById(R.id.feed_item_text);
 		viewHolder.author = (TextView) tempView
 				.findViewById(R.id.feed_item_author);
-
 		viewHolder.timestamp = (TextView) tempView
 				.findViewById(R.id.feed_item_timestamp);
+		viewHolder.profilePicture = (ImageView) tempView
+				.findViewById(R.id.feed_item_author_image);
 		Typeface robotoThinItalic = Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
+		Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(),
+				"fonts/Roboto-Medium.ttf");
 		viewHolder.text.setTypeface(robotoThinItalic);
+		viewHolder.timestamp.setTypeface(robotoThinItalic);
+		viewHolder.author.setTypeface(robotoMedium);
+
 		tempView.setTag(viewHolder);
 		return tempView;
 	}
