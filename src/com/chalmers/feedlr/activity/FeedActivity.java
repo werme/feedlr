@@ -206,8 +206,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		feedAdapter = new PageAdapter(getSupportFragmentManager(), db, this);
 		feedViewSwiper.setAdapter(feedAdapter);
 
-		// swipe testing, this is just a stub
-		feedViewSwiper
+		// lets 3 feedsviews to each side of the current one be retained in an
+		// idle state.
+		feedViewSwiper.setOffscreenPageLimit(3);
+
+		CirclePageIndicator circleIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+		circleIndicator.setViewPager(feedViewSwiper);
+		circleIndicator
 				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 					@Override
 					public void onPageSelected(int feedIndex) {
@@ -217,7 +222,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 					@Override
 					public void onPageScrolled(int arg0, float arg1, int arg2) {
-						// TODO Auto-generated method stub
+						// TODO Auto-generated method stub'
 					}
 
 					@Override
@@ -225,9 +230,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 						// TODO Auto-generated method stub
 					}
 				});
-
-		CirclePageIndicator circleIndicator = (CirclePageIndicator) findViewById(R.id.titles);
-		circleIndicator.setViewPager(feedViewSwiper);
 
 		// instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
@@ -351,13 +353,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-		if (isOnline()) {
-			feedService.updateFeed(new Feed(feedTitle));
-		} else {
-			Intent intent = new Intent();
-			intent.setAction(NO_CONNECTION);
-			lbm.sendBroadcast(intent);
-		}
+		// if (isOnline()) {
+		feedService.updateFeed(new Feed(feedTitle));
+		// } else {
+		// Intent intent = new Intent();
+		// intent.setAction(NO_CONNECTION);
+		// lbm.sendBroadcast(intent);
+		// }
 	}
 
 	public boolean isOnline() {
@@ -394,12 +396,12 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		if (isOnline()) {
-			feedService.updateUsers();
-		} else {
-			Toast.makeText(this, "No connection available", Toast.LENGTH_LONG)
-					.show();
-		}
+		// if (isOnline()) {
+		feedService.updateUsers();
+		// } else {
+		// Toast.makeText(this, "No connection available", Toast.LENGTH_LONG)
+		// .show();
+		// }
 
 		Cursor cursor = db.getAllUsers();
 
