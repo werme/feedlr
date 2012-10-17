@@ -51,7 +51,6 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		super(context, layout, c, from, to, flags);
 		this.context = context;
 		this.db = new DatabaseHelper(context);
-		System.out.println(DatabaseHelper.ITEM_COLUMN_USERNAME);
 	}
 
 	static class ViewHolder {
