@@ -111,7 +111,7 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<TwitterItem> twitterTimeline = twitter.getTimeline();
-				
+
 				if (twitterTimeline != null) {
 					// Save to database
 					db.addListOfItems(twitterTimeline);
@@ -150,7 +150,7 @@ public class DataService extends Service {
 					// Save to database
 					db.addUsers(users);
 					intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
-				} else {					
+				} else {
 					intent.setAction(FeedActivity.TWITTER_USERS_PROBLEM_UPDATING);
 				}
 
@@ -182,7 +182,7 @@ public class DataService extends Service {
 					db.addListOfItems(userTweets);
 					intent.setAction(FeedActivity.FEED_UPDATED);
 				} else {
-					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);					
+					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);
 				}
 
 				// Broadcast update to activity
@@ -371,13 +371,12 @@ public class DataService extends Service {
 								facebookItemsForUsers
 										.addAll(new FacebookJSONParser()
 												.parseFeed(response));
-								responses++;
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
 							Log.d("DataService", response);
 						}
-
+						responses++;
 
 						if (responses == facebookUsersInFeed.size())
 							onAllComplete();
