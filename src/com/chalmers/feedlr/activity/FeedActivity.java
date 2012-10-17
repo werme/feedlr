@@ -30,6 +30,8 @@ import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -71,16 +73,18 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private DatabaseHelper db;
 
 	// Twitter strings
-	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
 	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
-	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
+	public static final String TWITTER_USERS_PROBLEM_UPDATING = "com.chalmers.feedlr.TWITTER_USERS_PROBLEM_UPDATING";
 
 	// Facebook strings
 	public static final String FACEBOOK_TIMELINE_UPDATED = "com.chalmers.feedlr.FACEBOOK_TIMELINE_UPDATED";
 	public static final String FACEBOOK_USERS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USERS_UPDATED";
+	public static final String FACEBOOK_USERS_PROBLEM_UPDATING = "com.chalmers.feedlr.FACEBOOK_USERS_PROBLEM_UPDATING";
 	public static final String FACEBOOK_USER_NEWS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USER_NEWS_UPDATED";
 
 	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
+	public static final String FEED_PROBLEM_UPDATING = "com.chalmers.feedlr.FEED_PROBLEM_UPDATING";
+	public static final String NO_CONNECTION = "com.chalmers.feedlr.NO_CONNECTION";
 
 	// Android system helpers
 	private Resources res;
@@ -110,47 +114,37 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private Animation slideInLeft;
 	private Animation slideInRight;
 
-	// Typefaces
-	private Typeface robotoThinItalic;
-	private Typeface robotoMedium;
-
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String broadcast = intent.getAction();
-			Bundle b = intent.getExtras();
 
-			String dialog;
-
-			if (broadcast.equals(TWITTER_TIMELINE_UPDATED)) {
-				dialog = "Twitter timeline updated!";
-
-			} else if (broadcast.equals(TWITTER_USERS_UPDATED)) {
-				dialog = "Twitter users updated!";
+			if (broadcast.equals(TWITTER_USERS_UPDATED)) {
 				userAdapter.swapCursor(db.getAllUsers());
-
-			} else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED)) {
-				dialog = "Tweets for Twitter user with ID: "
-						+ b.getInt("userID") + " updated!";
-
-			} else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED)) {
-				dialog = "Facebook timeline updated!";
 
 			} else if (broadcast.equals(FACEBOOK_USERS_UPDATED)) {
-				dialog = "Facebook users updated!";
 				userAdapter.swapCursor(db.getAllUsers());
 
-			} else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED)) {
-				dialog = "News for Facebook user with ID: "
-						+ b.getInt("userID") + " updated!";
+			} else if (broadcast.equals(TWITTER_USERS_PROBLEM_UPDATING)) {
+				Toast.makeText(
+						context,
+						"The was a problem refreshing your twitter friends. Please check your connection and try again.",
+						Toast.LENGTH_SHORT).show();
 
-			} else if (broadcast.equals(FEED_UPDATED)) {
-				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
-
-			} else
-				dialog = "broadcast from unknown intent recieved!";
-
-			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
+			} else if (broadcast.equals(FACEBOOK_USERS_PROBLEM_UPDATING)) {
+				Toast.makeText(
+						context,
+						"The was a problem refreshing your facebook friends. Please check your connection and try again.",
+						Toast.LENGTH_SHORT).show();
+			} else if (broadcast.equals(FEED_PROBLEM_UPDATING)) {
+				Toast.makeText(
+						context,
+						"The was a problem refreshing the feed. Please check your connection and try again.",
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Log.wtf(getClass().getName(),
+						"broadcast from unknown intent recieved!");
+			}
 		}
 	};
 
@@ -166,21 +160,21 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		// add intent filter to be used by broadcast reciever
 		intentFilter = new IntentFilter();
-		intentFilter.addAction(TWITTER_TIMELINE_UPDATED);
 		intentFilter.addAction(TWITTER_USERS_UPDATED);
-		intentFilter.addAction(TWITTER_USER_TWEETS_UPDATED);
+		intentFilter.addAction(TWITTER_USERS_PROBLEM_UPDATING);
 		intentFilter.addAction(FACEBOOK_TIMELINE_UPDATED);
 		intentFilter.addAction(FACEBOOK_USERS_UPDATED);
+		intentFilter.addAction(FACEBOOK_USERS_PROBLEM_UPDATING);
 		intentFilter.addAction(FACEBOOK_USER_NEWS_UPDATED);
-		intentFilter.addAction(FEED_UPDATED);
+		intentFilter.addAction(FEED_PROBLEM_UPDATING);
 
 		// instanciate database helper
 		db = new DatabaseHelper(this);
 
 		// load typefaces from assets
-		robotoThinItalic = Typeface.createFromAsset(getAssets(),
+		Typeface robotoThinItalic = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-ThinItalic.ttf");
-		robotoMedium = Typeface.createFromAsset(getAssets(),
+		Typeface robotoMedium = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-Medium.ttf");
 
 		// find views inflated from xml
@@ -324,13 +318,15 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// TODO: Toggle animation for the create feed view. Currently sliding
 		// away in the wring direction.
 
-		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout)
-			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout)
+		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout) {
+			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout) {
 				settingsViewFlipper.showPrevious();
-			else
+			} else {
 				toggleSettingsView(null);
-		else
+			}
+		} else {
 			super.onBackPressed();
+		}
 	}
 
 	@Override
@@ -355,7 +351,25 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-		feedService.updateFeed(new Feed(feedTitle));
+		if (isOnline()) {
+			feedService.updateFeed(new Feed(feedTitle));
+		} else {
+			Intent intent = new Intent();
+			intent.setAction(NO_CONNECTION);
+			lbm.sendBroadcast(intent);
+		}
+	}
+
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo i = cm.getActiveNetworkInfo();
+		if (i == null)
+			return false;
+		if (!i.isConnected())
+			return false;
+		if (!i.isAvailable())
+			return false;
+		return true;
 	}
 
 	// Methods called on button press below. See xml files.
@@ -380,10 +394,14 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		feedService.updateUsers();
+		if (isOnline()) {
+			feedService.updateUsers();
+		} else {
+			Toast.makeText(this, "No connection available", Toast.LENGTH_LONG)
+					.show();
+		}
 
 		Cursor cursor = db.getAllUsers();
-		Log.i(getClass().getName(), "" + cursor.getCount());
 
 		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
 				DatabaseHelper.USER_COLUMN_USERID };

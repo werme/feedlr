@@ -33,6 +33,7 @@ import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.util.ClientStore;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 public class TwitterHelper {
@@ -55,11 +56,7 @@ public class TwitterHelper {
 		new Thread() {
 			@Override
 			public void run() {
-				try {
-					runnable.run();
-				} finally {
-
-				}
+				runnable.run();
 			}
 		}.start();
 	}
@@ -68,6 +65,9 @@ public class TwitterHelper {
 		long time = System.currentTimeMillis();
 
 		String response = request(TIMELINE);
+		if (response == null) {
+			return null;
+		}
 
 		Log.i(TwitterJSONParser.class.getName(),
 				"Timeline request time in millis: "
@@ -82,6 +82,9 @@ public class TwitterHelper {
 		url.append(USER_TWEETS).append(userID);
 
 		String response = request(url.toString());
+		if (response == null) {
+			return null;
+		}
 
 		Log.i(TwitterJSONParser.class.getName(),
 				"User tweets request time in millis: "
@@ -94,11 +97,17 @@ public class TwitterHelper {
 		long time = System.currentTimeMillis();
 
 		long userID = getAuthorizedUserID();
+		if (userID == 0) {
+			return null;
+		}
 
 		StringBuilder url = new StringBuilder();
 		url.append(USER_IDS).append(userID);
 
 		String response = request(url.toString());
+		if (response == null) {
+			return null;
+		}
 
 		Log.i(TwitterJSONParser.class.getName(), "ID request time in millis: "
 				+ (System.currentTimeMillis() - time));
@@ -108,15 +117,25 @@ public class TwitterHelper {
 	}
 
 	private long getAuthorizedUserID() {
+		long userID = ClientStore.getTwitterUserID(context);
+		if (userID != 0) {
+			return userID;
+		}
+
 		long time = System.currentTimeMillis();
 
 		String response = request(CREDENTIALS);
+		if (response == null) {
+			return 0;
+		}
 
 		Log.i(TwitterJSONParser.class.getName(),
 				"Credentials request time in millis: "
 						+ (System.currentTimeMillis() - time));
 
-		return new TwitterJSONParser().parseCredentials(response);
+		userID = new TwitterJSONParser().parseCredentials(response);
+		ClientStore.saveTwitterUserID(userID, context);
+		return userID;
 	}
 
 	private List<User> getTwitterUserNamesFromID(String[] ids) {
@@ -137,11 +156,17 @@ public class TwitterHelper {
 				url.append(",").append(ids[i]);
 			}
 		}
+		
 		String response = request(url.toString());
+		if (response == null) {
+			return null;
+		}
+
 		users.addAll(new TwitterJSONParser().parseUserNames(response));
 
-		for (User u : users)
+		for (User u : users) {
 			u.setSource("twitter");
+		}
 
 		return users;
 	}
@@ -167,10 +192,11 @@ public class TwitterHelper {
 			twitter.signRequest(accessToken, request);
 			Response response = request.send();
 
-			if (response.isSuccessful())
+			if (response.isSuccessful()) {
 				return response.getBody();
-			else
+			} else {
 				Log.e(getClass().getName(), "Unsuccessful response returned");
+			}
 		} catch (OAuthException e) {
 			Log.e(getClass().getName(), "Problem establishing connection");
 		}

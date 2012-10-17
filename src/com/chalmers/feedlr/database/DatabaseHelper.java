@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
-	
+
 	public void onCreate(SQLiteDatabase database) {
 		// @formatter:off
 		// Creating feed table
@@ -110,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	//
 	// Feed related methods
 	//
-	
+
 	/**
 	 * Adds a feed to the database.
 	 * 
@@ -191,12 +191,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		c.close();
 		return feed_id;
 	}
-	
+
 	//
 	//
 	// User related methods
 	//
-	
+
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -309,7 +309,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            item to be added.
 	 */
 	public long addItem(Item item) {
-		return db.insert(TABLE_ITEM, null, itemCV(item));
+
+		// return db.insert(TABLE_ITEM, null, itemCV(item));
+
+		// return db.insert(TABLE_ITEM, null, itemCV(item));
+		return db.insertWithOnConflict(TABLE_ITEM, null, itemCV(item),
+				SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	/**
@@ -448,6 +453,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " IN (SELECT " + FEEDUSER_COLUMN_USER_ID + " FROM "
 				+ TABLE_FEEDUSER + " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
 				+ getFeed_id(feed) + ")", new String[] { source });
+		/*
+		 * Cursor c; if (source == null) c = db.rawQuery("SELECT * FROM " +
+		 * TABLE_USER + " WHERE " + USER_COLUMN_USERID + " IN (SELECT " +
+		 * FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER + " WHERE " +
+		 * FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed) + ")", null); else
+		 * { c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE " +
+		 * USER_COLUMN_SOURCE + " = ?" + " AND " + USER_COLUMN_USERID +
+		 * " IN (SELECT " + FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+		 * + " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = " + getFeedID(feed) +
+		 * ")", new String[] { source }); } return c;
+		 */
 	}
 
 	/**

@@ -39,6 +39,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class FeedFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
@@ -54,6 +55,7 @@ public class FeedFragment extends ListFragment implements
 	private PullToRefreshListView listView;
 	private Loader<Cursor> loader;
 	private FeedListener listener;
+	private LocalBroadcastManager lbm;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,21 +64,24 @@ public class FeedFragment extends ListFragment implements
 		Bundle arg = getArguments();
 		feedTitle = arg.getString("title");
 
-		LocalBroadcastManager lbm = LocalBroadcastManager
-				.getInstance(getActivity());
+		lbm = LocalBroadcastManager.getInstance(getActivity());
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(FeedActivity.TWITTER_TIMELINE_UPDATED);
-		filter.addAction(FeedActivity.TWITTER_USERS_UPDATED);
-		filter.addAction(FeedActivity.TWITTER_USER_TWEETS_UPDATED);
-		filter.addAction(FeedActivity.FACEBOOK_TIMELINE_UPDATED);
-		filter.addAction(FeedActivity.FACEBOOK_USERS_UPDATED);
-		filter.addAction(FeedActivity.FACEBOOK_USER_NEWS_UPDATED);
 		filter.addAction(FeedActivity.FEED_UPDATED);
+		filter.addAction(FeedActivity.FEED_PROBLEM_UPDATING);
+		filter.addAction(FeedActivity.NO_CONNECTION);
 		lbm.registerReceiver(receiver, filter);
 	}
 
 	@Override
+
+	public void onDestroy() {
+		lbm.unregisterReceiver(receiver);
+		super.onDestroy();
+	}
+
+	@Override
+
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
@@ -136,7 +141,16 @@ public class FeedFragment extends ListFragment implements
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			loader.forceLoad();
+			String broadcast = intent.getAction();
+			Bundle b = intent.getExtras();
+
+			if (broadcast.equals(FeedActivity.FEED_UPDATED)) {
+				loader.forceLoad();
+			} else if (broadcast.equals(FeedActivity.NO_CONNECTION)) {
+				Toast.makeText(getActivity(), "Problem connection available",
+						Toast.LENGTH_LONG).show();
+			}
+
 			listView.onRefreshComplete();
 		}
 	};

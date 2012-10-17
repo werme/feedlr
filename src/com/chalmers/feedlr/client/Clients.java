@@ -52,8 +52,9 @@ public class Clients {
 	}
 
 	public synchronized static OAuthService getTwitter() {
-		if (twitter != null)
+		if (twitter != null) {
 			return twitter;
+		}
 
 		twitter = new ServiceBuilder().provider(TwitterApi.class)
 				.apiKey(TWITTER_CONSUMER_KEY)
@@ -64,16 +65,18 @@ public class Clients {
 	}
 
 	public synchronized static Facebook getFacebook() {
-		if (facebook != null)
+		if (facebook != null) {
 			return facebook;
+		}
 
 		facebook = new Facebook(FACEBOOK_APP_ID);
 		return facebook;
 	}
 
 	public synchronized static AsyncFacebookRunner getAsyncFacebookRunner() {
-		if (asyncFacebookRunner != null)
+		if (asyncFacebookRunner != null) {
 			return asyncFacebookRunner;
+		}
 
 		asyncFacebookRunner = new AsyncFacebookRunner(facebook);
 		return asyncFacebookRunner;
@@ -95,10 +98,12 @@ public class Clients {
 	public static List<Integer> getAuthorizedClients(Context context) {
 		List<Integer> authorizedClients = new ArrayList<Integer>();
 
-		if (isAuthorized(TWITTER, context))
+		if (isAuthorized(TWITTER, context)) {
 			authorizedClients.add(TWITTER);
-		if (isAuthorized(FACEBOOK, context))
+		}
+		if (isAuthorized(FACEBOOK, context)) {
 			authorizedClients.add(FACEBOOK);
+		}
 
 		return authorizedClients;
 	}

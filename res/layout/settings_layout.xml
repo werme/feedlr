@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.chalmers.feedlr.ui.CreateFeedView
+    <ViewAnimator
         android:id="@+id/settings_view_flipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -84,6 +84,6 @@
                 android:layout_height="1dp"
                 android:background="#212b35" />
         </LinearLayout>
-    </com.chalmers.feedlr.ui.CreateFeedView>
+    </ViewAnimator>
 
 </LinearLayout>

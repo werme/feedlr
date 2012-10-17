@@ -16,8 +16,6 @@
 
 package com.chalmers.feedlr.model;
 
-import java.net.URL;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**

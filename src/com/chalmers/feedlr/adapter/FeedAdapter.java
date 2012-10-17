@@ -19,9 +19,7 @@ package com.chalmers.feedlr.adapter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.DatabaseHelper;

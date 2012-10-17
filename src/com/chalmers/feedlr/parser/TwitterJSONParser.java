@@ -65,9 +65,10 @@ public class TwitterJSONParser {
 	public List<TwitterItem> parseTweets(String json) {
 		long time = System.currentTimeMillis();
 
-		if (tweetReader == null)
+		if (tweetReader == null) {
 			tweetReader = mapper.reader(new TypeReference<List<TwitterItem>>() {
 			});
+		}
 
 		List<TwitterItem> list = null;
 
@@ -105,8 +106,9 @@ public class TwitterJSONParser {
 
 		try {
 
-			if (jfactory == null)
+			if (jfactory == null) {
 				jfactory = new JsonFactory();
+			}
 
 			jParser = jfactory.createJsonParser(json);
 
