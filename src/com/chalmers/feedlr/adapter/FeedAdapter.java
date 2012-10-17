@@ -58,6 +58,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		public TextView author;
 		public TextView timestamp;
 		public ImageView profilePicture;
+		public ImageView source;
 	}
 
 	@Override
@@ -91,6 +92,15 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		int colNumUserId = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
 		Cursor cursor = db.getUser(c.getInt(colNumUserId) + "");
 		cursor.moveToFirst();
+
+		// Set source image
+		int colNumSource = cursor
+				.getColumnIndex(DatabaseHelper.USER_COLUMN_SOURCE);
+		if (cursor.getString(colNumSource).equals("facebook")) {
+			viewHolder.source.setBackgroundResource(R.drawable.source_facebook);
+		} else {
+			viewHolder.source.setBackgroundResource(R.drawable.source_twitter);
+		}
 
 		// Display profile picture
 		int colNumURL = cursor
@@ -129,6 +139,8 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View tempView = inflater.inflate(R.layout.feed_item, null);
+
+		// Find views
 		ViewHolder viewHolder = new ViewHolder();
 		viewHolder.text = (TextView) tempView.findViewById(R.id.feed_item_text);
 		viewHolder.author = (TextView) tempView
@@ -137,6 +149,10 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				.findViewById(R.id.feed_item_timestamp);
 		viewHolder.profilePicture = (ImageView) tempView
 				.findViewById(R.id.feed_item_author_image);
+		viewHolder.source = (ImageView) tempView
+				.findViewById(R.id.feed_item_source_image);
+
+		// Set fonts
 		Typeface robotoThinItalic = Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(),

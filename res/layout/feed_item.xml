@@ -48,8 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/feed_item_author"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/feed_item_author_image"
-        android:src="@drawable/source_twitter" />
+        android:layout_toRightOf="@+id/feed_item_author_image" />
 
     <TextView
         android:id="@+id/feed_item_author"
