@@ -56,7 +56,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 	static class ViewHolder {
 		public TextView text;
 		public TextView author;
-		public TextView timeStamp;
+		public TextView timestamp;
 		public ImageView profilePicture;
 	}
 
@@ -93,12 +93,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				timestampDate.getTime(), DateUtils.SECOND_IN_MILLIS,
 				DateUtils.WEEK_IN_MILLIS, 0).toString();
 
-		if (parsedTimestamp.contains(",")) {
-			viewHolder.timeStamp.setText(parsedTimestamp.substring(0,
-					parsedTimestamp.indexOf(',')));
-		} else {
-			viewHolder.timeStamp.setText(parsedTimestamp);
-		}
+		viewHolder.timestamp.setText(stripTimestamp(parsedTimestamp));
 
 		profilePicture = (ImageView) v
 				.findViewById(R.id.feed_item_author_image);
@@ -132,13 +127,21 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		viewHolder.author = (TextView) tempView
 				.findViewById(R.id.feed_item_author);
 
-		viewHolder.timeStamp = (TextView) tempView
+		viewHolder.timestamp = (TextView) tempView
 				.findViewById(R.id.feed_item_timestamp);
 		Typeface robotoThinItalic = Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
 		viewHolder.text.setTypeface(robotoThinItalic);
 		tempView.setTag(viewHolder);
 		return tempView;
+	}
+
+	public String stripTimestamp(String timestamp) {
+		if (timestamp.contains(",")) {
+			return (timestamp.substring(0, timestamp.indexOf(',')));
+		} else {
+			return timestamp;
+		}
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
