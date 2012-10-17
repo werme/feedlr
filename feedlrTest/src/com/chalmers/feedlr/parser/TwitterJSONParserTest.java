@@ -20,21 +20,21 @@ public class TwitterJSONParserTest extends AndroidTestCase {
 		StringBuilder json = new StringBuilder();
 
 		json.append("[{")
-				.append("\"created_at\": \"Wed Aug 29 17:12:58 +0000 2012\"")
+				.append("\"created_at\":\"Wed Aug 29 17:12:58 +0000 2012\"")
 				.append(",")
-				.append("\"id_str\": \"240859602684612608\"")
+				.append("\"id_str\":\"240859602684612608\"")
 				.append(",")
 				.append("\"text\":\"Awesome test message!\"")
 				.append(",")
-				.append("\"id\": 240859602684612608")
+				.append("\"id\":240859602684612608")
 				.append(",")
 				.append("\"user\":")
 				.append("{")
-				.append("\"name\": \"Awesome test user\"")
+				.append("\"name\":\"Awesome test user\"")
 				.append(",")
 				.append("\"profile_image_url\":\"http://www.google.com/img.png\"")
-				.append(",").append("\"id_str\": \"6253282\"").append(",")
-				.append("\"id\": 6253282").append("}").append("}]");
+				.append(",").append("\"id_str\":\"6253282\"").append(",")
+				.append("\"id\":6253282").append("}").append("}]");
 
 		String jsonString = json.toString();
 
@@ -47,10 +47,10 @@ public class TwitterJSONParserTest extends AndroidTestCase {
 		StringBuilder json = new StringBuilder();
 
 		json.append("[{")
-				.append("\"name\": \"Awesome test user\"")
+				.append("\"name\":\"Awesome test user\"")
 				.append(",")
 				.append("\"profile_image_url\":\"http://www.google.com/img.png\"")
-				.append(",").append("\"id\": 24085960").append("}]");
+				.append(",").append("\"id\":24085960").append("}]");
 
 		String jsonString = json.toString();
 
