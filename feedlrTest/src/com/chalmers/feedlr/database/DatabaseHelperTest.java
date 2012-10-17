@@ -40,7 +40,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		Cursor c = db.query(DatabaseHelper.TABLE_FEED,
 				new String[] { DatabaseHelper.FEED_COLUMN_NAME },
 				DatabaseHelper.FEED_COLUMN_ID + " = ?",
-				new String[] { dbHelper.getFeedID(f1) + "" }, null, null, null);
+				new String[] { dbHelper.getFeed_id(f1) + "" }, null, null, null);
 		c.moveToFirst();
 		assertTrue(c.getString(0).equals(feedName));
 		
@@ -71,8 +71,8 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	}
 
 	public void testAddUser() {
-		User u1 = new User(1, "Olle");
-		
+		User u1 = new User(1, "Olle");		
 		dbHelper.addUser(u1);
+
 	}
 }

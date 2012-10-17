@@ -88,7 +88,7 @@ public class Clients {
 			Token accessToken = ClientStore.getTwitterAccessToken(context);
 			return (accessToken.getToken() != null && accessToken.getSecret() != null);
 		case FACEBOOK:
-			return (facebook.isSessionValid());
+			return (ClientStore.getFacebookAccessToken(context) != null);
 		default:
 			Log.wtf("Client authorization", "Client does not exist");
 			return false;
@@ -97,6 +97,7 @@ public class Clients {
 
 	public static List<Integer> getAuthorizedClients(Context context) {
 		List<Integer> authorizedClients = new ArrayList<Integer>();
+
 
 		if (isAuthorized(TWITTER, context)) {
 			authorizedClients.add(TWITTER);

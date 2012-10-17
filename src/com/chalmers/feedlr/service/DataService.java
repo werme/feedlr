@@ -142,6 +142,7 @@ public class DataService extends Service {
 				Intent intent = new Intent();
 
 				List<User> users = twitter.getFollowing();
+
 				if (users != null) {
 					for (User u : users) {
 						u.setSource("twitter");
@@ -365,12 +366,18 @@ public class DataService extends Service {
 					@Override
 					public void onComplete(String response, Object state) {
 
-						if (response != null) {
-							facebookItemsForUsers
-									.addAll(new FacebookJSONParser()
-											.parseFeed(response));
-							responses++;
+						try {
+							if (response != null) {
+								facebookItemsForUsers
+										.addAll(new FacebookJSONParser()
+												.parseFeed(response));
+								responses++;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							Log.d("DataService", response);
 						}
+
 
 						if (responses == facebookUsersInFeed.size())
 							onAllComplete();
