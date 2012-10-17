@@ -110,22 +110,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// Feed related methods:
 
-	public void addFeed(Feed feed) throws SQLiteException {
-		db.insertOrThrow(TABLE_FEED, null, feedCV(feed));
+	public boolean addFeed(Feed feed) throws SQLiteException {
+		if (feedExist(feed) || feed.getTitle() == null)
+			return false;
+		db.insert(TABLE_FEED, null, feedCV(feed));
+		return true;
 	}
 
-	public void removeFeed(Feed feed) throws IllegalArgumentException {
-		String title = feed.getTitle();
-		long id = getFeedID(feed);
+	public boolean removeFeed(Feed feed) {
+		if(feedExist(feed)){
+			long id = getFeedID(feed);
+			removeFeedBridge(id);
+			db.delete(TABLE_FEED, FEED_COLUMN_ID + "=?", new String[] { id + "" });
+			return true;
+		}
+		return false;
+	}
 
-		removeFeedBridge(id);
-
-		db.delete(TABLE_FEED, FEED_COLUMN_NAME + "=?", new String[] { title });
+	public boolean feedExist(Feed feed) {
+		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_NAME },
+				FEED_COLUMN_NAME + " = ?", new String[] { feed.getTitle() },
+				null, null, null);
+		if (c.getCount() == 0)
+			return false;
+		return true;
 	}
 
 	public void clearFeeds() {
 		db.delete(TABLE_FEED, null, null);
 		db.delete(TABLE_FEEDUSER, null, null);
+	}
+
+	public long getFeedTableSize() {
+		return DatabaseUtils.queryNumEntries(db, TABLE_FEED);
 	}
 
 	public ArrayList<String> listFeeds() {
@@ -159,21 +176,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	// User related methods
 
-	public long addUser(User user) {
-		Long userID;
-		try {
-			userID = getUserID(user);
+	public boolean addUser(User user) {
+		if (userExist(user)) {
 			updateUser(user);
-		} catch (IllegalArgumentException e) {
-			userID = db.insert(TABLE_USER, null, userCV(user));
+			return false;
 		}
-		return userID;
+		db.insert(TABLE_USER, null, userCV(user));
+		return true;
 	}
 
 	public void addUsers(List<? extends User> users) {
 
 		db.beginTransaction();
-		//TODO Make sure addUsers are using addUser method instead of a insert to db.
+		// TODO Make sure addUsers are using addUser method instead of a insert
+		// to db.
 		for (User u : users) {
 			db.insertWithOnConflict(TABLE_USER, null, userCV(u),
 					SQLiteDatabase.CONFLICT_IGNORE);
@@ -183,17 +199,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public long updateUser(User user) {
-		return db.update(TABLE_USER, userCV(user), USER_COLUMN_ID + " = "
+		return db.update(TABLE_USER, userCV(user), USER_COLUMN_USERID + " = "
 				+ user.getId(), null);
 	}
 
-	private void removeUser(User user) {
-		long id = user.getId();
-		db.delete(TABLE_USER, USER_COLUMN_ID + "=?", new String[] { id + "" });
+	public boolean removeUser(User user) {
+		if (userExist(user)) {
+			long id = user.getId();
+			db.delete(TABLE_USER, USER_COLUMN_USERID + "=?", new String[] { id
+					+ "" });
+			return true;
+		}
+		return false;
+	}
+
+	public boolean userExist(User user) {
+		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERID },
+				USER_COLUMN_USERID + " = ?",
+				new String[] { user.getId() + "" }, null, null, null);
+		if (c.getCount() == 0)
+			return false;
+		return true;
 	}
 
 	public void clearUserTable() {
 		db.delete(TABLE_USER, null, null);
+	}
+
+	public long getUserTableSize() {
+		return DatabaseUtils.queryNumEntries(db, TABLE_USER);
 	}
 
 	public ArrayList<String> listUsers() {
@@ -208,7 +242,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return users;
 	}
 
-	private long getUserID(User user) throws IllegalArgumentException {
+	public long getUserID(User user) throws IllegalArgumentException {
 		long id = user.getId();
 		long userID;
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -227,8 +261,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	// Item related methods
 
 	public long addItem(Item item) {
-//		return db.insert(TABLE_ITEM, null, itemCV(item));
-		return db.insertWithOnConflict(TABLE_ITEM, null, itemCV(item), SQLiteDatabase.CONFLICT_IGNORE);
+		// return db.insert(TABLE_ITEM, null, itemCV(item));
+		return db.insertWithOnConflict(TABLE_ITEM, null, itemCV(item),
+				SQLiteDatabase.CONFLICT_IGNORE);
 	}
 
 	public void addListOfItems(List<? extends Item> itemList) {
@@ -244,24 +279,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_ITEM, null, null);
 	}
 
+	public long getItemTableSize() {
+		return DatabaseUtils.queryNumEntries(db, TABLE_ITEM);
+	}
+
 	// Bridge methods:
-
-	public void addUserToFeed(User user, Feed feed) {
-		long FeedID = getFeedID(feed);
-		long UserID = addUser(user);
-
-		// Add bridge connection
-		if (UserID != -1) {
-			addFeedUserBridge(FeedID, UserID);
-		}
-	}
-
-	public void removeUserFromFeed(Feed feed, User user) {
-		long feedID = getFeedID(feed);
-		long userID = getUserID(user);
-
-		removeFeedUserBridge(feedID, userID);
-	}
 
 	public void addFeedUserBridge(long feedID, long userID) {
 		ContentValues temp = new ContentValues();
@@ -326,13 +348,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
 				null, null);
 		return c;
-	}
-
-	public long getItemTableSize() {
-		SQLiteDatabase database = this.getReadableDatabase();
-		long l = DatabaseUtils.queryNumEntries(database, TABLE_ITEM);
-		// database.close();
-		return l;
 	}
 
 	// Contentvalue creaters for each table

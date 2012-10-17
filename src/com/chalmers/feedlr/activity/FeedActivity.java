@@ -340,7 +340,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-		if (isOnline()) {
+		if (true) {
 			feedService.updateFeed(new Feed(feedTitle));
 		} else {
 			Intent intent = new Intent();
@@ -383,7 +383,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		if (isOnline()) {
+		if (true) {
 			feedService.updateUsers();
 		} else {
 			Toast.makeText(this, "No connection available", Toast.LENGTH_LONG)
