@@ -420,6 +420,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void createFeed(View button) {
+		
 		// Animate switch to main view
 		toggleSettingsView(null);
 
@@ -467,6 +468,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.removeView(v);
 		userListLayout = null;
 		userListView = null;
+		
 	}
 
 	public void authorizeTwitter(View v) {

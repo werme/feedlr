@@ -20,6 +20,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -64,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
-	
+
 	public void onCreate(SQLiteDatabase database) {
 		// @formatter:off
 		// Creating feed table
@@ -106,26 +107,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
+	//
+	//
 	// Feed related methods:
+	//
 
+	/**
+	 * Adds a feed to the database.
+	 * 
+	 * @param feed
+	 *            the feed to be added in the database.
+	 * @return true if the feed was added to the database.
+	 */
 	public boolean addFeed(Feed feed) throws SQLiteException {
-		if (feedExist(feed) || feed.getTitle() == null)
+		if (feedExist(feed))
 			return false;
 		db.insert(TABLE_FEED, null, feedCV(feed));
 		return true;
 	}
 
+	/**
+	 * Removes a feed from the database.
+	 * 
+	 * @param feed
+	 *            the feed to be removed.
+	 * @return true if the feed was removed.
+	 */
 	public boolean removeFeed(Feed feed) {
-		if(feedExist(feed)){
+		if (feedExist(feed)) {
 			long id = getFeed_id(feed);
 			removeFeedBridge(id);
-			db.delete(TABLE_FEED, FEED_COLUMN_ID + "=?", new String[] { id + "" });
+			db.delete(TABLE_FEED, FEED_COLUMN_ID + "=?",
+					new String[] { id + "" });
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Method to see if a feed exists.
+	 * 
+	 * @param feed
+	 *            the feed to be searched for.
+	 * @return true if feed exists.
+	 */
 	public boolean feedExist(Feed feed) {
+		if (feed.getTitle() == null) {
+			return false;
+		}
 		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_NAME },
 				FEED_COLUMN_NAME + " = ?", new String[] { feed.getTitle() },
 				null, null, null);
@@ -142,10 +171,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_FEEDUSER, null, null);
 	}
 
+	/**
+	 * Returns the size of the feed table.
+	 * 
+	 * @return number of feeds in the database as a long.
+	 */
 	public long getFeedTableSize() {
 		return DatabaseUtils.queryNumEntries(db, TABLE_FEED);
 	}
-
 
 	/**
 	 * Lists all the feeds in the database.
@@ -170,9 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * 
 	 * @param feed
 	 *            whose ID is searched for
-	 * @return the id of the searched feed.
-	 * @throws IllegalArgumentException
-	 *             if no such feed exists in the database.
+	 * @return the id of the searched feed. -1 if the feed doesn't exist.
 	 */
 	public long getFeed_id(Feed feed) throws IllegalArgumentException {
 		String feedTitle = feed.getTitle();
@@ -184,29 +215,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 		if (c.moveToNext()) {
 			feed_id = Long.parseLong(c.getString(0));
-		} else {
-			throw (new IllegalArgumentException("Feed does not exist!"));
+			c.close();
+			return feed_id;
 		}
-		c.close();
-		return feed_id;
+		return -1;
 	}
-	
+
 	//
 	//
 	// User related methods
 	//
-	
+
 	/**
 	 * Adds a user to the database.
 	 * 
 	 * @param user
 	 *            the user to be added in the database.
-	 * @return the database ID of the user.
+	 * @return true if user was added or updated in the database.
 	 */
 	public boolean addUser(User user) {
-	if (userExist(user)) {
-			updateUser(user);
-			return false;
+		if (updateUser(user)) {
+			return true;
 		}
 		db.insert(TABLE_USER, null, userCV(user));
 		return true;
@@ -223,8 +252,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// TODO Make sure addUsers are using addUser method instead of a insert
 		// to db.
 		for (User u : users) {
-			db.insertWithOnConflict(TABLE_USER, null, userCV(u),
-					SQLiteDatabase.CONFLICT_IGNORE);
+			addUser(u);
 		}
 		db.setTransactionSuccessful();
 		db.endTransaction();
@@ -237,22 +265,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            the user to be updated.
 	 * @return the database ID of the user added.
 	 */
-
-	public long updateUser(User user) {
-		return db.update(TABLE_USER, userCV(user), USER_COLUMN_USERID + " = "
-				+ user.getId(), null);
-	}
-
-	public boolean removeUser(User user) {
+	public boolean updateUser(User user) {
 		if (userExist(user)) {
-			long id = user.getId();
-			db.delete(TABLE_USER, USER_COLUMN_USERID + "=?", new String[] { id
-					+ "" });
+			db.update(TABLE_USER, userCV(user), USER_COLUMN_USERID + " = "
+					+ user.getId(), null);
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Removes a user from the database.
+	 * 
+	 * @param user
+	 *            the user to be removed.
+	 * @return result of action, true if user removed.
+	 */
+	public boolean removeUser(User user) {
+		if (userExist(user)) {
+			db.delete(TABLE_USER, USER_COLUMN_USERID + "=?",
+					new String[] { user.getId() + "" });
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check if a user exists in the database.
+	 * 
+	 * @param user
+	 *            the user to check.
+	 * @return the result of the query, true if user exists.
+	 */
 	public boolean userExist(User user) {
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERID },
 				USER_COLUMN_USERID + " = ?",
@@ -269,6 +313,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_USER, null, null);
 	}
 
+	/*
+	 * Returns the size of the user table.
+	 * 
+	 * @return number of users in the database.
+	 */
 	public long getUserTableSize() {
 		return DatabaseUtils.queryNumEntries(db, TABLE_USER);
 	}
@@ -276,7 +325,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/**
 	 * Returns a cursor of all the users in the database.
 	 * 
-	 * @return
+	 * @return a cursor pointing at all the users in the database.
 	 */
 	public Cursor listUsers() {
 		return db.rawQuery("SELECT * FROM " + TABLE_USER, null);
@@ -291,7 +340,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @throws IllegalArgumentException
 	 *             if the user does not exists within the database.
 	 */
-	private long getUser_id(User user) throws IllegalArgumentException {
+	private long getUser_id(User user) {
 		long id = user.getId();
 		long user_id;
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
@@ -299,11 +348,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				null);
 		if (c.moveToNext()) {
 			user_id = Long.parseLong(c.getString(0));
-		} else {
-			throw (new IllegalArgumentException("User does not exist!"));
+			c.close();
+			return user_id;
 		}
-		c.close();
-		return user_id;
+		return -1;
+
+	}
+
+	/**
+	 * Return a cursor pointing at the requested user.
+	 * 
+	 * @param userID
+	 *            the userID of the user that is requested.
+	 * @return a cursor pointing at the requested user.
+	 */
+	public Cursor getUser(String userID) {
+		return db.query(TABLE_USER, null, USER_COLUMN_USERID + " = ?",
+				new String[] { userID }, null, null, null);
+	}
+	/**
+	 * Return a cursor pointing at all the users in a feed.
+	 * 
+	 * @param feed
+	 *            the feed which users are part of.
+	 * @return a cursor with all the users in the feed.
+	 */
+	public Cursor getUsers(Feed feed) {
+		return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+				+ USER_COLUMN_USERID + " IN (SELECT " + FEEDUSER_COLUMN_USER_ID
+				+ " FROM " + TABLE_FEEDUSER + " WHERE "
+				+ FEEDUSER_COLUMN_FEED_ID + " = " + getFeed_id(feed) + ")",
+				null);
+	}
+	/**
+	 * Returns a cursor with all users in a feed from a certain source.
+	 * 
+	 * @param feed
+	 *            the feed which the users are part of.
+	 * 
+	 * @param source
+	 *            which source the users in the feed come from.
+	 * @return a cursor with all the selected users.
+	 */
+	public Cursor getUsers(Feed feed, String source) {
+		if (source == null)
+			return null;
+		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+					+ USER_COLUMN_SOURCE + " = ?" + " AND "
+					+ USER_COLUMN_USERID + " IN (SELECT "
+					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+					+ getFeed_id(feed) + ")" + " ORDER BY "
+					+ USER_COLUMN_USERNAME + " ASC", new String[] { source });
+		return c;
+	}
+
+	/**
+	 * Returns a cursor with all the users in the database.
+	 * 
+	 * @return a cursor with all users.
+	 */
+	public Cursor getAllUsers() {
+		return db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
+				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
+				null, USER_COLUMN_USERNAME + " ASC");
 	}
 
 	//
@@ -314,13 +422,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/**
 	 * Adds a item to the database.
 	 * 
-	 * @param the
-	 *            item to be added.
+	 * @param item
+	 *            the item to be added.
+	 * @return
 	 */
-	public long addItem(Item item) {
-		// return db.insert(TABLE_ITEM, null, itemCV(item));
-		return db.insertWithOnConflict(TABLE_ITEM, null, itemCV(item),
-				SQLiteDatabase.CONFLICT_IGNORE);
+	public boolean addItem(Item item) {
+		Log.i("Item", "item1");
+		if (updateItem(item)) {
+			Log.i("Item", "item2");
+			return true;
+		}
+		db.insert(TABLE_ITEM, null, itemCV(item));
+		return true;
+	}
+
+	/**
+	 * Method to update a item in the item table.
+	 * 
+	 * @param item
+	 *            the item to be updated.
+	 * @return true if the item got updated, false if the item does not exist.
+	 */
+	public boolean updateItem(Item item) {
+		if (itemExist(item)) {
+			db.update(TABLE_ITEM, itemCV(item), ITEM_COLUMN_ITEMID + " = "
+					+ item.getId(), null);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Method to check if a item exists in the database.
+	 * 
+	 * @param item
+	 *            the item to be searched.
+	 * @return true if item exists, false if the item does not exist.
+	 */
+	public boolean itemExist(Item item) {
+		if (!item.getId().equals(null)) {
+			Cursor c = db.query(TABLE_ITEM,
+					new String[] { ITEM_COLUMN_ITEMID }, ITEM_COLUMN_ITEMID
+							+ " = ?", new String[] { item.getId() + "" }, null,
+					null, null);
+			if (c.getCount() > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -345,9 +494,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_ITEM, null, null);
 	}
 
-
+	/**
+	 * Returns the size of the ItemTable.
+	 * 
+	 * @return the total number of items in the database as a long.
+	 */
 	public long getItemTableSize() {
 		return DatabaseUtils.queryNumEntries(db, TABLE_ITEM);
+	}
+
+	/**
+	 * Returns a cursor with all the items in a feed.
+	 * 
+	 * @param feed
+	 *            which feed's items that will be returned.
+	 * @param int the amount of items returned.
+	 * @return a cursor with the requested items.
+	 */
+	public Cursor getItems(Feed feed, int amount) {
+		return db.query(TABLE_ITEM, null, ITEM_COLUMN_USER_ID + " IN (SELECT "
+				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
+				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+				+ getFeed_id(feed) + ")", null, null, null,
+				ITEM_COLUMN_TIMESTAMP + " DESC", amount + "");
+	}
+
+	/**
+	 * Returns a cursor with all the items in the database.
+	 * 
+	 * @return a cursor with all items.
+	 */
+	public Cursor getAllItems() {
+		return db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
+				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
+				ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID,
+				ITEM_COLUMN_USERNAME }, null, null, null, null, null);
 	}
 
 	//
@@ -405,94 +586,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 *            the feed which the users are part of.
 	 * @return a cursor with all the users in the feed.
 	 */
-
-	public Cursor getUsers(Feed feed) {
-		return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-				+ USER_COLUMN_USERID + " IN (SELECT " + FEEDUSER_COLUMN_USER_ID
-				+ " FROM " + TABLE_FEEDUSER + " WHERE "
-				+ FEEDUSER_COLUMN_FEED_ID + " = " + getFeed_id(feed) + ")",
-				null);
-	}
-
-	/**
-	 * Returns a cursor with all users in a feed from a certain source.
-	 * 
-	 * @param feed
-	 *            the feed which the users are part of.
-	 * 
-	 * @param source
-	 *            which source the users in the feed come from.
-	 * @return a cursor with all the selected users.
-	 */
-	public Cursor getUsers(Feed feed, String source) {
-	Cursor c;
-	if (source == null)
-		c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-				+ USER_COLUMN_USERID + " IN (SELECT "
-				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-				+ getFeed_id(feed) + ")", null);
-	else {
-		c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-				+ USER_COLUMN_SOURCE + " = ?" + " AND "
-				+ USER_COLUMN_USERID + " IN (SELECT "
-				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-				+ getFeed_id(feed) + ")", new String[] { source });
-	}
-	return c;
-	}
-
-	/**
-	 * Returns a cursor with all the items in a feed.
-	 * 
-	 * @param feed
-	 *            which feed's items that will be returned.
-	 * @param int the amount of items returned.
-	 * @return a cursor with the requested items.
-	 */
-	public Cursor getItems(Feed feed, int amount) {
-		return db.query(TABLE_ITEM, null, ITEM_COLUMN_USER_ID + " IN (SELECT "
-				+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-				+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-				+ getFeed_id(feed) + ")", null, null, null,
-				ITEM_COLUMN_TIMESTAMP + " DESC", amount + "");
-	}
-
-	/**
-	 * Returns a cursor with all the items in the database.
-	 * 
-	 * @return a cursor with all items.
-	 */
-	public Cursor getAllItems() {
-		return db.query(TABLE_ITEM, new String[] { ITEM_COLUMN_ID,
-				ITEM_COLUMN_TEXT, ITEM_COLUMN_TIMESTAMP, ITEM_COLUMN_TYPE,
-				ITEM_COLUMN_URL, ITEM_COLUMN_IMGURL, ITEM_COLUMN_USER_ID,
-				ITEM_COLUMN_USERNAME }, null, null, null, null, null);
-	}
-
-	/**
-	 * Returns a cursor with all the users in the database.
-	 * 
-	 * @return a cursor with all users.
-	 */
-	public Cursor getAllUsers() {
-		return db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
-				USER_COLUMN_USERNAME, USER_COLUMN_USERID }, null, null, null,
-				null, null);
-	}
-
-	/**
-	 * Return a cursor pointing at the requested user.
-	 * 
-	 * @param userID
-	 *            the userID of the user that is requested.
-	 * @return a cursor pointing at the requested user.
-	 */
-	public Cursor getUser(String userID) {
-		return db.query(TABLE_USER, null, USER_COLUMN_USERID + " = ?",
-				new String[] { userID }, null, null, null);
-	}
 
 	//
 	//
