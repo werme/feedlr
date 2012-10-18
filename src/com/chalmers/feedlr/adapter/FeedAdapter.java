@@ -187,7 +187,8 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 		final int color = 0xff424242;
 		final Paint paint = new Paint();
-		final Rect rect = new Rect(0, 0, squareBitmap.getWidth(), squareBitmap.getHeight());
+		final Rect rect = new Rect(0, 0, squareBitmap.getWidth(),
+				squareBitmap.getHeight());
 		final RectF rectF = new RectF(rect);
 		final float roundPx = 8;
 
@@ -220,7 +221,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				URL imgValue = new URL(strings[0]);
 				Bitmap thumbNail = BitmapFactory.decodeStream(imgValue
 						.openConnection().getInputStream());
-				return thumbNail;
+				Bitmap bitmapScaled = Bitmap.createScaledBitmap(thumbNail, 70,
+						70, true);
+				return bitmapScaled;
 			} catch (MalformedURLException e) {
 
 				e.printStackTrace();
