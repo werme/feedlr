@@ -29,7 +29,14 @@ import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -173,6 +180,28 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		}
 	}
 
+	public static Bitmap getRoundedCornerBitmap(Bitmap squareBitmap) {
+		Bitmap roundedBitmap = Bitmap.createBitmap(squareBitmap.getWidth(),
+				squareBitmap.getHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(roundedBitmap);
+
+		final int color = 0xff424242;
+		final Paint paint = new Paint();
+		final Rect rect = new Rect(0, 0, squareBitmap.getWidth(), squareBitmap.getHeight());
+		final RectF rectF = new RectF(rect);
+		final float roundPx = 8;
+
+		paint.setAntiAlias(true);
+		canvas.drawARGB(0, 0, 0, 0);
+		paint.setColor(color);
+		canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		canvas.drawBitmap(squareBitmap, rect, rect, paint);
+
+		return roundedBitmap;
+	}
+
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
 		// Avarage time: 270 ms
@@ -204,7 +233,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 		protected void onPostExecute(Bitmap result) {
 			if (profilePicture.getTag().toString().equals(tag)) {
-				profilePicture.setImageBitmap(result);
+				profilePicture.setImageBitmap(getRoundedCornerBitmap(result));
 			}
 		}
 	}
