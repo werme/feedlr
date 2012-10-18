@@ -86,6 +86,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Holds the views, so that a recycled view does not have to find its
 		// XML view
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
+		
+		// Remove the recycled profile picture
+		viewHolder.profilePicture.setImageDrawable(null);
 
 		// Get user id
 		int colNumUserId = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
@@ -98,6 +101,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		String imgURL = cursor.getString(colNumURL);
 		viewHolder.profilePicture.setTag(numberOfViews++);
 		new DownloadImageTask(viewHolder.profilePicture).execute(imgURL);
+		
 
 		// Display username
 		int colNumUsername = cursor
