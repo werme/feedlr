@@ -21,8 +21,9 @@ import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
+import com.chalmers.feedlr.external.PullToRefreshListView;
+import com.chalmers.feedlr.external.PullToRefreshListView.OnRefreshListener;
 import com.chalmers.feedlr.listener.FeedListener;
-import com.chalmers.feedlr.ui.PullToRefreshListView.OnRefreshListener;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
