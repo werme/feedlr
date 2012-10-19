@@ -234,9 +234,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return true if user was added or updated in the database.
 	 */
 	public boolean addUser(User user) {
+		if (user.getId() == 0 || user.getUserName() == null){
+			return false;
+		}
 		if (updateUser(user)) {
 			return true;
-		}
+		} 
 		db.insert(TABLE_USER, null, userCV(user));
 		return true;
 	}
@@ -298,6 +301,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return the result of the query, true if user exists.
 	 */
 	public boolean userExist(User user) {
+		if (user.getId() == 0 || user.getUserName() == null){
+			return false;
+		}
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERID },
 				USER_COLUMN_USERID + " = ?",
 				new String[] { user.getId() + "" }, null, null, null);
@@ -366,6 +372,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return db.query(TABLE_USER, null, USER_COLUMN_USERID + " = ?",
 				new String[] { userID }, null, null, null);
 	}
+
 	/**
 	 * Return a cursor pointing at all the users in a feed.
 	 * 
@@ -380,6 +387,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ FEEDUSER_COLUMN_FEED_ID + " = " + getFeed_id(feed) + ")",
 				null);
 	}
+
 	/**
 	 * Returns a cursor with all users in a feed from a certain source.
 	 * 
@@ -394,12 +402,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (source == null)
 			return null;
 		Cursor c = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
-					+ USER_COLUMN_SOURCE + " = ?" + " AND "
-					+ USER_COLUMN_USERID + " IN (SELECT "
-					+ FEEDUSER_COLUMN_USER_ID + " FROM " + TABLE_FEEDUSER
-					+ " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
-					+ getFeed_id(feed) + ")" + " ORDER BY "
-					+ USER_COLUMN_USERNAME + " ASC", new String[] { source });
+				+ USER_COLUMN_SOURCE + " = ?" + " AND " + USER_COLUMN_USERID
+				+ " IN (SELECT " + FEEDUSER_COLUMN_USER_ID + " FROM "
+				+ TABLE_FEEDUSER + " WHERE " + FEEDUSER_COLUMN_FEED_ID + " = "
+				+ getFeed_id(feed) + ")" + " ORDER BY " + USER_COLUMN_USERNAME
+				+ " ASC", new String[] { source });
 		return c;
 	}
 
