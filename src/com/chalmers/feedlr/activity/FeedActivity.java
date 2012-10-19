@@ -353,6 +353,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
+
 		// if (isOnline()) {
 		feedService.updateFeed(new Feed(feedTitle));
 		// } else {
@@ -419,6 +420,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void createFeed(View button) {
+		
 		// Animate switch to main view
 		toggleSettingsView(null);
 
@@ -466,6 +468,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.removeView(v);
 		userListLayout = null;
 		userListView = null;
+		
 	}
 
 	public void authorizeTwitter(View v) {
