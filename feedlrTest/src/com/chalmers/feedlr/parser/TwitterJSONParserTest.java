@@ -1,6 +1,9 @@
 package com.chalmers.feedlr.parser;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
@@ -23,25 +26,43 @@ public class TwitterJSONParserTest extends AndroidTestCase {
 	}
 
 	public void testParseTweets() {
-		StringBuilder json = new StringBuilder();
+		String timestampIn = "Wed Aug 29 17:12:58 +0000 2012";
+		
+		// Parse timestamp
+		SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
+		dateFormat.setLenient(false);
+		
+		Date date = null;
+		try {
+			date = dateFormat.parse(timestampIn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		long timestampOut = date.getTime();
+		String text = "Awesome text message!";
+		String tweetId = "2408596";
+		String username = "Awesome username";
+		String url = "http://www.google.com/img.png";
+		String userId = "6253282";
 
-		json.append(START_ARRAY)
-				.append(START_OBJECT)
-				.append("\"created_at\": \"Wed Aug 29 17:12:58 +0000 2012\"")
+		StringBuilder json = new StringBuilder();
+		json.append(START_ARRAY).append(START_OBJECT)
+				.append("\"created_at\":\"" + timestampIn + "\"")
 				.append(SEPARATOR)
-				.append("\"id_str\": \"240859602684612608\"")
+				.append("\"text\":\"" + text + "\"")
 				.append(SEPARATOR)
-				.append("\"text\":\"Awesome test message!\"")
-				.append(SEPARATOR)
-				.append("\"id\": 240859602684612608")
+				.append("\"id\":" + tweetId)
 				.append(SEPARATOR)
 				.append("\"user\":")
 				.append(START_OBJECT)
-				.append("\"name\": \"Awesome test user\"")
+				.append("\"name\":\"" + username + "\"")
 				.append(SEPARATOR)
-				.append("\"profile_image_url\":\"http://www.google.com/img.png\"")
-				.append(SEPARATOR).append("\"id_str\": \"6253282\"")
-				.append(SEPARATOR).append("\"id\": 6253282").append(END_OBJECT)
+				.append("\"profile_image_url\":\"" + url + "\"")
+				.append(SEPARATOR)
+				.append("\"id\":" + userId)
+				.append(END_OBJECT)
 				.append(END_OBJECT).append(END_ARRAY);
 
 		String jsonString = json.toString();
@@ -49,6 +70,17 @@ public class TwitterJSONParserTest extends AndroidTestCase {
 		List<TwitterItem> tweets = parser.parseTweets(jsonString);
 
 		assertNotNull(tweets);
+
+		TwitterItem item = tweets.get(0);
+		assertNotNull(item);
+
+		assertEquals("twitter", item.getUser().getSource());
+		assertTrue(timestampOut == item.getTimestamp());
+		assertEquals(text, item.getText());
+		assertEquals(tweetId, item.getId());
+		assertEquals(username, item.getUser().getUserName());
+		assertEquals(url, item.getUser().getProfileImageURL());
+		assertEquals(userId, item.getUser().getId());
 	}
 
 	public void testParseUserNames() {
