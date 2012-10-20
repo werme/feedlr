@@ -170,7 +170,7 @@ public class DataService extends Service {
 	 * 
 	 * This method is currently not in use.
 	 */
-	public void updateTweetsByUser(final long userID, final Feed feed) {
+	public void updateTweetsByUser(final String userID, final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
@@ -208,7 +208,7 @@ public class DataService extends Service {
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
 					User u = new User(
-							c.getLong(c
+							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
 							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME)));
@@ -352,7 +352,7 @@ public class DataService extends Service {
 		while (!c.isAfterLast()) {
 			facebookUsersInFeed
 					.add(new User(
-							c.getLong(c
+							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
 							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME))));

@@ -22,24 +22,13 @@ public interface Item {
 
 	public void setUser(User user);
 
-	public void setSource(String source);
-	
 	public void setId(String id);
 
 	public String getText();
-
-	public String getSource();
 	
 	public User getUser();
-	
-	public String getType();
 
 	public Long getTimestamp();
-
-	public String getURL();
-
-	public String getIMGURL();
 	
 	public String getId();
-
 }

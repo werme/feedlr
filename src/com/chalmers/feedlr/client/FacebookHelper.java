@@ -77,11 +77,11 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	public void getUserFeed(long userID, RequestListener listener) {
+	public void getUserFeed(String userID, RequestListener listener) {
 		long time = System.currentTimeMillis();
 
 		Bundle params = new Bundle();
-		params.putString("uid", userID + "");
+		params.putString("uid", userID);
 		params.putString("fields", "statuses");
 		request(FRIENDS, params, listener);
 
@@ -103,7 +103,7 @@ public class FacebookHelper {
 	}
 
 	// Gets small version of profile picture. Add ?type=large for big version
-	public String getProfileImageURL(long id) {
+	public String getProfileImageURL(String id) {
 		return ("http://graph.facebook.com/" + id + "/picture");
 	}
 }
