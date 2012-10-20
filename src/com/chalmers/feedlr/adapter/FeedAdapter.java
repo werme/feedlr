@@ -164,7 +164,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(),
 				"fonts/Roboto-Medium.ttf");
-		viewHolder.text.setTypeface(robotoThinItalic);
+		Typeface robotoLight = Typeface.createFromAsset(context.getAssets(),
+				"fonts/Roboto-Light.ttf");
+		viewHolder.text.setTypeface(robotoLight);
 		viewHolder.timestamp.setTypeface(robotoThinItalic);
 		viewHolder.author.setTypeface(robotoMedium);
 

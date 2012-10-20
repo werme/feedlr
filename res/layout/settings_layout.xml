@@ -9,14 +9,15 @@
         android:id="@+id/settings_view_flipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#222222" >
+        android:background="#1e2126" >
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/settings_background_gradient"
             android:orientation="vertical" >
+
+            <!-- android:background="@drawable/settings_background_gradient" -->
 
             <Button
                 android:id="@+id/button_create_feed"
