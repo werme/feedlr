@@ -119,6 +119,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Display username
 		int colNumUsername = cursor
 				.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME);
+		if (cursor.getString(colNumUsername).length() > 18) {
+			viewHolder.author.setTextSize(16);
+		}
 		viewHolder.author.setText(cursor.getString(colNumUsername));
 
 		// Display timestamp
@@ -174,6 +177,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		return tempView;
 	}
 
+	/*
+	 * Strips timestamp string from unwanted information.
+	 */
 	public String stripTimestamp(String timestamp) {
 		if (timestamp.contains(",")) {
 			return (timestamp.substring(0, timestamp.indexOf(',')));
