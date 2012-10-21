@@ -16,8 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_launcher" />
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/feed_item_timestamp"
