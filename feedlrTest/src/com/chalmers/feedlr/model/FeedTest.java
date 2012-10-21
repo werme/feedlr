@@ -4,9 +4,9 @@
 
 package com.chalmers.feedlr.model;
 
+import android.test.AndroidTestCase;
 import java.util.ArrayList;
 import java.util.List;
-import android.test.AndroidTestCase;
 
 public class FeedTest extends AndroidTestCase {
 	

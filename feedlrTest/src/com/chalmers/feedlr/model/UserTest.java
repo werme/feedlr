@@ -5,7 +5,6 @@
 package com.chalmers.feedlr.model;
 
 import android.test.AndroidTestCase;
-import com.chalmers.feedlr.model.User;
 
 public class UserTest extends AndroidTestCase {
 	
