@@ -27,7 +27,6 @@ import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.model.FacebookItem;
-import com.chalmers.feedlr.listener.RequestListener;
 
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.TwitterItem;
@@ -89,6 +88,11 @@ public class DataService extends Service {
 		return binder;
 	}
 
+	/**
+	 * Simple method for running tasks asynchronous.
+	 * 
+	 * @param runnable the runnable to be run
+	 */
 	private void runAsync(final Runnable runnable) {
 		new Thread() {
 			@Override
@@ -100,7 +104,7 @@ public class DataService extends Service {
 
 	/**
 	 * Populates the application database ITEM table with the most recent tweets
-	 * from the registered users timeline.
+	 * from the registered users timeline. 
 	 * 
 	 * This method is currently not in use.
 	 */
@@ -111,7 +115,7 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<TwitterItem> twitterTimeline = twitter.getTimeline();
-				
+
 				if (twitterTimeline != null) {
 					// Save to database
 					db.addListOfItems(twitterTimeline);
@@ -144,13 +148,10 @@ public class DataService extends Service {
 				List<User> users = twitter.getFollowing();
 
 				if (users != null) {
-					for (User u : users) {
-						u.setSource("twitter");
-					}
 					// Save to database
 					db.addUsers(users);
 					intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
-				} else {					
+				} else {
 					intent.setAction(FeedActivity.TWITTER_USERS_PROBLEM_UPDATING);
 				}
 
@@ -166,11 +167,16 @@ public class DataService extends Service {
 
 	/**
 	 * Populates application database ITEM table with the most recent tweets
-	 * from the user with the given userID.
+	 * from the user with the given userID within a specific feed.
 	 * 
 	 * This method is currently not in use.
+	 * 
+	 * @param userID
+	 *            the id for the user
+	 * @param feed
+	 *            the feed that sent the request
 	 */
-	public void updateTweetsByUser(final String userID, final Feed feed) {
+	private void updateTweetsByUser(final String userID, final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
@@ -182,7 +188,7 @@ public class DataService extends Service {
 					db.addListOfItems(userTweets);
 					intent.setAction(FeedActivity.FEED_UPDATED);
 				} else {
-					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);					
+					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);
 				}
 
 				// Broadcast update to activity
@@ -198,6 +204,15 @@ public class DataService extends Service {
 		});
 	}
 
+	/**
+	 * Populates application database ITEM table with the most recent tweets
+	 * from all the users in the specified feed through {@link
+	 * #updateTweetsByUser(final String userID, final Feed feed)
+	 * updateTweetsByUser}.
+	 * 
+	 * @param feed
+	 *            the feed to be updated
+	 */
 	public void updateFeedTwitterItems(final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
@@ -377,7 +392,6 @@ public class DataService extends Service {
 							e.printStackTrace();
 							Log.d("DataService", response);
 						}
-
 
 						if (responses == facebookUsersInFeed.size())
 							onAllComplete();
