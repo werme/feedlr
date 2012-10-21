@@ -24,5 +24,7 @@
 	
 	<string name="button_create_feed">New feed</string>
 	<string name="default_feed_name">Feed name</string>
+	<string name="button_create_feed_done">Done!</string>
+	<string name="title_settings">Settings</string>
 	
 </resources>
