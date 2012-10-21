@@ -97,7 +97,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private UserAdapter userAdapter;
 
 	// Views
-	private ViewFlipper mainViewFlipper;
 	private ViewPager feedViewSwiper;
 	private ViewAnimator settingsViewFlipper;
 	private ListView userListView;
@@ -178,7 +177,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				"fonts/Roboto-Medium.ttf");
 
 		// find views inflated from xml
-		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
+		// mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
 		settingsViewFlipper = (ViewAnimator) findViewById(R.id.settings_view_flipper);
 
@@ -206,7 +205,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		feedAdapter = new PageAdapter(getSupportFragmentManager(), db, this);
 		feedViewSwiper.setAdapter(feedAdapter);
 
-		// lets 3 feedsviews to each side of the current one be retained in an
+		// lets 3 feedviews to each side of the current one be retained in an
 		// idle state.
 		feedViewSwiper.setOffscreenPageLimit(3);
 
@@ -320,15 +319,12 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// TODO: Toggle animation for the create feed view. Currently sliding
 		// away in the wring direction.
 
-		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout) {
-			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout) {
-				settingsViewFlipper.showPrevious();
-			} else {
-				toggleSettingsView(null);
-			}
-		} else {
-			super.onBackPressed();
-		}
+		/*
+		 * if (feedViewSwiper.get == R.id.settings_layout) { if
+		 * (settingsViewFlipper.getCurrentView().getId() ==
+		 * R.id.user_list_layout) { settingsViewFlipper.showPrevious(); } else {
+		 * toggleSettingsView(null); } } else { super.onBackPressed(); }
+		 */
 	}
 
 	@Override
@@ -377,17 +373,18 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	// Methods called on button press below. See xml files.
 
 	public void toggleSettingsView(View v) {
-		int currentView = mainViewFlipper.getCurrentView().getId();
-
-		if (currentView == R.id.main_layout) {
-			mainViewFlipper.setInAnimation(slideInLeft);
-			mainViewFlipper.setOutAnimation(slideOutRight);
-			mainViewFlipper.showNext();
-		} else {
-			mainViewFlipper.setInAnimation(slideInRight);
-			mainViewFlipper.setOutAnimation(slideOutLeft);
-			mainViewFlipper.showPrevious();
-		}
+		feedViewSwiper.setCurrentItem(0);
+		/*
+		 * int currentView = mainViewFlipper.getCurrentView().getId();
+		 * 
+		 * if (currentView == R.id.main_layout) {
+		 * mainViewFlipper.setInAnimation(slideInLeft);
+		 * mainViewFlipper.setOutAnimation(slideOutRight);
+		 * mainViewFlipper.showNext(); } else {
+		 * mainViewFlipper.setInAnimation(slideInRight);
+		 * mainViewFlipper.setOutAnimation(slideOutLeft);
+		 * mainViewFlipper.showPrevious(); }
+		 */
 	}
 
 	public void initCreateFeedView(View v) {

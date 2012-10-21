@@ -11,6 +11,7 @@ import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.ui.FeedFragment;
+import com.chalmers.feedlr.ui.SettingsFragment;
 
 public class PageAdapter extends FragmentPagerAdapter {
 
@@ -20,10 +21,11 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	private FeedListener listener;
 
-	public PageAdapter(FragmentManager fm, DatabaseHelper db, FeedListener listener) {
+	public PageAdapter(FragmentManager fm, DatabaseHelper db,
+			FeedListener listener) {
 		super(fm);
 		this.listener = listener;
-		
+
 		db.clearFeeds();
 		feedTitles = db.listFeeds();
 		numberOfFeeds = feedTitles.size();
@@ -31,7 +33,13 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int index) {
+
 		Bundle bundle = new Bundle();
+
+		if (index == 0) {
+			SettingsFragment sf = SettingsFragment.newInstance();
+			return sf;
+		}
 		bundle.putString("title", feedTitles.get(index));
 		FeedFragment f = FeedFragment.newInstance(bundle);
 		f.setUpdateRequestListener(listener);
@@ -40,14 +48,14 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		return numberOfFeeds;
+		return numberOfFeeds + 1;
 	}
 
 	public void addFeed(Feed feed) {
 		numberOfFeeds++;
 		feedTitles.add(feed.getTitle());
 	}
-	
+
 	public String getFeedTitle(int index) {
 		return feedTitles.get(index);
 	}
