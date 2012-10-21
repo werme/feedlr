@@ -99,7 +99,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 
 	public void testAddUser() {
 		String username = "Olle";
-		long id = 507;
+		String id = "507";
 		String URL = "pictureurl";
 		String source = "twitter";
 
@@ -137,11 +137,11 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		assertTrue(c.getString(1).equals(newUsername));
 
 		// Trying to addUser with no id or username
-		assertFalse(dbHelper.addUser(new User(0, "null")));
+		assertFalse(dbHelper.addUser(new User(null, null)));
 	}
 
 	public void testRemoveUser() {
-		User u1 = new User(507, "Daniel");
+		User u1 = new User("507", "Daniel");
 		u1.setSource("twitter");
 		dbHelper.addUser(u1);
 		dbHelper.removeUser(u1);
@@ -152,11 +152,11 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		assertTrue(c.getCount() == 0);
 
 		// Trying to remove a user that doesn't exist
-		assertFalse(dbHelper.removeUser(new User(509, "Daniel")));
+		assertFalse(dbHelper.removeUser(new User("509", "Daniel")));
 	}
 
 	public void testUpdateUser() {
-		long id = 507;
+		String id = "507";
 		String newUsername = "Daniel Larsson";
 		User u1 = new User(id, "Daniel");
 		u1.setSource("twitter");
@@ -173,17 +173,17 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	}
 
 	public void testUserExist() {
-		User u1 = new User(507, "Daniel");
+		User u1 = new User("507", "Daniel");
 		u1.setSource("twitter");
 		dbHelper.addUser(u1);
 		assertTrue(dbHelper.userExist(u1));
 
 		// Trying a user that don't exist.
-		assertFalse(dbHelper.userExist(new User(104, "David")));
+		assertFalse(dbHelper.userExist(new User("104", "David")));
 	}
 
 	public void testClearUserTable() {
-		User u1 = new User(507, "Daniel");
+		User u1 = new User("507", "Daniel");
 		u1.setSource("twitter");
 		dbHelper.addUser(u1);
 		dbHelper.clearUserTable();
@@ -191,10 +191,10 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	}
 
 	public void testGetUserTableSize() {
-		User u1 = new User(507, "Daniel");
+		User u1 = new User("507", "Daniel");
 		u1.setSource("twitter");
 		dbHelper.addUser(u1);
-		User u2 = new User(509, "David");
+		User u2 = new User("509", "David");
 		u2.setSource("twitter");
 		dbHelper.addUser(u2);
 		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_USER) == dbHelper.getUserTableSize());
@@ -207,7 +207,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	
 	public void testAddItem(){
 
-	User u1 = new User(507, "Daniel");
+	User u1 = new User("507", "Daniel");
 	u1.setSource("twitter");
 	
 	long id = 13001;
@@ -250,7 +250,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 	}
 	
 	public void testUpdateItem(){
-		User u1 = new User(507, "Daniel");
+		User u1 = new User("507", "Daniel");
 		u1.setSource("twitter");
 		
 		long id = 13001;
@@ -282,7 +282,7 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		assertFalse(dbHelper.updateItem(i1));
 	}
 	public void testItemExist(){
-		User u1 = new User(507, "Daniel");
+		User u1 = new User("507", "Daniel");
 		u1.setSource("twitter");
 		
 		long id = 13001;

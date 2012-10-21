@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chalmers.feedlr.database;
+package com.chalmers.feedlr.external;
 
 import android.content.Context;
 import android.database.Cursor;

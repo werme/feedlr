@@ -1,5 +1,6 @@
 package com.chalmers.feedlr.database;
 
+import com.chalmers.feedlr.external.SimpleCursorLoader;
 import com.chalmers.feedlr.model.Feed;
 
 import android.content.Context;

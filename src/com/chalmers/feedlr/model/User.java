@@ -19,24 +19,25 @@ package com.chalmers.feedlr.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Class description
+ * A class representing a user or an author of a post in a feed.
  * 
  * @author Olle Werme
  */
 
 public class User {
-	private long id;
-	private String userName, profileImageURL, source;
+	protected String id;
+	protected String userName, profileImageURL, source;
 
 	public User() {
 	}
 
-	public User(long id, String userName) {
+	public User(String id, String userName) {
 		this.id = id;
 		this.userName = userName;
 	}
 
-	public User(String userName, String profileImageURL) {
+	public User(String id, String userName, String profileImageURL) {
+		this.id = id;
 		this.userName = userName;
 		this.profileImageURL = profileImageURL;
 	}
@@ -45,7 +46,7 @@ public class User {
 	 * @param id
 	 *            the user id to set
 	 */
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -86,7 +87,7 @@ public class User {
 	/**
 	 * @return the user id
 	 */
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
