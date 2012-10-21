@@ -406,7 +406,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		Cursor cursor = db.getAllUsers();
 
 		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
-				DatabaseHelper.USER_COLUMN_USERID };
+				DatabaseHelper.USER_COLUMN_USERID, DatabaseHelper.USER_COLUMN_SOURCE };
 		int[] to = new int[] { R.id.user_item_text_view };
 
 		userAdapter = new UserAdapter(this, R.layout.user_list_item, cursor,

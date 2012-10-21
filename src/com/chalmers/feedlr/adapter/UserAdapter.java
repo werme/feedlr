@@ -34,19 +34,14 @@ public class UserAdapter extends SimpleCursorAdapter {
 
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
 
-		//int colNumUserId = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
-		//Cursor cursor = db.getUser(c.getInt(colNumUserId) + "");
-		//cursor.moveToFirst();
-
-		//int colNumSource = cursor
-		//		.getColumnIndex(DatabaseHelper.USER_COLUMN_SOURCE);
-		//if (cursor.getString(colNumSource).equals("facebook")) {
-		//	viewHolder.source
-		//			.setBackgroundResource(R.drawable.source_facebook_small);
-		//} else {
+		int colNumSource = c.getColumnIndex(DatabaseHelper.USER_COLUMN_SOURCE);
+		if (c.getString(colNumSource).equals("facebook")) {
+			viewHolder.source
+					.setBackgroundResource(R.drawable.source_facebook_small);
+		} else {
 			viewHolder.source
 					.setBackgroundResource(R.drawable.source_twitter_small);
-		//}
+		}
 	}
 
 	@Override
