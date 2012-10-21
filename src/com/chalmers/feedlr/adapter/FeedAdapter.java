@@ -29,7 +29,14 @@ import android.content.Context;
 import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -58,6 +65,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		public TextView author;
 		public TextView timestamp;
 		public ImageView profilePicture;
+		public ImageView source;
 	}
 
 	@Override
@@ -92,6 +100,15 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		Cursor cursor = db.getUser(c.getInt(colNumUserId) + "");
 		cursor.moveToFirst();
 
+		// Set source image
+		int colNumSource = cursor
+				.getColumnIndex(DatabaseHelper.USER_COLUMN_SOURCE);
+		if (cursor.getString(colNumSource).equals("facebook")) {
+			viewHolder.source.setBackgroundResource(R.drawable.source_facebook);
+		} else {
+			viewHolder.source.setBackgroundResource(R.drawable.source_twitter);
+		}
+
 		// Display profile picture
 		int colNumURL = cursor
 				.getColumnIndex(DatabaseHelper.USER_COLUMN_IMGURL);
@@ -102,6 +119,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Display username
 		int colNumUsername = cursor
 				.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME);
+		if (cursor.getString(colNumUsername).length() > 18) {
+			viewHolder.author.setTextSize(16);
+		}
 		viewHolder.author.setText(cursor.getString(colNumUsername));
 
 		// Display timestamp
@@ -129,6 +149,8 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View tempView = inflater.inflate(R.layout.feed_item, null);
+
+		// Find views
 		ViewHolder viewHolder = new ViewHolder();
 		viewHolder.text = (TextView) tempView.findViewById(R.id.feed_item_text);
 		viewHolder.author = (TextView) tempView
@@ -137,11 +159,17 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				.findViewById(R.id.feed_item_timestamp);
 		viewHolder.profilePicture = (ImageView) tempView
 				.findViewById(R.id.feed_item_author_image);
+		viewHolder.source = (ImageView) tempView
+				.findViewById(R.id.feed_item_source_image);
+
+		// Set fonts
 		Typeface robotoThinItalic = Typeface.createFromAsset(
 				context.getAssets(), "fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(context.getAssets(),
 				"fonts/Roboto-Medium.ttf");
-		viewHolder.text.setTypeface(robotoThinItalic);
+		Typeface robotoLight = Typeface.createFromAsset(context.getAssets(),
+				"fonts/Roboto-Light.ttf");
+		viewHolder.text.setTypeface(robotoLight);
 		viewHolder.timestamp.setTypeface(robotoThinItalic);
 		viewHolder.author.setTypeface(robotoMedium);
 
@@ -149,12 +177,38 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		return tempView;
 	}
 
+	/*
+	 * Strips timestamp string from unwanted information.
+	 */
 	public String stripTimestamp(String timestamp) {
 		if (timestamp.contains(",")) {
 			return (timestamp.substring(0, timestamp.indexOf(',')));
 		} else {
 			return timestamp;
 		}
+	}
+
+	public static Bitmap getRoundedCornerBitmap(Bitmap squareBitmap) {
+		Bitmap roundedBitmap = Bitmap.createBitmap(squareBitmap.getWidth(),
+				squareBitmap.getHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(roundedBitmap);
+
+		final int color = 0xff424242;
+		final Paint paint = new Paint();
+		final Rect rect = new Rect(0, 0, squareBitmap.getWidth(),
+				squareBitmap.getHeight());
+		final RectF rectF = new RectF(rect);
+		final float roundPx = 8;
+
+		paint.setAntiAlias(true);
+		canvas.drawARGB(0, 0, 0, 0);
+		paint.setColor(color);
+		canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		canvas.drawBitmap(squareBitmap, rect, rect, paint);
+
+		return roundedBitmap;
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -175,7 +229,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				URL imgValue = new URL(strings[0]);
 				Bitmap thumbNail = BitmapFactory.decodeStream(imgValue
 						.openConnection().getInputStream());
-				return thumbNail;
+				Bitmap bitmapScaled = Bitmap.createScaledBitmap(thumbNail, 70,
+						70, true);
+				return bitmapScaled;
 			} catch (MalformedURLException e) {
 
 				e.printStackTrace();
@@ -188,7 +244,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 		protected void onPostExecute(Bitmap result) {
 			if (profilePicture.getTag().toString().equals(tag)) {
-				profilePicture.setImageBitmap(result);
+				profilePicture.setImageBitmap(getRoundedCornerBitmap(result));
 			}
 		}
 	}

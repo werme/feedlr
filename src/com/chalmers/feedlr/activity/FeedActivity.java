@@ -58,6 +58,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -407,7 +408,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		Cursor cursor = db.getAllUsers();
 
 		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
-				DatabaseHelper.USER_COLUMN_USERID };
+				DatabaseHelper.USER_COLUMN_USERID,
+				DatabaseHelper.USER_COLUMN_SOURCE };
 		int[] to = new int[] { R.id.user_item_text_view };
 
 		userAdapter = new UserAdapter(this, R.layout.user_list_item, cursor,
@@ -420,7 +422,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void createFeed(View button) {
-		
+
 		// Animate switch to main view
 		toggleSettingsView(null);
 
@@ -468,7 +470,12 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.removeView(v);
 		userListLayout = null;
 		userListView = null;
-		
+
+		LinearLayout bajs = (LinearLayout) mainViewFlipper
+				.findViewById(R.id.main_layout);
+		ImageView hej = (ImageView) bajs.findViewById(R.id.no_feed_image);
+		hej.setVisibility(8);
+
 	}
 
 	public void authorizeTwitter(View v) {
