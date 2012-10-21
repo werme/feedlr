@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:background="@drawable/settings_background_gradient"
+        android:background="#1e2126"
         android:choiceMode="multipleChoice" />
-    <!-- android:background="#222222" -->
+    <!-- android:background="@drawable/settings_background_gradient" -->
 
 </LinearLayout>

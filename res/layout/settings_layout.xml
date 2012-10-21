@@ -16,6 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
+            
+            <include layout="@layout/settings_action_bar" />
 
             <!-- android:background="@drawable/settings_background_gradient" -->
 
