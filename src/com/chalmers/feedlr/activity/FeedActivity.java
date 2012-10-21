@@ -354,7 +354,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-
 		// if (isOnline()) {
 		feedService.updateFeed(new Feed(feedTitle));
 		// } else {

@@ -94,6 +94,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Holds the views, so that a recycled view does not have to find its
 		// XML view
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
+		
+		// Remove the recycled profile picture
+		viewHolder.profilePicture.setImageDrawable(null);
 
 		// Get user id
 		int colNumUserId = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
@@ -122,6 +125,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		if (cursor.getString(colNumUsername).length() > 18) {
 			viewHolder.author.setTextSize(16);
 		}
+
 		viewHolder.author.setText(cursor.getString(colNumUsername));
 
 		// Display timestamp
@@ -132,7 +136,6 @@ public class FeedAdapter extends SimpleCursorAdapter {
 				timestampDate.getTime(), DateUtils.SECOND_IN_MILLIS,
 				DateUtils.WEEK_IN_MILLIS, 0).toString();
 		viewHolder.timestamp.setText(stripTimestamp(parsedTimestamp));
-
 	}
 
 	/*

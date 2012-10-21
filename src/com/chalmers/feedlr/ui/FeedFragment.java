@@ -74,12 +74,14 @@ public class FeedFragment extends ListFragment implements
 	}
 
 	@Override
+
 	public void onDestroy() {
 		lbm.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 
 	@Override
+
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 

@@ -378,6 +378,7 @@ public class DataService extends Service {
 						}
 						responses++;
 
+
 						if (responses == facebookUsersInFeed.size())
 							onAllComplete();
 					}
