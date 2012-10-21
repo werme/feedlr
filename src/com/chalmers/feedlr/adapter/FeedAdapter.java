@@ -96,7 +96,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
 		
 		// Remove the recycled profile picture
-		viewHolder.profilePicture.setImageDrawable(null);
+		viewHolder.profilePicture.setVisibility(View.INVISIBLE);
 
 		// Get user id
 		int colNumUserId = c.getColumnIndex(DatabaseHelper.ITEM_COLUMN_USER_ID);
@@ -248,6 +248,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		protected void onPostExecute(Bitmap result) {
 			if (profilePicture.getTag().toString().equals(tag)) {
 				profilePicture.setImageBitmap(getRoundedCornerBitmap(result));
+				profilePicture.setVisibility(View.VISIBLE);
 			}
 		}
 	}
