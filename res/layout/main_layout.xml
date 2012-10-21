@@ -3,14 +3,26 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eeeeee"
     android:orientation="vertical" >
 
     <include
+        android:id="@+id/include1"
         layout="@layout/feed_action_bar"
         android:tag="action_bar" />
 
-    <include
-        layout="@layout/feed_view_pager"
-        android:tag="feed" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <include
+            layout="@layout/feed_view_pager"
+            android:tag="feed" />
+
+        <ImageView
+            android:id="@+id/no_feed_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/default_start_image" />
+    </RelativeLayout>
 
 </LinearLayout>
