@@ -3,6 +3,8 @@ package com.chalmers.feedlr.database;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.model.Feed;
+import com.chalmers.feedlr.model.Item;
+import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 
 import android.database.Cursor;
@@ -79,9 +81,13 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		Feed f3 = new Feed("feed3");
 		dbHelper.addFeed(f1);
 		dbHelper.addFeed(f2);
-		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_FEED) == 2);
+		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_FEED) == dbHelper.getFeedTableSize());
 		dbHelper.addFeed(f3);
-		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_FEED) == 3);
+		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_FEED) == dbHelper.getFeedTableSize());
+		
+		// Testing so remove feed affects tablesize aswell.
+		dbHelper.removeFeed(f1);
+		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_FEED) == dbHelper.getFeedTableSize());
 	}
 
 	public void testListFeeds() {
@@ -191,11 +197,118 @@ public class DatabaseHelperTest extends AndroidTestCase {
 		User u2 = new User(509, "David");
 		u2.setSource("twitter");
 		dbHelper.addUser(u2);
-		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_USER) == 2);
+		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_USER) == dbHelper.getUserTableSize());
 		
 		// Updating user too make sure size doesn't increase. 
 		u1.setUserName("Olle");
 		dbHelper.addUser(u1);
-		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_USER) == 2);
+		assertTrue(DatabaseUtils.queryNumEntries(db, DatabaseHelper.TABLE_USER) == dbHelper.getUserTableSize());
+	}
+	
+	public void testAddItem(){
+
+	User u1 = new User(507, "Daniel");
+	u1.setSource("twitter");
+	
+	long id = 13001;
+	String text = "test item";
+	String timestamp = "Wed Jul 04 13:37:11 +0100 2012";
+	TwitterItem i1 = new TwitterItem();
+	i1.setId(id + "");
+	i1.setText(text);
+	i1.setUser(u1);
+	i1.setTimestamp(timestamp);
+
+	assertTrue(dbHelper.addItem(i1));
+	
+	Cursor c = db.query(DatabaseHelper.TABLE_ITEM, null,
+			DatabaseHelper.ITEM_COLUMN_ITEMID + " = ?", new String[] { id
+					+ "" }, null, null, null);
+	c.moveToFirst();
+	
+	String dbId = c.getString(1);
+	String dbText = c.getString(2);
+
+	assertTrue(dbId.equals(id + ""));
+	assertTrue(dbText.equals(text));
+
+	// Testing to update the same item:
+	
+	String dbNewText = "new test item";
+	i1.setText(dbNewText);
+	
+	assertTrue(dbHelper.addItem(i1));
+	
+	c = db.query(DatabaseHelper.TABLE_ITEM, null,
+			DatabaseHelper.ITEM_COLUMN_ITEMID + " = ?", new String[] { id
+					+ "" }, null, null, null);
+	c.moveToFirst();
+	assertTrue(dbNewText.equals(c.getString(2)));
+
+	// Trying to add a item with no ID;
+	assertFalse(dbHelper.addItem(new TwitterItem()));
+	}
+	
+	public void testUpdateItem(){
+		User u1 = new User(507, "Daniel");
+		u1.setSource("twitter");
+		
+		long id = 13001;
+		String text = "test item";
+		String updatedText = "updated test item";
+		String timestamp = "Wed Jul 04 13:37:11 +0100 2012";
+		
+		TwitterItem i1 = new TwitterItem();
+		i1.setId(id + "");
+		i1.setText(text);
+		i1.setUser(u1);
+		i1.setTimestamp(timestamp);
+		
+		dbHelper.addItem(i1);
+		i1.setText(updatedText);
+		assertTrue(dbHelper.updateItem(i1));
+
+		Cursor c = db.query(DatabaseHelper.TABLE_ITEM, null,
+				DatabaseHelper.ITEM_COLUMN_ITEMID + " = ?", new String[] { id
+						+ "" }, null, null, null);
+		c.moveToFirst();
+		
+		String dbText = c.getString(2);
+		
+		assertTrue(dbText.equals(updatedText));
+		i1.setId(null);
+		
+		// Trying to update a item without id.
+		assertFalse(dbHelper.updateItem(i1));
+	}
+	public void testItemExist(){
+		User u1 = new User(507, "Daniel");
+		u1.setSource("twitter");
+		
+		long id = 13001;
+		String text = "test item";
+		String timestamp = "Wed Jul 04 13:37:11 +0100 2012";
+		
+		TwitterItem i1 = new TwitterItem();
+		i1.setId(id + "");
+		i1.setText(text);
+		i1.setUser(u1);
+		i1.setTimestamp(timestamp);
+		
+		dbHelper.addItem(i1);
+		// Checking if itemExist adds 
+		assertTrue(dbHelper.itemExist(i1));
+		
+		TwitterItem i2 = new TwitterItem();
+		i2.setId(13002 + "");
+		i2.setText(text);
+		i2.setUser(u1);
+		i2.setTimestamp(timestamp);
+		
+		// Checking if i2 exists.
+		assertFalse(dbHelper.itemExist(i2));
+		
+		// Checking if a empty TwitterItem
+		assertFalse(dbHelper.itemExist(new TwitterItem()));
 	}
 }

@@ -234,12 +234,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return true if user was added or updated in the database.
 	 */
 	public boolean addUser(User user) {
-		if (user.getId() == 0 || user.getUserName() == null){
+		if (user.getId() == 0 || user.getUserName() == null) {
 			return false;
 		}
 		if (updateUser(user)) {
 			return true;
-		} 
+		}
 		db.insert(TABLE_USER, null, userCV(user));
 		return true;
 	}
@@ -301,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return the result of the query, true if user exists.
 	 */
 	public boolean userExist(User user) {
-		if (user.getId() == 0 || user.getUserName() == null){
+		if (user.getId() == 0 || user.getUserName() == null) {
 			return false;
 		}
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERID },
@@ -434,9 +434,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return
 	 */
 	public boolean addItem(Item item) {
-		Log.i("Item", "item1");
+		if (item.getId() == null || item.getUser() == null) {
+			return false;
+		}
 		if (updateItem(item)) {
-			Log.i("Item", "item2");
 			return true;
 		}
 		db.insert(TABLE_ITEM, null, itemCV(item));
@@ -467,7 +468,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return true if item exists, false if the item does not exist.
 	 */
 	public boolean itemExist(Item item) {
-		if (!item.getId().equals(null)) {
+		if (!(item.getId() == null)) {
 			Cursor c = db.query(TABLE_ITEM,
 					new String[] { ITEM_COLUMN_ITEMID }, ITEM_COLUMN_ITEMID
 							+ " = ?", new String[] { item.getId() + "" }, null,
@@ -641,7 +642,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		cv.put(ITEM_COLUMN_ITEMID, item.getId());
 		cv.put(ITEM_COLUMN_TEXT, item.getText());
 		cv.put(ITEM_COLUMN_TIMESTAMP, item.getTimestamp());
-		cv.put(ITEM_COLUMN_TYPE, item.getText());
+		cv.put(ITEM_COLUMN_TYPE, item.getType());
 		cv.put(ITEM_COLUMN_URL, item.getURL());
 		cv.put(ITEM_COLUMN_IMGURL, item.getIMGURL());
 		cv.put(ITEM_COLUMN_USER_ID, item.getUser().getId());
