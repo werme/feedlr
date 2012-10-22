@@ -91,7 +91,8 @@ public class DataService extends Service {
 	/**
 	 * Simple method for running tasks asynchronous.
 	 * 
-	 * @param runnable the runnable to be run
+	 * @param runnable
+	 *            the runnable to be run
 	 */
 	private void runAsync(final Runnable runnable) {
 		new Thread() {
@@ -104,8 +105,8 @@ public class DataService extends Service {
 
 	/**
 	 * Populates the application database ITEM table with the most recent tweets
-	 * from the registered users twitter timeline.
-	 * This method is currently not in use.
+	 * from the registered users twitter timeline. This method is currently not
+	 * in use.
 	 */
 	public void updateTwitterTimeline() {
 		runAsync(new Runnable() {
@@ -203,6 +204,7 @@ public class DataService extends Service {
 		});
 	}
 
+	/**
 	 * Populates application database ITEM table with the most recent tweets
 	 * from all the users in the specified feed through {@link
 	 * #updateTweetsByUser(final String userID, final Feed feed)
@@ -399,11 +401,7 @@ public class DataService extends Service {
 						}
 						responses++;
 
-<<<<<<< HEAD
 						if (responses == facebookUsersInFeed.size()) {
-=======
-						if (responses == facebookUsersInFeed.size())
->>>>>>> origin/Documentation
 							onAllComplete();
 						}
 					}
