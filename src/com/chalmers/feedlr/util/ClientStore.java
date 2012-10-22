@@ -37,6 +37,9 @@ public class ClientStore {
 	private static final String FACEBOOK_ACCESS_TOKEN = "access_token";
 	private static final String FACEBOOK_ACCESS_TOKEN_EXPIRES = "access_expires";
 
+	private ClientStore() {
+	}
+
 	/*
 	 * Save the Twitter access token and secret to shared preferences.
 	 */
@@ -84,7 +87,7 @@ public class ClientStore {
 		String requestSecret = settings.getString(TWITTER_REQUEST_SECRET, null);
 		return new Token(requestToken, requestSecret);
 	}
-	
+
 	/*
 	 * Save the registered users Twitter id to shared preferences.
 	 */

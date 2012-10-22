@@ -47,6 +47,9 @@ public class Clients {
 	private static Facebook facebook;
 	private static AsyncFacebookRunner asyncFacebookRunner;
 
+	private Clients() {
+	}
+
 	public static String[] getClients() {
 		return new String[] { "Twitter", "Facebook" };
 	}
@@ -97,7 +100,6 @@ public class Clients {
 
 	public static List<Integer> getAuthorizedClients(Context context) {
 		List<Integer> authorizedClients = new ArrayList<Integer>();
-
 
 		if (isAuthorized(TWITTER, context)) {
 			authorizedClients.add(TWITTER);

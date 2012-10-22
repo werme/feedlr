@@ -325,10 +325,6 @@ public class DataService extends Service {
 			}
 		});
 
-		// List<FacebookItem> facebookTimeline = facebook.getTimeline();
-
-		// Save to database
-
 		// Broadcast update to activity
 		Intent intent = new Intent();
 		intent.setAction(FeedActivity.FACEBOOK_TIMELINE_UPDATED);
