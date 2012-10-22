@@ -4,13 +4,14 @@
 
 package com.chalmers.feedlr.model;
 
+import com.chalmers.feedlr.model.FacebookItem.From;
+
 import android.test.AndroidTestCase;
 
 public class FacebookItemTest extends AndroidTestCase {
 
 	private FacebookItem FbI;
-	private User user;
-
+	private From from;
 	/**
 	 * This is called before each test.
 	 */
@@ -18,12 +19,11 @@ public class FacebookItemTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		user = new User();
-		user.setUserName("Olle");
 		FbI = new FacebookItem();
 		FbI.setText("Hej David!");
-		FbI.setUser(user);
 		FbI.setId("1337");
+		from = FbI.getFrom();
+		from.setUserName("Olle");
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class FacebookItemTest extends AndroidTestCase {
 	 */
 	public void testPreconditions() {
 		assertTrue(FbI != null);
-		assertTrue(FbI.getUser() == user);
+		assertTrue(FbI.getUser() == from);
 		assertTrue(FbI.getText().equalsIgnoreCase("Hej David!"));
 		assertTrue(FbI.getId().equalsIgnoreCase("1337"));
 	}
@@ -44,7 +44,7 @@ public class FacebookItemTest extends AndroidTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
-		user = null;
+		from = null;
 		FbI = null;
 	}
 
