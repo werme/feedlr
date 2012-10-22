@@ -33,8 +33,8 @@ public class TwitterItemTest extends AndroidTestCase {
 	public void testPreconditions() {
 		assertTrue(ti != null);
 		assertTrue(ti.getUser() == user);
-		assertTrue(ti.getText() == "Hej David!");
-		assertTrue(ti.getId() == "1337");
+		assertTrue(ti.getText().equalsIgnoreCase("Hej David!"));
+		assertTrue(ti.getId().equalsIgnoreCase("1337"));
 	}
 
 	/**
