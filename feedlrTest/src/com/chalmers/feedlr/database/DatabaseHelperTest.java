@@ -3,20 +3,13 @@ package com.chalmers.feedlr.database;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.model.Feed;
-import com.chalmers.feedlr.model.Item;
 import com.chalmers.feedlr.model.TwitterItem;
 import com.chalmers.feedlr.model.User;
 
 import android.database.Cursor;
-<<<<<<< HEAD
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-=======
-import android.database.sqlite.SQLiteConstraintException;
-import android.database.sqlite.SQLiteException;
->>>>>>> origin/UI
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 public class DatabaseHelperTest extends AndroidTestCase {
 
@@ -68,29 +61,8 @@ public class DatabaseHelperTest extends AndroidTestCase {
 				DatabaseHelper.TABLE_FEED);
 		assertTrue(feedTableSize == 0);
 
-<<<<<<< HEAD
 		// Trying to remove a feed that does not exist.
 		assertFalse(dbHelper.removeFeed(f1));
-=======
-	public void testAddUser() {
-		User u1 = new User(1, "Olle");
-		User u2 = new User(2, "David");
-		User u3 = new User(1, "Daniel");
-		db.addUser(u1);
-		db.addUser(u2);
-		db.addUser(u3);
-		Cursor c =  db.listUsers();
-		final ArrayList<String> users = new ArrayList<String>();
-		while (c.moveToNext()) {
-			String s = c.getString(1);
-			users.add(s);
-		}
-		Log.i("a:", "" + users);
-	}
-/*
-	public void testAddFeedUserBridge() {
-		fail("Not yet implemented");
->>>>>>> origin/UI
 	}
 
 	public void testClearFeeds() {
