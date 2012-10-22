@@ -35,11 +35,11 @@ public class FacebookItem implements Item {
 	private String message;
 	private String timestamp;
 	private String id;
-	private From from;
+	private User author;
 
 	public FacebookItem() {
-		from = new From();
-		from.setSource("facebook");
+		author = new User();
+		author.setSource("facebook");
 	}
 
 	@Override
@@ -69,13 +69,14 @@ public class FacebookItem implements Item {
 	}
 
 	/**
-	 * Returns the link to the Author of a post.
+	 * Set
 	 * 
 	 * @param from
-	 *            Link to the the author.
+	 *            Link to the author.
 	 */
-	public void setFrom(From from) {
-		this.from = from;
+	@JsonProperty("from")
+	public void setAuthor(User author) {
+		this.author = author;
 	}
 
 	@Override
@@ -109,53 +110,13 @@ public class FacebookItem implements Item {
 		return id;
 	}
 
-	/**
-	 * Returns the author of the item as a From.
-	 * 
-	 * @return the user as a From
-	 */
-	public From getFrom() {
-		return from;
-	}
-
-	/**
-	 * From links the Author of the post.
-	 * 
-	 * @author Daniel Larsson
-	 * 
-	 */
-	class From extends User {
-		public From() {
-		}
-
-		/*
-		 * @param userId the user id of a user
-		 */
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		@JsonProperty("name")
-		public void setUserName(String userName) {
-			this.userName = userName;
-		}
-
-		public String getUserName() {
-			return userName;
-		}
-
-		public String getId() {
-			return id;
-		}
-	}
-
 	@Override
 	public void setUser(User user) {
-		this.from = (From) user;
+		this.author = user;
 	}
 
 	@Override
 	public User getUser() {
-		return from;
+		return author;
 	}
 }
