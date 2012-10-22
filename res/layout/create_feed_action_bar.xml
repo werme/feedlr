@@ -13,7 +13,7 @@
         android:layout_alignParentRight="true"
         android:gravity="center"
         android:onClick="createFeed"
-        android:text="@string/button_create_feed" />
+        android:text="@string/button_create_feed_done" />
 
     <EditText
         android:id="@+id/create_feed_action_bar_title"

@@ -33,7 +33,6 @@ import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.util.ClientStore;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 public class TwitterHelper {
@@ -76,7 +75,7 @@ public class TwitterHelper {
 		return new TwitterJSONParser().parseTweets(response);
 	}
 
-	public List<TwitterItem> getUserTweets(long userID) {
+	public List<TwitterItem> getUserTweets(String userID) {
 		long time = System.currentTimeMillis();
 		StringBuilder url = new StringBuilder();
 		url.append(USER_TWEETS).append(userID);

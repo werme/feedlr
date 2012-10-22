@@ -2,8 +2,7 @@
 <ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_view_flipper"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#aaaaaa" >
+    android:layout_height="fill_parent" >
 
     <include layout="@layout/main_layout" />
 

@@ -35,11 +35,11 @@ public class TwitterItem implements Item {
 	private String text;
 	private User user;
 	private String timestamp;
-	private String source = "twitter";
 	private String id;
 
 	public TwitterItem() {
 		user = new User();
+		user.setSource("twitter");
 	}
 
 	/*
@@ -55,22 +55,13 @@ public class TwitterItem implements Item {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.chalmers.feedlr.model.Item#setSource(java.lang.String)
-	 */
-	@Override
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * com.chalmers.feedlr.model.Item#setUser(com.chalmers.feedlr.model.User)
 	 */
 	@Override
 	public void setUser(User user) {
 		this.user = user;
+		this.user.setSource("twitter");
 	}
 
 	/*
@@ -86,21 +77,11 @@ public class TwitterItem implements Item {
 		try {
 			created = dateFormat.parse(timestamp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.timestamp = d.format(created);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#getSource()
-	 */
-	@Override
-	public String getSource() {
-		return source;
 	}
 
 	/*
@@ -133,25 +114,10 @@ public class TwitterItem implements Item {
 		try {
 			d = format.parse(timestamp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		return d.getTime();
-	}
-
-	@Override
-	public String getType() {
-		return "STATUS";
-	}
-
-	@Override
-	public String getURL() {
-		return null;
-	}
-
-	@Override
-	public String getIMGURL() {
-		return null;
 	}
 
 	@Override

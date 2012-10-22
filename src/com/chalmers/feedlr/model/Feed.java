@@ -35,15 +35,15 @@ public class Feed extends ArrayList<Item> {
 	private List<User> facebookUsers;
 
 	public Feed() {
-		// Set a sweet default title
-		setTitle("Yeah buddy");
+		// Set a default title
+		setTitle("Feed");
 	}
 
 	public Feed(String title) {
 		if (title != null && !title.equals("")) {
 			this.setTitle(title);
 		} else {
-			setTitle("Yeah buddy");
+			setTitle("Feed");
 		}
 	}
 

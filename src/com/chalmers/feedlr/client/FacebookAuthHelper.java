@@ -16,8 +16,6 @@
 
 package com.chalmers.feedlr.client;
 
-import com.chalmers.feedlr.R;
-import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.listener.AuthListener;
 import com.chalmers.feedlr.util.ClientStore;
 import com.facebook.android.DialogError;
@@ -28,9 +26,7 @@ import com.facebook.android.Facebook.DialogListener;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Toast;
 
 /**
  * Class description
@@ -75,11 +71,13 @@ public class FacebookAuthHelper {
 		Long accessTokenExpires = ClientStore
 				.getFacebookAccessTokenExpires(context);
 
-		if (accessToken != null)
+		if (accessToken != null) {
 			facebook.setAccessToken(accessToken);
+		}
 
-		if (accessTokenExpires != 0)
+		if (accessTokenExpires != 0) {
 			facebook.setAccessExpires(accessTokenExpires);
+		}
 	}
 
 	/*

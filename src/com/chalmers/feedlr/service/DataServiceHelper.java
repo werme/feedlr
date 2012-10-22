@@ -48,6 +48,9 @@ public class DataServiceHelper {
 		isBound = false;
 	}
 
+	/*
+	 * This method is currently not in use.
+	 */
 	public void updateAll() {
 		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
 
@@ -66,6 +69,10 @@ public class DataServiceHelper {
 		}
 	}
 
+	/*
+	 * Updates the application database USER table with all facebook friends and
+	 * twitter "following users" for the registered accounts.
+	 */
 	public void updateUsers() {
 		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
 
@@ -84,6 +91,10 @@ public class DataServiceHelper {
 		}
 	}
 
+	/*
+	 * Updates the application database ITEM table with the most recent feed
+	 * items from all the registered accounts.
+	 */
 	public void updateFeed(Feed feed) {
 		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
 

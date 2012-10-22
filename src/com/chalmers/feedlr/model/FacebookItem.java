@@ -18,31 +18,28 @@ package com.chalmers.feedlr.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+
+import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Class description
+ * Represents a Facebook item in a feed. Contains all the attributes that are
+ * relevant for the feed.
  * 
  * @author Daniel Larsson
- * 
- *         Represents a Facebook item in a feed. Contains all the attributes
- *         that are relevant for the feed.
- * 
  */
 
 public class FacebookItem implements Item {
 
 	private String message;
 	private String timestamp;
-	private String type;
-	private String source = "facebook";
 	private String id;
 	private From from;
 
 	public FacebookItem() {
 		from = new From();
+		from.setSource("facebook");
 	}
 
 	/*
@@ -69,7 +66,7 @@ public class FacebookItem implements Item {
 		try {
 			created = dateFormat.parse(timestamp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -100,45 +97,10 @@ public class FacebookItem implements Item {
 		try {
 			d = format.parse(this.timestamp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		return d.getTime();
-	}
-
-	/*
-	 * @param type the type of Facebook Item
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/*
-	 * @return type the type of Facebook Item
-	 */
-	public String getType() {
-		return type;
-	}
-
-	@Override
-	public String getURL() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getIMGURL() {
-		return null;
-	}
-
-	@Override
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	@Override
-	public String getSource() {
-		return source;
 	}
 
 	@Override
@@ -156,16 +118,13 @@ public class FacebookItem implements Item {
 	}
 
 	class From extends User {
-		private String userName;
-		private long id;
-
 		public From() {
 		}
 
 		/*
 		 * @param userId the user id of a user
 		 */
-		public void setId(long id) {
+		public void setId(String id) {
 			this.id = id;
 		}
 
@@ -178,7 +137,7 @@ public class FacebookItem implements Item {
 			return userName;
 		}
 
-		public long getId() {
+		public String getId() {
 			return id;
 		}
 	}

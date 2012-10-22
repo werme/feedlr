@@ -17,7 +17,6 @@
 package com.chalmers.feedlr.parser;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,24 +74,24 @@ public class TwitterJSONParser {
 		try {
 			list = tweetReader.readValue(json);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
-		// Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
-		// Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
-		// Log.i(TwitterJSONParser.class.getName(),
-		// "Time in millis: " + (System.currentTimeMillis() - time));
+		Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
+		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
+		Log.i(TwitterJSONParser.class.getName(),
+				"Time in millis: " + (System.currentTimeMillis() - time));
 
 		return list;
 	}
 
 	/**
-	 * Parse a JSON response for a list of "tweets" from Twitters REST API with
-	 * Jacksons streaming parse method. Although this is a sligthly faster
+	 * Parse a JSON response for a list of "tweets" from Twitter's REST API with
+	 * Jackson's streaming parse method. Although this is a sligthly faster
 	 * alternative the current build uses the databinding parse, favoring a
 	 * simplier implementation. This method is thus currently not in use.
 	 * 
@@ -136,11 +135,11 @@ public class TwitterJSONParser {
 			jParser.close();
 
 		} catch (JsonGenerationException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Streaming parse");
@@ -164,8 +163,7 @@ public class TwitterJSONParser {
 				ids[i] = jsonIDs.getString(i);
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + ids.length
@@ -176,6 +174,12 @@ public class TwitterJSONParser {
 		return ids;
 	}
 
+	/*
+	 * Parse a JSON response for a list of usernames from Twitter's REST API
+	 * with Jackson's databinding method.
+	 * 
+	 * @return list containing <code>Users</code>
+	 */
 	public List<User> parseUserNames(String json) {
 		long time = System.currentTimeMillis();
 
@@ -189,11 +193,11 @@ public class TwitterJSONParser {
 		try {
 			list = usernameReader.readValue(json);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + list.size()
@@ -213,8 +217,7 @@ public class TwitterJSONParser {
 			wrapperObject = new JSONObject(json);
 			userID = wrapperObject.getLong("id");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed user credentials");

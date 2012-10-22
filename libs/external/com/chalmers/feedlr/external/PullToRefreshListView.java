@@ -1,4 +1,4 @@
-package com.chalmers.feedlr.ui;
+package com.chalmers.feedlr.external;
 
 import android.content.Context;
 import android.util.AttributeSet;

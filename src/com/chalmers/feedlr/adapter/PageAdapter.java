@@ -24,13 +24,14 @@ public class PageAdapter extends FragmentPagerAdapter {
 		super(fm);
 		this.listener = listener;
 		
-		db.clearFeeds();
 		feedTitles = db.listFeeds();
 		numberOfFeeds = feedTitles.size();
 	}
 
 	@Override
 	public Fragment getItem(int index) {
+		
+		
 		Bundle bundle = new Bundle();
 		bundle.putString("title", feedTitles.get(index));
 		FeedFragment f = FeedFragment.newInstance(bundle);

@@ -4,9 +4,9 @@
 
 package com.chalmers.feedlr.model;
 
+import android.test.AndroidTestCase;
 import java.util.ArrayList;
 import java.util.List;
-import android.test.AndroidTestCase;
 
 public class FeedTest extends AndroidTestCase {
 	
@@ -49,12 +49,10 @@ public class FeedTest extends AndroidTestCase {
 	 * The various objects should have been created with suitable values.
 	 */
 	public void testPreconditions(){
-		System.out.println("HIT KOMMER VI");
 		assertTrue(feed != null);
-		System.out.println("HIT MED");
 		assertTrue(feed.getFacebookUsers() == fbUsers);
 		assertTrue(feed.getTwitterUsers() == twitterUsers);
-		assertTrue(feed.getTitle() == "Yeah buddy"); 
+		assertTrue(feed.getTitle().equalsIgnoreCase("Yeah buddy")); 
 	}
 
 	/**
@@ -64,7 +62,13 @@ public class FeedTest extends AndroidTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
-		// Set everything you created to null;
+		feed = null;
+		user1 = null;
+		user2 = null;
+		user3 = null;
+		fbUsers = null;
+		twitterUsers = null;
+		feed = null;
 	}
 
 }

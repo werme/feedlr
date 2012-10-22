@@ -51,6 +51,7 @@ import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -58,6 +59,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -172,8 +174,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		db = new DatabaseHelper(this);
 
 		// load typefaces from assets
-		Typeface robotoThinItalic = Typeface.createFromAsset(getAssets(),
-				"fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-Medium.ttf");
 
@@ -245,10 +245,17 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		slideInRight = AnimationUtils
 				.loadAnimation(this, R.anim.slide_in_right);
 
+		// Display name correct
+		if (feedAdapter.getCount() > 0) {
+			String feedTitle = feedAdapter.getFeedTitle(0);
+			feedTitleTextView.setText(feedTitle);
+		}
+		
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
 
+		updateOverlay();
 	}
 
 	@Override
@@ -312,6 +319,20 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.feed_layout, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			toggleSettingsView(null);
+			break;
+		case R.id.menu_exit:
+			finish();
+			break;
+
+		}
 		return true;
 	}
 
@@ -406,7 +427,8 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		Cursor cursor = db.getAllUsers();
 
 		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
-				DatabaseHelper.USER_COLUMN_USERID };
+				DatabaseHelper.USER_COLUMN_USERID,
+				DatabaseHelper.USER_COLUMN_SOURCE };
 		int[] to = new int[] { R.id.user_item_text_view };
 
 		userAdapter = new UserAdapter(this, R.layout.user_list_item, cursor,
@@ -419,6 +441,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void createFeed(View button) {
+
 		// Animate switch to main view
 		toggleSettingsView(null);
 
@@ -466,6 +489,19 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.removeView(v);
 		userListLayout = null;
 		userListView = null;
+
+		// Check overlay
+		updateOverlay();
+	}
+
+	private void updateOverlay() {
+		if (feedAdapter.getCount() > 0) {
+			LinearLayout overlayLayout = (LinearLayout) mainViewFlipper
+					.findViewById(R.id.main_layout);
+			ImageView overlay = (ImageView) overlayLayout
+					.findViewById(R.id.no_feed_image);
+			overlay.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	public void authorizeTwitter(View v) {

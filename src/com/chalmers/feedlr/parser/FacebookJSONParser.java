@@ -17,9 +17,6 @@
 package com.chalmers.feedlr.parser;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import com.chalmers.feedlr.model.FacebookItem;
@@ -57,14 +54,21 @@ public class FacebookJSONParser {
 		}
 	}
 
+	/*
+	 * Parse a JSON response for a list of statuses from Facebook's REST API
+	 * with Jackson's databinding parse method.
+	 * 
+	 * @return list containing <code>FacebookItems</code>
+	 */
 	public List<FacebookItem> parseFeed(String json) {
 		long time = System.currentTimeMillis();
 
 		String data = json.substring(json.indexOf("statuses") + 18);
 
-		if (itemReader == null)
+		if (itemReader == null) {
 			itemReader = mapper.reader(new TypeReference<List<FacebookItem>>() {
 			});
+		}
 
 		List<FacebookItem> list = null;
 
@@ -76,35 +80,41 @@ public class FacebookJSONParser {
 								+ (System.currentTimeMillis() - time)
 								+ " millis.");
 			} catch (JsonParseException e) {
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			} catch (JsonMappingException e) {
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			}
 		}
 
 		return list;
 	}
 
+	/*
+	 * Parse a JSON response for a list of users from Facebook's REST API with
+	 * Jackson's databinding parse method. The list will be filled with
+	 * 
+	 * @return list containing <code>Users</code>
+	 */
 	public List<User> parseUsers(String json) {
 		long time = System.currentTimeMillis();
 		String data = json.substring(8);
 
-		if (userReader == null)
+		if (userReader == null) {
 			userReader = mapper.reader(new TypeReference<List<User>>() {
 			});
-
+		}
 		List<User> list = null;
 
 		try {
 			list = userReader.readValue(data);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()

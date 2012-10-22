@@ -16,7 +16,7 @@ public class TwitterHelperTest extends AndroidTestCase  {
 	}
 	
 	public void testGetUserTweets() {
-		long userID = 38895958;
+		String userID = "38895958";
 		List<TwitterItem> userTweets = twitter.getUserTweets(userID);
 		assertNotNull(userTweets);
 	}

@@ -27,7 +27,6 @@ import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.model.FacebookItem;
-import com.chalmers.feedlr.listener.RequestListener;
 
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.TwitterItem;
@@ -100,7 +99,7 @@ public class DataService extends Service {
 
 	/**
 	 * Populates the application database ITEM table with the most recent tweets
-	 * from the registered users timeline.
+	 * from the registered users twitter timeline.
 	 * 
 	 * This method is currently not in use.
 	 */
@@ -111,7 +110,7 @@ public class DataService extends Service {
 				long time = System.currentTimeMillis();
 
 				List<TwitterItem> twitterTimeline = twitter.getTimeline();
-				
+
 				if (twitterTimeline != null) {
 					// Save to database
 					db.addListOfItems(twitterTimeline);
@@ -150,7 +149,7 @@ public class DataService extends Service {
 					// Save to database
 					db.addUsers(users);
 					intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
-				} else {					
+				} else {
 					intent.setAction(FeedActivity.TWITTER_USERS_PROBLEM_UPDATING);
 				}
 
@@ -170,7 +169,7 @@ public class DataService extends Service {
 	 * 
 	 * This method is currently not in use.
 	 */
-	public void updateTweetsByUser(final long userID, final Feed feed) {
+	public void updateTweetsByUser(final String userID, final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
@@ -182,7 +181,7 @@ public class DataService extends Service {
 					db.addListOfItems(userTweets);
 					intent.setAction(FeedActivity.FEED_UPDATED);
 				} else {
-					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);					
+					intent.setAction(FeedActivity.FEED_PROBLEM_UPDATING);
 				}
 
 				// Broadcast update to activity
@@ -198,6 +197,10 @@ public class DataService extends Service {
 		});
 	}
 
+	/*
+	 * Populates application database ITEM table with the most recent tweets
+	 * from the users in the feed.
+	 */
 	public void updateFeedTwitterItems(final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
@@ -208,7 +211,7 @@ public class DataService extends Service {
 				c.moveToFirst();
 				while (!c.isAfterLast()) {
 					User u = new User(
-							c.getLong(c
+							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
 							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME)));
@@ -222,6 +225,11 @@ public class DataService extends Service {
 			}
 		});
 	}
+
+	/**
+	 * Updates application database USER table with all the friends the
+	 * registered user has on its facebook account.
+	 */
 
 	public void updateFacebookUsers() {
 		final long time = System.currentTimeMillis();
@@ -276,8 +284,12 @@ public class DataService extends Service {
 		});
 	}
 
-	// No need to start a new thread, since Facebook makes the request Async
-	// automatically when using AsyncFacebookRunner
+	/**
+	 * Populates the application database ITEM table with the most recent feed
+	 * from the registered users facebook timeline.
+	 * 
+	 * This method is currently not in use.
+	 */
 	public void updateFacebookTimeline() {
 		final long time = System.currentTimeMillis();
 
@@ -325,10 +337,6 @@ public class DataService extends Service {
 			}
 		});
 
-		// List<FacebookItem> facebookTimeline = facebook.getTimeline();
-
-		// Save to database
-
 		// Broadcast update to activity
 		Intent intent = new Intent();
 		intent.setAction(FeedActivity.FACEBOOK_TIMELINE_UPDATED);
@@ -340,6 +348,10 @@ public class DataService extends Service {
 
 	}
 
+	/*
+	 * Populates application database ITEM table with the most recent facebook
+	 * feed updates from the users in the feed.
+	 */
 	public void updateFeedFacebookItems(final Feed feed) {
 		final long time = System.currentTimeMillis();
 
@@ -352,7 +364,7 @@ public class DataService extends Service {
 		while (!c.isAfterLast()) {
 			facebookUsersInFeed
 					.add(new User(
-							c.getLong(c
+							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERID)),
 							c.getString(c
 									.getColumnIndex(DatabaseHelper.USER_COLUMN_USERNAME))));
@@ -371,16 +383,15 @@ public class DataService extends Service {
 								facebookItemsForUsers
 										.addAll(new FacebookJSONParser()
 												.parseFeed(response));
-								responses++;
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
-							Log.d("DataService", response);
+							Log.e(getClass().getName(), e.getMessage());
 						}
+						responses++;
 
-
-						if (responses == facebookUsersInFeed.size())
+						if (responses == facebookUsersInFeed.size()) {
 							onAllComplete();
+						}
 					}
 
 					private void onAllComplete() {

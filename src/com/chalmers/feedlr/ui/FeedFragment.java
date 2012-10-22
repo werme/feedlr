@@ -21,8 +21,9 @@ import com.chalmers.feedlr.activity.FeedActivity;
 import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.database.FeedCursorLoader;
+import com.chalmers.feedlr.external.PullToRefreshListView;
+import com.chalmers.feedlr.external.PullToRefreshListView.OnRefreshListener;
 import com.chalmers.feedlr.listener.FeedListener;
-import com.chalmers.feedlr.ui.PullToRefreshListView.OnRefreshListener;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,7 +36,6 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,7 +140,6 @@ public class FeedFragment extends ListFragment implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String broadcast = intent.getAction();
-			Bundle b = intent.getExtras();
 
 			if (broadcast.equals(FeedActivity.FEED_UPDATED)) {
 				loader.forceLoad();

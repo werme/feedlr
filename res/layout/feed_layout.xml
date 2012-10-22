@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.chalmers.feedlr.ui.PullToRefreshListView
+    <com.chalmers.feedlr.external.PullToRefreshListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="0dip"

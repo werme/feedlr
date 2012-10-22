@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    <include layout="@layout/create_feed_action_bar"/>
+
+    <include layout="@layout/create_feed_action_bar" />
 
     <ListView
         android:id="@+id/user_list_view"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:background="#222222"
+        android:background="#1e2126"
         android:choiceMode="multipleChoice" />
+    <!-- android:background="@drawable/settings_background_gradient" -->
 
 </LinearLayout>

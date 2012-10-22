@@ -23,7 +23,7 @@ public class TwitterItemTest extends AndroidTestCase {
 		ti = new TwitterItem();
 		ti.setText("Hej David!");
 		ti.setUser(user);
-		ti.setTimestamp("13:37");
+		ti.setId("1337");
 	}
 
 	/**
@@ -33,8 +33,8 @@ public class TwitterItemTest extends AndroidTestCase {
 	public void testPreconditions() {
 		assertTrue(ti != null);
 		assertTrue(ti.getUser() == user);
-		//assertTrue(ti.getTimestamp() == "13:37");
 		assertTrue(ti.getText() == "Hej David!");
+		assertTrue(ti.getId() == "1337");
 	}
 
 	/**
