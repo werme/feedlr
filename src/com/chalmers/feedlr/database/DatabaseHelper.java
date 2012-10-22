@@ -576,7 +576,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public Cursor getAllUsers() {
 		return db.query(TABLE_USER, new String[] { USER_COLUMN_ID,
 				USER_COLUMN_USERNAME, USER_COLUMN_USERID, USER_COLUMN_SOURCE },
-				null, null, null, null, null);
+				null, null, null, null, USER_COLUMN_USERNAME + " ASC");
 	}
 
 	/**
