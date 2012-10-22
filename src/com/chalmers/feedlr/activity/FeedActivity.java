@@ -381,18 +381,31 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// intent.setAction(NO_CONNECTION);
 		// lbm.sendBroadcast(intent);
 		// }
+		if (isOnline()) {
+			feedService.updateFeed(new Feed(feedTitle));
+		} else {
+			Intent intent = new Intent();
+			intent.setAction(NO_CONNECTION);
+			lbm.sendBroadcast(intent);
+		}
 	}
 
 	public boolean isOnline() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo i = cm.getActiveNetworkInfo();
-		if (i == null)
+		ConnectivityManager cm;
+		NetworkInfo info = null;
+
+		try {
+			cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			info = cm.getActiveNetworkInfo();
+		} catch (Exception e) {
+			Log.e("Check connection", e.getMessage());
+		}
+
+		if (info != null) {
+			return info.isConnected();
+		} else {
 			return false;
-		if (!i.isConnected())
-			return false;
-		if (!i.isAvailable())
-			return false;
-		return true;
+		}
 	}
 
 	// Methods called on button press below. See xml files.
