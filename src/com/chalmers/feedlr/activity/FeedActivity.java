@@ -67,6 +67,10 @@ import android.widget.Toast;
 import android.widget.ViewAnimator;
 import android.widget.ViewFlipper;
 
+/**
+ * FeedActivity is the activity in which almost all parts of the application is
+ * run. This is the default activity.
+ */
 public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	private DataServiceHelper feedService;
@@ -515,7 +519,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		if (!isOnline()) {
 			return;
 		}
-		
+
 		clientHandler.authorize(Clients.TWITTER, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
@@ -540,10 +544,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void authorizeFacebook(View v) {
-		if(!isOnline()) {
+		if (!isOnline()) {
 			return;
 		}
-		
+
 		clientHandler.authorize(Clients.FACEBOOK, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
