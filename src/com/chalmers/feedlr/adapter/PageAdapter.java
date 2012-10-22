@@ -28,6 +28,12 @@ import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.ui.FeedFragment;
 
+/**
+ * 
+ * @author Olle Werme
+ * 
+ */
+
 public class PageAdapter extends FragmentPagerAdapter {
 
 	private int numberOfFeeds = 0;

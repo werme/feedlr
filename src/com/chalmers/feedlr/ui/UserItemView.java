@@ -25,6 +25,13 @@ import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * 
+ * @author Olle Werme
+ * 
+ * 
+ */
+
 public class UserItemView extends LinearLayout implements Checkable {
 
 	private boolean checked;

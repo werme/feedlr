@@ -62,7 +62,7 @@ public class FacebookAuthHelper {
 		setAccessToken();
 	}
 
-	/*
+	/**
 	 * Looks for an access token in <code>ClientStore</code> and, if there is
 	 * one, applies it to this session. Also sets expiration time of the token.
 	 */
@@ -80,10 +80,11 @@ public class FacebookAuthHelper {
 		}
 	}
 
-	/*
+	/**
 	 * Authorizes the session, if is not authorized.
 	 * 
-	 * @param listener the listener to be used in the authorization request
+	 * @param listener
+	 *            the listener to be used in the authorization request
 	 */
 	public void authorize(AuthListener listener) {
 		authListener = listener;
@@ -123,7 +124,7 @@ public class FacebookAuthHelper {
 		facebook.authorizeCallback(requestCode, resultCode, data);
 	}
 
-	/*
+	/**
 	 * Uses variable shouldExtendAccessToken in
 	 * <code>com.facebook.android.Facebook</code> to validate if the access
 	 * token used is out dated. If so, the method will call

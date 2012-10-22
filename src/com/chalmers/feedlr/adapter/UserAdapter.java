@@ -27,6 +27,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+/**
+ * The class UserAdapter is a Cursor adapter used to create user item views
+ * with.
+ * 
+ * @author Olle Werme
+ * @author Daniel Larsson
+ * 
+ */
+
 public class UserAdapter extends SimpleCursorAdapter {
 
 	Context context;
@@ -46,13 +55,6 @@ public class UserAdapter extends SimpleCursorAdapter {
 		public ImageView source;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.support.v4.widget.SimpleCursorAdapter#bindView(android.view.View,
-	 * android.content.Context, android.database.Cursor)
-	 */
 	@Override
 	public void bindView(View v, Context context, Cursor c) {
 		super.bindView(v, context, c);
@@ -69,13 +71,6 @@ public class UserAdapter extends SimpleCursorAdapter {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.support.v4.widget.ResourceCursorAdapter#newView(android.content
-	 * .Context, android.database.Cursor, android.view.ViewGroup)
-	 */
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		super.newView(context, cursor, parent);

@@ -39,13 +39,14 @@ public class FacebookHelper {
 		asyncFacebookRunner = new AsyncFacebookRunner(Clients.getFacebook());
 	}
 
-	/*
+	/**
 	 * Sends a requst to Facebook's graph API for the "timeline". This includes
 	 * everything viewed on the user's /home screen in Facebook.
 	 * 
 	 * This method is currently not in use.
 	 * 
-	 * @param listener the listener to be used in the request
+	 * @param listener
+	 *            the listener to be used in the request
 	 */
 	public void getTimeline(RequestListener listener) {
 		long time = System.currentTimeMillis();
@@ -60,11 +61,12 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	/*
+	/**
 	 * Sends a request to Facebook's graph API for the registered user's
 	 * friends.
 	 * 
-	 * @param listener the listener to be used in the request
+	 * @param listener
+	 *            the listener to be used in the request
 	 */
 	public void getFriends(RequestListener listener) {
 		long time = System.currentTimeMillis();
@@ -78,13 +80,14 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	/*
+	/**
 	 * Sends a request to Facebook's graph API for the registered user's friends
 	 * lists.
 	 * 
 	 * This method is currently not in use.
 	 * 
-	 * @param listener the listener to be used in the request
+	 * @param listener
+	 *            the listener to be used in the request
 	 */
 	public void getFriendsLists(RequestListener listener) {
 		long time = System.currentTimeMillis();
@@ -98,14 +101,16 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	/*
+	/**
 	 * Sends a request to Facebook's graph API for the feed of the user given as
 	 * parameter. Returns only statuses, no likes, photos and other types of
 	 * updates.
 	 * 
-	 * @param userID String containing the user id of the feed
+	 * @param userID
+	 *            String containing the user id of the feed
 	 * 
-	 * @param listener the listener to be used in the request
+	 * @param listener
+	 *            the listener to be used in the request
 	 */
 	public void getUserFeed(String userID, RequestListener listener) {
 		long time = System.currentTimeMillis();
@@ -120,12 +125,14 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
-	/*
+	/**
 	 * Uses <code>getUserFeed</code> to request the statuses of a list of users.
 	 * 
-	 * @param facebookUsersInFeed list of users
+	 * @param facebookUsersInFeed
+	 *            list of users
 	 * 
-	 * @param listener the listener to be used in the request
+	 * @param listener
+	 *            the listener to be used in the request
 	 */
 	public void getFeedsForUsers(List<User> facebookUsersInFeed,
 			final RequestListener listener) {
@@ -134,24 +141,28 @@ public class FacebookHelper {
 		}
 	}
 
-	/*
+	/**
 	 * Is called by all request methods, to use an asynchronized request caller.
 	 * 
-	 * @param requestURL URL for the request
+	 * @param requestURL
+	 *            URL for the request
 	 * 
-	 * @param params Bundle of parameters needed for the request
+	 * @param params
+	 *            Bundle of parameters needed for the request
 	 * 
-	 * @param listener the listener to be used in the request
+	 * @param listener
+	 *            the listener to be used in the request
 	 */
 	private void request(String requestURL, Bundle params,
 			RequestListener listener) {
 		asyncFacebookRunner.request(requestURL, params, listener);
 	}
 
-	/*
+	/**
 	 * Creates a URL of the profile picture for a specific user.
 	 * 
-	 * @param id String containing the user id
+	 * @param id
+	 *            String containing the user id
 	 * 
 	 * @return complete url for small version of profile picture
 	 */

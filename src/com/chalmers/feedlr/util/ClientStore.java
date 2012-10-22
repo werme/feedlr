@@ -24,6 +24,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+/**
+ * The ClientStore class handles all editing of shared preferenes.
+ * 
+ * @author Olle Werme
+ * @author Daniel Larsson
+ */
+
 public class ClientStore {
 
 	private static final String APP_NAME = "feedlr";
@@ -40,12 +47,14 @@ public class ClientStore {
 	private ClientStore() {
 	}
 
-	/*
+	/**
 	 * Save the Twitter access token and secret to shared preferences.
 	 * 
-	 * @param token access token so be saved
+	 * @param token
+	 *            access token so be saved
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return true if the new value was written correctly to storage
 	 */
@@ -57,12 +66,14 @@ public class ClientStore {
 		return editor.commit();
 	}
 
-	/*
+	/**
 	 * Save the Twitter request token and secret to shared preferences.
 	 * 
-	 * @param token access token so be saved
+	 * @param token
+	 *            access token so be saved
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return true if the new value was written correctly to storage
 	 */
@@ -74,10 +85,11 @@ public class ClientStore {
 		return editor.commit();
 	}
 
-	/*
+	/**
 	 * Get Twitter access token from shared preferences.
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return copy of access token
 	 */
@@ -89,10 +101,11 @@ public class ClientStore {
 		return new Token(accessToken, accessSecret);
 	}
 
-	/*
+	/**
 	 * Get Twitter request token from shared preferences.
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return copy of request token
 	 */
@@ -104,12 +117,14 @@ public class ClientStore {
 		return new Token(requestToken, requestSecret);
 	}
 
-	/*
+	/**
 	 * Save the registered users Twitter id to shared preferences.
 	 * 
-	 * @param id user id to be saved
+	 * @param id
+	 *            user id to be saved
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return true if the new value was written correctly to storage
 	 */
@@ -120,10 +135,11 @@ public class ClientStore {
 		return editor.commit();
 	}
 
-	/*
+	/**
 	 * Get registered Twitter user id from shared preferences.
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return registered Twitter user id
 	 */
@@ -133,12 +149,14 @@ public class ClientStore {
 		return settings.getLong(TWITTER_USER_ID, 0);
 	}
 
-	/*
+	/**
 	 * Save the Facebook OAuth 2.0 access token to shared preferences.
 	 * 
-	 * @param facebook Facebook object
+	 * @param facebook
+	 *            Facebook object
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return true if the new value was written correctly to storage
 	 */
@@ -150,13 +168,15 @@ public class ClientStore {
 		return editor.commit();
 	}
 
-	/*
+	/**
 	 * Save the Facebook OAuth 2.0 access expiration token to shared
 	 * preferences.
 	 * 
-	 * @param facebook Facebook object
+	 * @param facebook
+	 *            Facebook object
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return true if the new value was written correctly to storage
 	 */
@@ -169,10 +189,11 @@ public class ClientStore {
 		return editor.commit();
 	}
 
-	/*
+	/**
 	 * Get Facebook OAuth 2.0 access token from shared preferences.
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return access token
 	 */
@@ -183,11 +204,12 @@ public class ClientStore {
 		return accessToken;
 	}
 
-	/*
+	/**
 	 * Get Facebook OAuth 2.0 access token expiration time from shared
 	 * preferences. Time expressed in milliseconds
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return session expiration time
 	 */

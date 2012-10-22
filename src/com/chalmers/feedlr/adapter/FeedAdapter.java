@@ -46,6 +46,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * The class FeedAdapter is a Cursor adapter used to create feed item views
+ * with.
+ * 
+ * @author Daniel Larsson
+ * 
+ */
+
 public class FeedAdapter extends SimpleCursorAdapter {
 
 	Context context;
@@ -59,7 +67,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		this.db = new DatabaseHelper(context);
 	}
 
-	/*
+	/**
 	 * Holds the children views for recycling.
 	 */
 	static class ViewHolder {
@@ -72,25 +80,11 @@ public class FeedAdapter extends SimpleCursorAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// Avarage time:
-		// 135 ms for first view.
-		// 40 ms for new views.
-		// 13 ms for recycled views.
-		View v = super.getView(position, convertView, parent);
-
-		return v;
+		return super.getView(position, convertView, parent);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.support.v4.widget.SimpleCursorAdapter#bindView(android.view.View,
-	 * android.content.Context, android.database.Cursor)
-	 */
 	@Override
 	public void bindView(View v, Context context, Cursor c) {
-		// Avarage time: 100 ms for first view, 10ms for the rest.
 		super.bindView(v, context, c);
 
 		// Holds the views, so that a recycled view does not have to find its
@@ -140,16 +134,8 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		viewHolder.timestamp.setText(stripTimestamp(parsedTimestamp));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.support.v4.widget.ResourceCursorAdapter#newView(android.content
-	 * .Context, android.database.Cursor, android.view.ViewGroup)
-	 */
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		// Avarage time: 30 ms
 		super.newView(context, cursor, parent);
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -182,8 +168,13 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		return tempView;
 	}
 
-	/*
+	/**
 	 * Strips timestamp string from unwanted information.
+	 * 
+	 * @param timestamp
+	 *            String containing original timestamp
+	 * 
+	 * @return timestamp Strin stripped from unwanted information
 	 */
 	public String stripTimestamp(String timestamp) {
 		if (timestamp.contains(",")) {
@@ -193,6 +184,12 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param squareBitmap
+	 *            original image
+	 * @return image with rounded corners
+	 */
 	public static Bitmap getRoundedCornerBitmap(Bitmap squareBitmap) {
 		Bitmap roundedBitmap = Bitmap.createBitmap(squareBitmap.getWidth(),
 				squareBitmap.getHeight(), Config.ARGB_8888);
@@ -216,6 +213,15 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		return roundedBitmap;
 	}
 
+	/**
+	 * DownloadImageTask is an inner class that handles the downloading and
+	 * setting of profile pictures. The class is asynchronized, so multiple
+	 * calls can be made without having to wait for the first one to return.
+	 * 
+	 * 
+	 * @author Daniel Larsson
+	 * 
+	 */
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
 		// Avarage time: 270 ms

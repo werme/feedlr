@@ -31,6 +31,12 @@ import com.chalmers.feedlr.util.ClientStore;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
+/**
+ * 
+ * @author Olle Werme
+ * 
+ */
+
 public class Clients {
 	public static final int TWITTER = 0;
 	public static final int FACEBOOK = 1;
@@ -50,14 +56,14 @@ public class Clients {
 	private Clients() {
 	}
 
-	/*
+	/**
 	 * @return array of availible clients
 	 */
 	public static String[] getClients() {
 		return new String[] { "Twitter", "Facebook" };
 	}
 
-	/*
+	/**
 	 * @return OAuthService for twitter
 	 */
 	public synchronized static OAuthService getTwitter() {
@@ -73,7 +79,7 @@ public class Clients {
 		return twitter;
 	}
 
-	/*
+	/**
 	 * @return Facebook object
 	 */
 	public synchronized static Facebook getFacebook() {
@@ -85,9 +91,9 @@ public class Clients {
 		return facebook;
 	}
 
-	/*
+	/**
 	 * @return Asynchronized facebookrunner to be used for asynchronized
-	 * requests
+	 *         requests
 	 */
 	public synchronized static AsyncFacebookRunner getAsyncFacebookRunner() {
 		if (asyncFacebookRunner != null) {
@@ -98,14 +104,16 @@ public class Clients {
 		return asyncFacebookRunner;
 	}
 
-	/*
+	/**
 	 * Decides if a client is authorized or not
 	 * 
 	 * @See <code>Clients</code>
 	 * 
-	 * @param client integer representation of the client.
+	 * @param client
+	 *            integer representation of the client.
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 */
 	public synchronized static boolean isAuthorized(int client, Context context) {
 		switch (client) {
@@ -120,12 +128,13 @@ public class Clients {
 		}
 	}
 
-	/*
+	/**
 	 * Get all authorized clients
 	 * 
 	 * @See <code>Clients</code>
 	 * 
-	 * @param context context
+	 * @param context
+	 *            context
 	 * 
 	 * @return list of integer representations of authorized clients
 	 */

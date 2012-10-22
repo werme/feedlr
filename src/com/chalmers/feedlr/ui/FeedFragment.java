@@ -41,6 +41,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+/**
+ * 
+ * @author Olle Werme
+ * 
+ */
+
 public class FeedFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
 
