@@ -1,7 +1,17 @@
-/**
- * Class description
+/*
+ * Copyright 2012 Feedlr
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
- * @user David Goransson
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.chalmers.feedlr.database;
@@ -20,6 +30,12 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+
+/**
+ * Class description
+ * 
+ * @user David Goransson
+ */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -86,9 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		database.execSQL("CREATE TABLE " + TABLE_ITEM + "(" + ITEM_COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + ITEM_COLUMN_ITEMID
 				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
-				+ ITEM_COLUMN_TIMESTAMP + " INT,"
-				+ ITEM_COLUMN_USER_ID + " INT NOT NULL," + ITEM_COLUMN_USERNAME
-				+ " TEXT" + ")");
+				+ ITEM_COLUMN_TIMESTAMP + " INT," + ITEM_COLUMN_USER_ID
+				+ " INT NOT NULL," + ITEM_COLUMN_USERNAME + " TEXT" + ")");
 		// @formatter:on
 	}
 
@@ -231,7 +246,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return true if user was added or updated in the database.
 	 */
 	public boolean addUser(User user) {
-		if (user.getId() == null || user.getUserName() == null){
+		if (user.getId() == null || user.getUserName() == null) {
 			return false;
 		}
 		if (updateUser(user)) {
@@ -298,12 +313,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return the result of the query, true if user exists.
 	 */
 	public boolean userExist(User user) {
-		if (user.getId() == null || user.getUserName() == null){
+		if (user.getId() == null || user.getUserName() == null) {
 			return false;
 		}
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERID },
-				USER_COLUMN_USERID + " = ?",
-				new String[] { user.getId() }, null, null, null);
+				USER_COLUMN_USERID + " = ?", new String[] { user.getId() },
+				null, null, null);
 		if (c.getCount() == 0) {
 			return false;
 		}
@@ -349,8 +364,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		String id = user.getId();
 		long user_id;
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_ID },
-				USER_COLUMN_ID + "=?", new String[] { id }, null, null,
-				null);
+				USER_COLUMN_ID + "=?", new String[] { id }, null, null, null);
 		if (c.moveToNext()) {
 			user_id = Long.parseLong(c.getString(0));
 			c.close();
