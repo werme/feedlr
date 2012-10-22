@@ -59,9 +59,10 @@ public class FacebookJSONParser {
 
 		String data = json.substring(json.indexOf("statuses") + 18);
 
-		if (itemReader == null)
+		if (itemReader == null) {
 			itemReader = mapper.reader(new TypeReference<List<FacebookItem>>() {
 			});
+		}
 
 		List<FacebookItem> list = null;
 
@@ -88,10 +89,10 @@ public class FacebookJSONParser {
 		long time = System.currentTimeMillis();
 		String data = json.substring(8);
 
-		if (userReader == null)
+		if (userReader == null) {
 			userReader = mapper.reader(new TypeReference<List<User>>() {
 			});
-
+		}
 		List<User> list = null;
 
 		try {

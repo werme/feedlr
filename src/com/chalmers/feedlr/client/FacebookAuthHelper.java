@@ -71,11 +71,13 @@ public class FacebookAuthHelper {
 		Long accessTokenExpires = ClientStore
 				.getFacebookAccessTokenExpires(context);
 
-		if (accessToken != null)
+		if (accessToken != null) {
 			facebook.setAccessToken(accessToken);
+		}
 
-		if (accessTokenExpires != 0)
+		if (accessTokenExpires != 0) {
 			facebook.setAccessExpires(accessTokenExpires);
+		}
 	}
 
 	/*

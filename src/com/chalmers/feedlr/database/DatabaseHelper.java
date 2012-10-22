@@ -115,8 +115,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @return true if the feed was added to the database.
 	 */
 	public boolean addFeed(Feed feed) throws SQLiteException {
-		if (feedExist(feed))
+		if (feedExist(feed)) {
 			return false;
+		}
 		db.insert(TABLE_FEED, null, feedCV(feed));
 		return true;
 	}
@@ -153,8 +154,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Cursor c = db.query(TABLE_FEED, new String[] { FEED_COLUMN_NAME },
 				FEED_COLUMN_NAME + " = ?", new String[] { feed.getTitle() },
 				null, null, null);
-		if (c.getCount() == 0)
+		if (c.getCount() == 0) {
 			return false;
+		}
 		return true;
 	}
 
@@ -302,8 +304,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		Cursor c = db.query(TABLE_USER, new String[] { USER_COLUMN_USERID },
 				USER_COLUMN_USERID + " = ?",
 				new String[] { user.getId() }, null, null, null);
-		if (c.getCount() == 0)
+		if (c.getCount() == 0) {
 			return false;
+		}
 		return true;
 	}
 
