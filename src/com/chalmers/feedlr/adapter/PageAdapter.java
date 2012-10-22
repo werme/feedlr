@@ -36,18 +36,18 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	private FeedListener listener;
 
-	public PageAdapter(FragmentManager fm, DatabaseHelper db, FeedListener listener) {
+	public PageAdapter(FragmentManager fm, DatabaseHelper db,
+			FeedListener listener) {
 		super(fm);
 		this.listener = listener;
-		
+
 		feedTitles = db.listFeeds();
 		numberOfFeeds = feedTitles.size();
 	}
 
 	@Override
 	public Fragment getItem(int index) {
-		
-		
+
 		Bundle bundle = new Bundle();
 		bundle.putString("title", feedTitles.get(index));
 		FeedFragment f = FeedFragment.newInstance(bundle);
@@ -60,11 +60,23 @@ public class PageAdapter extends FragmentPagerAdapter {
 		return numberOfFeeds;
 	}
 
+	/*
+	 * Add a new feed
+	 * 
+	 * @param feed feed to be added
+	 */
 	public void addFeed(Feed feed) {
 		numberOfFeeds++;
 		feedTitles.add(feed.getTitle());
 	}
-	
+
+	/*
+	 * Get feed title
+	 * 
+	 * @param index index of the feed
+	 * 
+	 * @return title
+	 */
 	public String getFeedTitle(int index) {
 		return feedTitles.get(index);
 	}

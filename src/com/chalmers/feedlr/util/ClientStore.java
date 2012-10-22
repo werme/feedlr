@@ -42,6 +42,12 @@ public class ClientStore {
 
 	/*
 	 * Save the Twitter access token and secret to shared preferences.
+	 * 
+	 * @param token access token so be saved
+	 * 
+	 * @param context context
+	 * 
+	 * @return true if the new value was written correctly to storage
 	 */
 	public static boolean saveTwitterAccessToken(Token token, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
@@ -53,6 +59,12 @@ public class ClientStore {
 
 	/*
 	 * Save the Twitter request token and secret to shared preferences.
+	 * 
+	 * @param token access token so be saved
+	 * 
+	 * @param context context
+	 * 
+	 * @return true if the new value was written correctly to storage
 	 */
 	public static boolean saveTwitterRequestToken(Token token, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
@@ -64,6 +76,8 @@ public class ClientStore {
 
 	/*
 	 * Get Twitter access token from shared preferences.
+	 * 
+	 * @param context context
 	 * 
 	 * @return copy of access token
 	 */
@@ -78,6 +92,8 @@ public class ClientStore {
 	/*
 	 * Get Twitter request token from shared preferences.
 	 * 
+	 * @param context context
+	 * 
 	 * @return copy of request token
 	 */
 	public static Token getTwitterRequestToken(Context context) {
@@ -90,6 +106,12 @@ public class ClientStore {
 
 	/*
 	 * Save the registered users Twitter id to shared preferences.
+	 * 
+	 * @param id user id to be saved
+	 * 
+	 * @param context context
+	 * 
+	 * @return true if the new value was written correctly to storage
 	 */
 	public static boolean saveTwitterUserID(long id, Context context) {
 		Editor editor = context.getSharedPreferences(APP_NAME,
@@ -101,6 +123,8 @@ public class ClientStore {
 	/*
 	 * Get registered Twitter user id from shared preferences.
 	 * 
+	 * @param context context
+	 * 
 	 * @return registered Twitter user id
 	 */
 	public static long getTwitterUserID(Context context) {
@@ -111,6 +135,12 @@ public class ClientStore {
 
 	/*
 	 * Save the Facebook OAuth 2.0 access token to shared preferences.
+	 * 
+	 * @param facebook Facebook object
+	 * 
+	 * @param context context
+	 * 
+	 * @return true if the new value was written correctly to storage
 	 */
 	public static boolean saveFacebookAccessToken(Facebook facebook,
 			Context context) {
@@ -123,6 +153,12 @@ public class ClientStore {
 	/*
 	 * Save the Facebook OAuth 2.0 access expiration token to shared
 	 * preferences.
+	 * 
+	 * @param facebook Facebook object
+	 * 
+	 * @param context context
+	 * 
+	 * @return true if the new value was written correctly to storage
 	 */
 	public static boolean saveFacebookAccessTokenExpires(Facebook facebook,
 			Context context) {
@@ -136,6 +172,8 @@ public class ClientStore {
 	/*
 	 * Get Facebook OAuth 2.0 access token from shared preferences.
 	 * 
+	 * @param context context
+	 * 
 	 * @return access token
 	 */
 	public static String getFacebookAccessToken(Context context) {
@@ -148,6 +186,8 @@ public class ClientStore {
 	/*
 	 * Get Facebook OAuth 2.0 access token expiration time from shared
 	 * preferences. Time expressed in milliseconds
+	 * 
+	 * @param context context
 	 * 
 	 * @return session expiration time
 	 */

@@ -82,6 +82,8 @@ public class FacebookAuthHelper {
 
 	/*
 	 * Authorizes the session, if is not authorized.
+	 * 
+	 * @param listener the listener to be used in the authorization request
 	 */
 	public void authorize(AuthListener listener) {
 		authListener = listener;
