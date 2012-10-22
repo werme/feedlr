@@ -33,7 +33,6 @@ import com.chalmers.feedlr.parser.TwitterJSONParser;
 import com.chalmers.feedlr.util.ClientStore;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 public class TwitterHelper {

@@ -74,14 +74,12 @@ public class FeedFragment extends ListFragment implements
 	}
 
 	@Override
-
 	public void onDestroy() {
 		lbm.unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 
 	@Override
-
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
@@ -142,7 +140,6 @@ public class FeedFragment extends ListFragment implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String broadcast = intent.getAction();
-			Bundle b = intent.getExtras();
 
 			if (broadcast.equals(FeedActivity.FEED_UPDATED)) {
 				loader.forceLoad();

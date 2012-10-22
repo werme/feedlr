@@ -173,8 +173,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		db = new DatabaseHelper(this);
 
 		// load typefaces from assets
-		Typeface robotoThinItalic = Typeface.createFromAsset(getAssets(),
-				"fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-Medium.ttf");
 
@@ -474,7 +472,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.findViewById(R.id.main_layout);
 		ImageView hej = (ImageView) bajs.findViewById(R.id.no_feed_image);
 		hej.setVisibility(8);
-
 	}
 
 	public void authorizeTwitter(View v) {

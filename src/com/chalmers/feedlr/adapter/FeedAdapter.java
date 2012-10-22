@@ -24,9 +24,7 @@ import java.util.Date;
 import com.chalmers.feedlr.R;
 import com.chalmers.feedlr.database.DatabaseHelper;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

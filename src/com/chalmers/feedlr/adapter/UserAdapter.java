@@ -1,7 +1,6 @@
 package com.chalmers.feedlr.adapter;
 
 import com.chalmers.feedlr.R;
-import com.chalmers.feedlr.adapter.FeedAdapter.ViewHolder;
 import com.chalmers.feedlr.database.DatabaseHelper;
 
 import android.content.Context;

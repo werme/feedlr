@@ -27,7 +27,6 @@ import com.chalmers.feedlr.client.FacebookHelper;
 import com.chalmers.feedlr.client.TwitterHelper;
 import com.chalmers.feedlr.database.DatabaseHelper;
 import com.chalmers.feedlr.model.FacebookItem;
-import com.chalmers.feedlr.listener.RequestListener;
 
 import com.chalmers.feedlr.model.Feed;
 import com.chalmers.feedlr.model.TwitterItem;
@@ -276,8 +275,9 @@ public class DataService extends Service {
 		});
 	}
 
-	// No need to start a new thread, since Facebook makes the request Async
-	// automatically when using AsyncFacebookRunner
+	/*
+	 * This method is never used, it is only there for future implementations.
+	 */
 	public void updateFacebookTimeline() {
 		final long time = System.currentTimeMillis();
 
@@ -377,7 +377,6 @@ public class DataService extends Service {
 							Log.d("DataService", response);
 						}
 						responses++;
-
 
 						if (responses == facebookUsersInFeed.size())
 							onAllComplete();

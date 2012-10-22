@@ -20,8 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**

@@ -48,6 +48,9 @@ public class DataServiceHelper {
 		isBound = false;
 	}
 
+	/*
+	 * This method is never used, it is only there for future implementations.
+	 */
 	public void updateAll() {
 		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
 
