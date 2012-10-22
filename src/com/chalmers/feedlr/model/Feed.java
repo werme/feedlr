@@ -56,6 +56,8 @@ public class Feed extends ArrayList<Item> {
 	}
 
 	/**
+	 * Sets the Twitter users of a feed.
+	 * 
 	 * @param twitterUsers
 	 *            list of all twitter users to be displayed in the feed
 	 */
@@ -64,6 +66,8 @@ public class Feed extends ArrayList<Item> {
 	}
 
 	/**
+	 * Sets the Facebook users of a feed.
+	 * 
 	 * @param facebookUsers
 	 *            list of all facebook users to be displayed in the feed
 	 */
@@ -72,13 +76,17 @@ public class Feed extends ArrayList<Item> {
 	}
 
 	/**
-	 * @return the feed title
+	 * Returns the feed's title.
+	 * 
+	 * @return the feed title as a String.
 	 */
 	public String getTitle() {
 		return title;
 	}
 
 	/**
+	 * Returns all the Twitter users in a feed.
+	 * 
 	 * @return list of all twitter users registered to this feed
 	 */
 	public List<User> getTwitterUsers() {
@@ -86,6 +94,8 @@ public class Feed extends ArrayList<Item> {
 	}
 
 	/**
+	 * Returns all the Facebook users in a feed.
+	 * 
 	 * @return list of all facebook users registered to this feed
 	 */
 	public List<User> getFacebookUsers() {

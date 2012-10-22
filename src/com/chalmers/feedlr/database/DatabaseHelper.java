@@ -32,9 +32,10 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Class description
+ * The DatabaseHelper defines the database tables of feedlr. The helper handles
+ * insertions of data and retrieving data.
  * 
- * @user David Goransson
+ * @author David Goransson
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -79,7 +80,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 
 	public void onCreate(SQLiteDatabase database) {
-		// @formatter:off
 		// Creating feed table
 		database.execSQL("CREATE TABLE " + TABLE_FEED + "(" + FEED_COLUMN_ID
 				+ " INTEGER PRIMARY KEY AUTOINCREMENT," + FEED_COLUMN_NAME
@@ -104,7 +104,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ " INT UNIQUE," + ITEM_COLUMN_TEXT + " TEXT,"
 				+ ITEM_COLUMN_TIMESTAMP + " INT," + ITEM_COLUMN_USER_ID
 				+ " INT NOT NULL," + ITEM_COLUMN_USERNAME + " TEXT" + ")");
-		// @formatter:on
 	}
 
 	@Override
@@ -332,7 +331,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.delete(TABLE_USER, null, null);
 	}
 
-	/*
+	/**
 	 * Returns the size of the user table.
 	 * 
 	 * @return number of users in the database.

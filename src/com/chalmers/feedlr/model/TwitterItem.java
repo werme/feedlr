@@ -25,7 +25,8 @@ import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Class description
+ * TwitterItem defines a item or post from twitter as a object. The TwitterItem
+ * are created by the parser and then inserted and stored in the database.
  * 
  * @author Olle Werme
  */
@@ -42,33 +43,26 @@ public class TwitterItem implements Item {
 		user.setSource("twitter");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#setText(java.lang.String)
-	 */
 	@Override
 	public void setText(String text) {
 		this.text = text;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chalmers.feedlr.model.Item#setUser(com.chalmers.feedlr.model.User)
-	 */
 	@Override
 	public void setUser(User user) {
 		this.user = user;
 		this.user.setSource("twitter");
 	}
 
-	/*
-	 * @param timestamp the time the Twitter item was created
+	/**
+	 * Sets the timestamp of a Ttwitter Item.
+	 * 
+	 * @param timestamp
+	 *            the time the Twitter item was created
 	 */
 	@JsonProperty("created_at")
 	public void setTimestamp(String timestamp) {
+		// Converts from the format to dateformat.
 		SimpleDateFormat dateFormat = new SimpleDateFormat(
 				"EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
 		dateFormat.setLenient(false);
@@ -84,27 +78,19 @@ public class TwitterItem implements Item {
 		this.timestamp = d.format(created);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#getUser()
-	 */
 	@Override
 	public User getUser() {
 		return user;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#getText()
-	 */
 	@Override
 	public String getText() {
 		return text;
 	}
 
-	/*
+	/**
+	 * Returns the timestamp as a long.
+	 * 
 	 * @return timestamp the time the Twitter item was created
 	 */
 	public Long getTimestamp() {

@@ -16,19 +16,60 @@
 
 package com.chalmers.feedlr.model;
 
+/**
+ * Interface to define a item or post from a social media.
+ * 
+ */
 public interface Item {
-
+	/**
+	 * Sets the text of a item
+	 * 
+	 * @param text
+	 *            the text of the item.
+	 */
 	public void setText(String text);
 
+	/**
+	 * Sets the author of the item.
+	 * 
+	 * @param user
+	 *            the author of the item.
+	 */
 	public void setUser(User user);
 
+	/**
+	 * Sets the id of the item.
+	 * 
+	 * @param id
+	 *            the id of the item.
+	 */
 	public void setId(String id);
 
+	/**
+	 * Returns the text of the item.
+	 * 
+	 * @return the text of the item as a string.
+	 */
 	public String getText();
-	
+
+	/**
+	 * Returns the user of the item.
+	 * 
+	 * @return the author of the item as a User.
+	 */
 	public User getUser();
 
+	/**
+	 * Returns the time stamp of the item as a long.
+	 * 
+	 * @return the timestamp as a long.
+	 */
 	public Long getTimestamp();
-	
+
+	/**
+	 * Returns the id of the item.
+	 * 
+	 * @return the id of the item as a String.
+	 */
 	public String getId();
 }

@@ -42,11 +42,6 @@ public class FacebookItem implements Item {
 		from.setSource("facebook");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#setText(java.lang.String)
-	 */
 	@Override
 	@JsonProperty("message")
 	public void setText(String message) {
@@ -73,15 +68,16 @@ public class FacebookItem implements Item {
 		this.timestamp = d.format(created);
 	}
 
+	/**
+	 * Returns the link to the Author of a post.
+	 * 
+	 * @param from
+	 *            Link to the the author.
+	 */
 	public void setFrom(From from) {
 		this.from = from;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#getText()
-	 */
 	@Override
 	public String getText() {
 		return message;
@@ -113,10 +109,21 @@ public class FacebookItem implements Item {
 		return id;
 	}
 
+	/**
+	 * Returns the author of the item as a From.
+	 * 
+	 * @return the user as a From
+	 */
 	public From getFrom() {
 		return from;
 	}
 
+	/**
+	 * From links the Author of the post.
+	 * 
+	 * @author Daniel Larsson
+	 * 
+	 */
 	class From extends User {
 		public From() {
 		}
