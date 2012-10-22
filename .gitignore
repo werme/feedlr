@@ -13,7 +13,6 @@ local.properties
 ant.properties
 
 # Eclipse project files
-.classpath
 .project
 .settings
 
