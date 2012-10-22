@@ -88,6 +88,11 @@ public class DataService extends Service {
 		return binder;
 	}
 
+	/**
+	 * Simple method for running tasks asynchronous.
+	 * 
+	 * @param runnable the runnable to be run
+	 */
 	private void runAsync(final Runnable runnable) {
 		new Thread() {
 			@Override
@@ -100,7 +105,6 @@ public class DataService extends Service {
 	/**
 	 * Populates the application database ITEM table with the most recent tweets
 	 * from the registered users twitter timeline.
-	 * 
 	 * This method is currently not in use.
 	 */
 	public void updateTwitterTimeline() {
@@ -143,9 +147,6 @@ public class DataService extends Service {
 				List<User> users = twitter.getFollowing();
 
 				if (users != null) {
-					for (User u : users) {
-						u.setSource("twitter");
-					}
 					// Save to database
 					db.addUsers(users);
 					intent.setAction(FeedActivity.TWITTER_USERS_UPDATED);
@@ -165,11 +166,16 @@ public class DataService extends Service {
 
 	/**
 	 * Populates application database ITEM table with the most recent tweets
-	 * from the user with the given userID.
+	 * from the user with the given userID within a specific feed.
 	 * 
 	 * This method is currently not in use.
+	 * 
+	 * @param userID
+	 *            the id for the user
+	 * @param feed
+	 *            the feed that sent the request
 	 */
-	public void updateTweetsByUser(final String userID, final Feed feed) {
+	private void updateTweetsByUser(final String userID, final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
 			public void run() {
@@ -197,9 +203,13 @@ public class DataService extends Service {
 		});
 	}
 
-	/*
 	 * Populates application database ITEM table with the most recent tweets
-	 * from the users in the feed.
+	 * from all the users in the specified feed through {@link
+	 * #updateTweetsByUser(final String userID, final Feed feed)
+	 * updateTweetsByUser}.
+	 * 
+	 * @param feed
+	 *            the feed to be updated
 	 */
 	public void updateFeedTwitterItems(final Feed feed) {
 		runAsync(new Runnable() {
@@ -389,7 +399,11 @@ public class DataService extends Service {
 						}
 						responses++;
 
+<<<<<<< HEAD
 						if (responses == facebookUsersInFeed.size()) {
+=======
+						if (responses == facebookUsersInFeed.size())
+>>>>>>> origin/Documentation
 							onAllComplete();
 						}
 					}
