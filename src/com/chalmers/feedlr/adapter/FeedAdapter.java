@@ -60,11 +60,11 @@ public class FeedAdapter extends SimpleCursorAdapter {
 	}
 
 	static class ViewHolder {
-		public TextView text;
-		public TextView author;
-		public TextView timestamp;
-		public ImageView profilePicture;
-		public ImageView source;
+		private TextView text;
+		private TextView author;
+		private TextView timestamp;
+		private ImageView profilePicture;
+		private ImageView source;
 	}
 
 	@Override
