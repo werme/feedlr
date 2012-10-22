@@ -374,13 +374,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
-		// if (isOnline()) {
-		feedService.updateFeed(new Feed(feedTitle));
-		// } else {
-		// Intent intent = new Intent();
-		// intent.setAction(NO_CONNECTION);
-		// lbm.sendBroadcast(intent);
-		// }
 		if (isOnline()) {
 			feedService.updateFeed(new Feed(feedTitle));
 		} else {
@@ -494,7 +487,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		// Animate switch to new feed view
 		this.feedAdapter.addFeed(feed);
 		feedViewSwiper.setCurrentItem(adapter.getCount());
-		feedTitleTextView.setText(feedTitle);
+		feedTitleTextView.setText(feed.getTitle());
 
 		// Remove the createFeedView
 		View v = settingsViewFlipper.getCurrentView();
