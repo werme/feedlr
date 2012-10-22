@@ -12,7 +12,6 @@ gen/
 local.properties
 
 # Eclipse project files
-.project
 .settings
 
 # OS X
