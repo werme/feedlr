@@ -150,7 +150,7 @@ public class FeedFragment extends ListFragment implements
 			if (broadcast.equals(FeedActivity.FEED_UPDATED)) {
 				loader.forceLoad();
 			} else if (broadcast.equals(FeedActivity.NO_CONNECTION)) {
-				Toast.makeText(getActivity(), "Problem connection available",
+				Toast.makeText(getActivity(), "No Internet connection found!",
 						Toast.LENGTH_LONG).show();
 			}
 

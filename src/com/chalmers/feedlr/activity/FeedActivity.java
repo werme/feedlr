@@ -523,9 +523,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		clientHandler.authorize(Clients.TWITTER, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
-				Toast.makeText(FeedActivity.this,
-						"Twitter authorization successful", Toast.LENGTH_SHORT)
-						.show();
 				twitterAuthButton.setText(res
 						.getString(R.string.twitter_authorized));
 				twitterAuthButton.setEnabled(false);
@@ -551,9 +548,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		clientHandler.authorize(Clients.FACEBOOK, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
-				Toast.makeText(FeedActivity.this,
-						"Facebook authorization successful", Toast.LENGTH_LONG)
-						.show();
 				facebookAuthButton.setText(res
 						.getString(R.string.facebook_authorized));
 				facebookAuthButton.setEnabled(false);
