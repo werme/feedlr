@@ -250,7 +250,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 			String feedTitle = feedAdapter.getFeedTitle(0);
 			feedTitleTextView.setText(feedTitle);
 		}
-		
+
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);

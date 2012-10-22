@@ -4,13 +4,14 @@
 
 package com.chalmers.feedlr.model;
 
+import com.chalmers.feedlr.model.FacebookItem.From;
+
 import android.test.AndroidTestCase;
 
-public class TwitterItemTest extends AndroidTestCase {
+public class FacebookItemTest extends AndroidTestCase {
 
-	private TwitterItem ti;
-	private User user;
-
+	private FacebookItem FbI;
+	private From from;
 	/**
 	 * This is called before each test.
 	 */
@@ -18,12 +19,11 @@ public class TwitterItemTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		user = new User();
-		user.setUserName("Olle");
-		ti = new TwitterItem();
-		ti.setText("Hej David!");
-		ti.setUser(user);
-		ti.setId("1337");
+		FbI = new FacebookItem();
+		FbI.setText("Hej David!");
+		FbI.setId("1337");
+		from = FbI.getFrom();
+		from.setUserName("Olle");
 	}
 
 	/**
@@ -31,10 +31,10 @@ public class TwitterItemTest extends AndroidTestCase {
 	 * objects should have been created with suitable values.
 	 */
 	public void testPreconditions() {
-		assertTrue(ti != null);
-		assertTrue(ti.getUser() == user);
-		assertTrue(ti.getText().equalsIgnoreCase("Hej David!"));
-		assertTrue(ti.getId().equalsIgnoreCase("1337"));
+		assertTrue(FbI != null);
+		assertTrue(FbI.getUser() == from);
+		assertTrue(FbI.getText().equalsIgnoreCase("Hej David!"));
+		assertTrue(FbI.getId().equalsIgnoreCase("1337"));
 	}
 
 	/**
@@ -44,8 +44,8 @@ public class TwitterItemTest extends AndroidTestCase {
 	@Override
 	public void tearDown() throws Exception {
 		super.tearDown();
-		user = null;
-		ti = null;
+		from = null;
+		FbI = null;
 	}
 
 }

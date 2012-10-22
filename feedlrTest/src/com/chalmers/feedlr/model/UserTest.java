@@ -27,8 +27,8 @@ public class UserTest extends AndroidTestCase {
 	 * The various objects should have been created with suitable values.
 	 */
 	public void testPreconditions() {
-		assertTrue(user.getUserName() == "Olle");
-		assertTrue(user.getProfileImageURL() == "www.google.se");
+		assertTrue(user.getUserName().equalsIgnoreCase("Olle"));
+		assertTrue(user.getProfileImageURL().equalsIgnoreCase("www.google.se"));
 	}
 
 	/**
