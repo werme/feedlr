@@ -512,6 +512,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void authorizeTwitter(View v) {
+		if (!isOnline()) {
+			return;
+		}
+		
 		clientHandler.authorize(Clients.TWITTER, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
@@ -536,6 +540,10 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void authorizeFacebook(View v) {
+		if(!isOnline()) {
+			return;
+		}
+		
 		clientHandler.authorize(Clients.FACEBOOK, new AuthListener() {
 			@Override
 			public void onAuthorizationComplete() {
