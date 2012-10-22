@@ -99,7 +99,7 @@ public class DataService extends Service {
 
 	/**
 	 * Populates the application database ITEM table with the most recent tweets
-	 * from the registered users timeline.
+	 * from the registered users twitter timeline.
 	 * 
 	 * This method is currently not in use.
 	 */
@@ -197,6 +197,10 @@ public class DataService extends Service {
 		});
 	}
 
+	/*
+	 * Populates application database ITEM table with the most recent tweets
+	 * from the users in the feed.
+	 */
 	public void updateFeedTwitterItems(final Feed feed) {
 		runAsync(new Runnable() {
 			@Override
@@ -221,6 +225,11 @@ public class DataService extends Service {
 			}
 		});
 	}
+
+	/**
+	 * Updates application database USER table with all the friends the
+	 * registered user has on its facebook account.
+	 */
 
 	public void updateFacebookUsers() {
 		final long time = System.currentTimeMillis();
@@ -275,8 +284,11 @@ public class DataService extends Service {
 		});
 	}
 
-	/*
-	 * This method is never used, it is only there for future implementations.
+	/**
+	 * Populates the application database ITEM table with the most recent feed
+	 * from the registered users facebook timeline.
+	 * 
+	 * This method is currently not in use.
 	 */
 	public void updateFacebookTimeline() {
 		final long time = System.currentTimeMillis();
@@ -336,6 +348,10 @@ public class DataService extends Service {
 
 	}
 
+	/*
+	 * Populates application database ITEM table with the most recent facebook
+	 * feed updates from the users in the feed.
+	 */
 	public void updateFeedFacebookItems(final Feed feed) {
 		final long time = System.currentTimeMillis();
 

@@ -54,6 +54,12 @@ public class FacebookJSONParser {
 		}
 	}
 
+	/*
+	 * Parse a JSON response for a list of statuses from Facebook's REST API
+	 * with Jackson's databinding parse method.
+	 * 
+	 * @return list containing <code>FacebookItems</code>
+	 */
 	public List<FacebookItem> parseFeed(String json) {
 		long time = System.currentTimeMillis();
 
@@ -85,6 +91,12 @@ public class FacebookJSONParser {
 		return list;
 	}
 
+	/*
+	 * Parse a JSON response for a list of users from Facebook's REST API with
+	 * Jackson's databinding parse method. The list will be filled with
+	 * 
+	 * @return list containing <code>Users</code>
+	 */
 	public List<User> parseUsers(String json) {
 		long time = System.currentTimeMillis();
 		String data = json.substring(8);

@@ -90,8 +90,8 @@ public class TwitterJSONParser {
 	}
 
 	/**
-	 * Parse a JSON response for a list of "tweets" from Twitters REST API with
-	 * Jacksons streaming parse method. Although this is a sligthly faster
+	 * Parse a JSON response for a list of "tweets" from Twitter's REST API with
+	 * Jackson's streaming parse method. Although this is a sligthly faster
 	 * alternative the current build uses the databinding parse, favoring a
 	 * simplier implementation. This method is thus currently not in use.
 	 * 
@@ -174,6 +174,12 @@ public class TwitterJSONParser {
 		return ids;
 	}
 
+	/*
+	 * Parse a JSON response for a list of usernames from Twitter's REST API
+	 * with Jackson's databinding method.
+	 * 
+	 * @return list containing <code>Users</code>
+	 */
 	public List<User> parseUserNames(String json) {
 		long time = System.currentTimeMillis();
 

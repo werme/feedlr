@@ -59,6 +59,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		this.db = new DatabaseHelper(context);
 	}
 
+	/*
+	 * Holds the children views for recycling.
+	 */
 	static class ViewHolder {
 		private TextView text;
 		private TextView author;

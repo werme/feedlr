@@ -38,6 +38,9 @@ public class ClientHandler {
 		// For every service...
 	}
 
+	/*
+	 * Sends an authorize call to the service given as a parameter.
+	 */
 	public void authorize(int service, AuthListener listener) {
 		switch (service) {
 		case Clients.TWITTER:
