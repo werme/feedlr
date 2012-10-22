@@ -40,6 +40,11 @@ public class ClientHandler {
 
 	/*
 	 * Sends an authorize call to the service given as a parameter.
+	 * 
+	 * @param service integer representation of the service needed to be
+	 * authorized
+	 * 
+	 * @param listener the listener to be used in the request
 	 */
 	public void authorize(int service, AuthListener listener) {
 		switch (service) {

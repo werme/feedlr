@@ -50,10 +50,16 @@ public class Clients {
 	private Clients() {
 	}
 
+	/*
+	 * @return array of availible clients
+	 */
 	public static String[] getClients() {
 		return new String[] { "Twitter", "Facebook" };
 	}
 
+	/*
+	 * @return OAuthService for twitter
+	 */
 	public synchronized static OAuthService getTwitter() {
 		if (twitter != null) {
 			return twitter;
@@ -67,6 +73,9 @@ public class Clients {
 		return twitter;
 	}
 
+	/*
+	 * @return Facebook object
+	 */
 	public synchronized static Facebook getFacebook() {
 		if (facebook != null) {
 			return facebook;
@@ -76,6 +85,10 @@ public class Clients {
 		return facebook;
 	}
 
+	/*
+	 * @return Asynchronized facebookrunner to be used for asynchronized
+	 * requests
+	 */
 	public synchronized static AsyncFacebookRunner getAsyncFacebookRunner() {
 		if (asyncFacebookRunner != null) {
 			return asyncFacebookRunner;
@@ -85,6 +98,15 @@ public class Clients {
 		return asyncFacebookRunner;
 	}
 
+	/*
+	 * Decides if a client is authorized or not
+	 * 
+	 * @See <code>Clients</code>
+	 * 
+	 * @param client integer representation of the client.
+	 * 
+	 * @param context context
+	 */
 	public synchronized static boolean isAuthorized(int client, Context context) {
 		switch (client) {
 		case TWITTER:
@@ -98,6 +120,15 @@ public class Clients {
 		}
 	}
 
+	/*
+	 * Get all authorized clients
+	 * 
+	 * @See <code>Clients</code>
+	 * 
+	 * @param context context
+	 * 
+	 * @return list of integer representations of authorized clients
+	 */
 	public static List<Integer> getAuthorizedClients(Context context) {
 		List<Integer> authorizedClients = new ArrayList<Integer>();
 
