@@ -423,12 +423,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
-		// if (isOnline()) {
-		feedService.updateUsers();
-		// } else {
-		// Toast.makeText(this, "No connection available", Toast.LENGTH_LONG)
-		// .show();
-		// }
+		if (isOnline()) {
+			feedService.updateUsers();
+		} else {
+			Intent intent = new Intent();
+			intent.setAction(NO_CONNECTION);
+			lbm.sendBroadcast(intent);
+		}
 
 		Cursor cursor = db.getAllUsers();
 
