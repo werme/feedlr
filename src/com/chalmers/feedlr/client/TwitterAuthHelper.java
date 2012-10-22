@@ -33,9 +33,9 @@ import android.os.AsyncTask;
  * Class description
  * 
  * @author Olle Werme
+ * 
+ * 		This class provides help methods for Twitter authorization. 
  */
-
-
 
 public class TwitterAuthHelper {
 
@@ -47,35 +47,68 @@ public class TwitterAuthHelper {
 		this.context = context;
 		twitter = Clients.getTwitter();
 	}
-
+	
+	/*
+	 * Authorizes the session, if is not authorized.
+	 * 
+	 * @param listener the listener to be used in the authorization request
+	 */
 	public void authorize(AuthListener listener) {
 		authListener = listener;
 		new GetTwitterRequestTokenTask().execute();
 	}
-
+	
+	/*
+	 * Verifies the data from the param through the Oauth-verifier.
+	 * 
+	 * @param Intent data to be verified.
+	 */
 	public void onAuthCallback(Intent data) {
 		String verifier = (String) data.getExtras().get("oauth_verifier");
 		new GetTwitterAccessTokenTask().execute(verifier);
 	}
-
+	
+	/*
+	 * Inner class to the get request tokens for Twitter. 
+	 */
 	private class GetTwitterRequestTokenTask extends
 			AsyncTask<Void, Void, Token> {
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		protected Token doInBackground(Void... params) {
 			return twitter.getRequestToken();
 		}
-
+		
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		protected void onPostExecute(Token requestToken) {
 			ClientStore.saveTwitterRequestToken(requestToken, context);
 			new GetTwitterAuthUriTask().execute();
 		}
 	}
-
+	
+	/*
+	 * Inner class to get Twitter Authorized 
+	 */
 	private class GetTwitterAuthUriTask extends AsyncTask<Void, Void, String> {
+		
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		protected String doInBackground(Void... params) {
 			Token requestToken = ClientStore.getTwitterRequestToken(context);
 			return twitter.getAuthorizationUrl(requestToken);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		protected void onPostExecute(String authURL) {
 			// Send to twitter authorization page for user input
 			Intent intent = new Intent(context, TwitterWebActivity.class);
@@ -84,16 +117,26 @@ public class TwitterAuthHelper {
 					Clients.TWITTER);
 		}
 	}
-
+	
+	/*
+	 * Inner class to get the access token for Twitter
+	 */
 	private class GetTwitterAccessTokenTask extends
 			AsyncTask<String, Void, Token> {
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
 		protected Token doInBackground(String... verifier) {
 			Token requestToken = ClientStore.getTwitterRequestToken(context);
 			Token result = twitter.getAccessToken(requestToken, new Verifier(
 					verifier[0]));
 			return result;
 		}
-
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		protected void onPostExecute(Token accessToken) {
 			ClientStore.saveTwitterAccessToken(accessToken, context);
 			authListener.onAuthorizationComplete();

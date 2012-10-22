@@ -36,7 +36,8 @@ import android.content.Context;
 import android.util.Log;
 
 public class TwitterHelper {
-
+	
+	//Constants
 	public static final String CREDENTIALS = "https://api.twitter.com/1.1/account/verify_credentials.json";
 	public static final String TIMELINE = "https://api.twitter.com/1/statuses/home_timeline.json?include_entities=false&exclude_replies=true&count=100&include_rts=false";
 	public static final String USER_IDS = "https://api.twitter.com/1.1/friends/ids.json?user_id=";
@@ -50,7 +51,12 @@ public class TwitterHelper {
 		twitter = Clients.getTwitter();
 		this.context = context;
 	}
-
+	
+	/*
+	 * Makes the class run in a new thread.
+	 * 
+	 * @param Runnable
+	 */
 	private void runAsync(final Runnable runnable) {
 		new Thread() {
 			@Override
@@ -59,7 +65,13 @@ public class TwitterHelper {
 			}
 		}.start();
 	}
-
+	
+	/* 
+	 * Sends a request to Twitter for the users "timeline". This includes posts from 
+	 * those the user have chosen to follow on Twitter.
+	 * 
+	 * @return List<TwitterItem> containing all the posts.
+	 */
 	public List<TwitterItem> getTimeline() {
 		long time = System.currentTimeMillis();
 
@@ -74,7 +86,12 @@ public class TwitterHelper {
 
 		return new TwitterJSONParser().parseTweets(response);
 	}
-
+	
+	/*
+	 * Sends a request to Twitter to get a specified user tweets.
+	 * 
+	 * @return List<TwitterItem> containing all the posts of a specified user.
+	 */
 	public List<TwitterItem> getUserTweets(String userID) {
 		long time = System.currentTimeMillis();
 		StringBuilder url = new StringBuilder();
@@ -91,7 +108,13 @@ public class TwitterHelper {
 
 		return new TwitterJSONParser().parseTweets(response);
 	}
-
+	
+	/*
+	 * Sends a request to Twitter to get all the twitter users that 
+	 * the user currently follows. 
+	 * 
+	 * @return List<User>
+	 */
 	public List<User> getFollowing() {
 		long time = System.currentTimeMillis();
 
@@ -114,7 +137,12 @@ public class TwitterHelper {
 		String[] ids = new TwitterJSONParser().parseUserIDs(response);
 		return getTwitterUserNamesFromID(ids);
 	}
-
+	
+	/* 
+	 * Get the authorized user ID registered with Twitter.
+	 * 
+	 * @return long with the User ID.
+	 */
 	private long getAuthorizedUserID() {
 		long userID = ClientStore.getTwitterUserID(context);
 		if (userID != 0) {
@@ -136,7 +164,14 @@ public class TwitterHelper {
 		ClientStore.saveTwitterUserID(userID, context);
 		return userID;
 	}
-
+	
+	/*
+	 * Sends a request to Twitter to get the user names from a specified twitter ID.
+	 * 
+	 * @param String[] of IDs to be used in the request.
+	 * 
+	 * @return A List of users.
+	 */
 	private List<User> getTwitterUserNamesFromID(String[] ids) {
 		final List<User> users = new ArrayList<User>();
 		StringBuilder url = new StringBuilder();
@@ -169,7 +204,14 @@ public class TwitterHelper {
 
 		return users;
 	}
-
+	
+	/*
+	 * Sends a request to Twitter to get all of a specified user tweets. 
+	 * 
+	 * @param twitterUsersInFeed list of users
+	 * 
+	 * @param listener the listener to be used in the request
+	 */
 	public void getTweetsForUsers(List<User> twitterUsersInFeed,
 			final RequestListener listener) {
 
@@ -183,7 +225,14 @@ public class TwitterHelper {
 			});
 		}
 	}
-
+	
+	/*
+	 *  Sends a request to Twitter.
+	 *  
+	 *  @param String The URL which the request is aimed at.
+	 * 	
+	 * 	@return	String with the content from the request
+	 */
 	private synchronized String request(String requestURL) {
 		try {
 			OAuthRequest request = new OAuthRequest(Verb.GET, requestURL);
