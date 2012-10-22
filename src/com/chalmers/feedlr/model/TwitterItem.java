@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -75,7 +77,7 @@ public class TwitterItem implements Item {
 		try {
 			created = dateFormat.parse(timestamp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -112,7 +114,7 @@ public class TwitterItem implements Item {
 		try {
 			d = format.parse(timestamp);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		return d.getTime();

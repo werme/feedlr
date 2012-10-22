@@ -39,6 +39,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,7 @@ public class FeedAdapter extends SimpleCursorAdapter {
 		// Holds the views, so that a recycled view does not have to find its
 		// XML view
 		ViewHolder viewHolder = (ViewHolder) v.getTag();
-		
+
 		// Remove the recycled profile picture
 		viewHolder.profilePicture.setVisibility(View.INVISIBLE);
 
@@ -234,11 +235,9 @@ public class FeedAdapter extends SimpleCursorAdapter {
 						70, true);
 				return bitmapScaled;
 			} catch (MalformedURLException e) {
-
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			}
 			return null;
 		}

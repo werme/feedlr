@@ -74,11 +74,11 @@ public class TwitterJSONParser {
 		try {
 			list = tweetReader.readValue(json);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
@@ -135,11 +135,11 @@ public class TwitterJSONParser {
 			jParser.close();
 
 		} catch (JsonGenerationException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Streaming parse");
@@ -163,8 +163,7 @@ public class TwitterJSONParser {
 				ids[i] = jsonIDs.getString(i);
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + ids.length
@@ -188,11 +187,11 @@ public class TwitterJSONParser {
 		try {
 			list = usernameReader.readValue(json);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed " + list.size()
@@ -212,8 +211,7 @@ public class TwitterJSONParser {
 			wrapperObject = new JSONObject(json);
 			userID = wrapperObject.getLong("id");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(TwitterJSONParser.class.getName(), "Parsed user credentials");

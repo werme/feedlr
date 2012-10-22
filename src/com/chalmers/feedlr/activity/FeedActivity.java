@@ -490,12 +490,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListLayout = null;
 		userListView = null;
 
-<<<<<<< HEAD
-		LinearLayout bajs = (LinearLayout) mainViewFlipper
-				.findViewById(R.id.main_layout);
-		ImageView hej = (ImageView) bajs.findViewById(R.id.no_feed_image);
-		hej.setVisibility(8);
-=======
 		// Check overlay
 		updateOverlay();
 	}
@@ -508,7 +502,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 					.findViewById(R.id.no_feed_image);
 			overlay.setVisibility(View.INVISIBLE);
 		}
->>>>>>> Created menu and made some small fixes
 	}
 
 	public void authorizeTwitter(View v) {

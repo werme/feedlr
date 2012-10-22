@@ -73,11 +73,11 @@ public class FacebookJSONParser {
 								+ (System.currentTimeMillis() - time)
 								+ " millis.");
 			} catch (JsonParseException e) {
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			} catch (JsonMappingException e) {
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e(getClass().getName(), e.getMessage());
 			}
 		}
 
@@ -97,11 +97,11 @@ public class FacebookJSONParser {
 		try {
 			list = userReader.readValue(data);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(getClass().getName(), e.getMessage());
 		}
 
 		Log.i(FacebookJSONParser.class.getName(), "Parsed " + list.size()

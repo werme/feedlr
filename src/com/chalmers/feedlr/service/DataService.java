@@ -373,8 +373,7 @@ public class DataService extends Service {
 												.parseFeed(response));
 							}
 						} catch (Exception e) {
-							e.printStackTrace();
-							Log.d("DataService", response);
+							Log.e(getClass().getName(), e.getMessage());
 						}
 						responses++;
 
