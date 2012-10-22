@@ -51,6 +51,7 @@ import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -244,10 +245,17 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		slideInRight = AnimationUtils
 				.loadAnimation(this, R.anim.slide_in_right);
 
+		// Display name correct
+		if (feedAdapter.getCount() > 0) {
+			String feedTitle = feedAdapter.getFeedTitle(0);
+			feedTitleTextView.setText(feedTitle);
+		}
+		
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
 
+		updateOverlay();
 	}
 
 	@Override
@@ -311,6 +319,20 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.feed_layout, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			toggleSettingsView(null);
+			break;
+		case R.id.menu_exit:
+			finish();
+			break;
+
+		}
 		return true;
 	}
 
@@ -468,10 +490,25 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListLayout = null;
 		userListView = null;
 
+<<<<<<< HEAD
 		LinearLayout bajs = (LinearLayout) mainViewFlipper
 				.findViewById(R.id.main_layout);
 		ImageView hej = (ImageView) bajs.findViewById(R.id.no_feed_image);
 		hej.setVisibility(8);
+=======
+		// Check overlay
+		updateOverlay();
+	}
+
+	private void updateOverlay() {
+		if (feedAdapter.getCount() > 0) {
+			LinearLayout overlayLayout = (LinearLayout) mainViewFlipper
+					.findViewById(R.id.main_layout);
+			ImageView overlay = (ImageView) overlayLayout
+					.findViewById(R.id.no_feed_image);
+			overlay.setVisibility(View.INVISIBLE);
+		}
+>>>>>>> Created menu and made some small fixes
 	}
 
 	public void authorizeTwitter(View v) {

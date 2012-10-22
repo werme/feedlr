@@ -9,7 +9,7 @@
     <include
         android:id="@+id/include1"
         layout="@layout/feed_action_bar"
-        android:tag="action_bar" />
+        android:tag="action_bar" />menu_clearfeedsmenu_clearfeedsmenu_clearfeedsmenu_clearfeeds
 
     <RelativeLayout
         android:layout_width="match_parent"

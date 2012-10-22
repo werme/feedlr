@@ -24,7 +24,6 @@ public class PageAdapter extends FragmentPagerAdapter {
 		super(fm);
 		this.listener = listener;
 		
-		db.clearFeeds();
 		feedTitles = db.listFeeds();
 		numberOfFeeds = feedTitles.size();
 	}
