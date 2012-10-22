@@ -52,7 +52,7 @@ public class FeedTest extends AndroidTestCase {
 		assertTrue(feed != null);
 		assertTrue(feed.getFacebookUsers() == fbUsers);
 		assertTrue(feed.getTwitterUsers() == twitterUsers);
-		assertTrue(feed.getTitle().equalsIgnoreCase("Yeah buddy")); 
+		assertTrue(feed.getTitle().equalsIgnoreCase("Feed")); 
 	}
 
 	/**
@@ -70,5 +70,4 @@ public class FeedTest extends AndroidTestCase {
 		twitterUsers = null;
 		feed = null;
 	}
-
 }
