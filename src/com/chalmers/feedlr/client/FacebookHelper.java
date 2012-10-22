@@ -38,6 +38,12 @@ public class FacebookHelper {
 		asyncFacebookRunner = new AsyncFacebookRunner(Clients.getFacebook());
 	}
 
+	/*
+	 * Sends a requst to Facebook's graph API for the "timeline". This includes
+	 * everything viewed on the user's /home screen in Facebook.
+	 * 
+	 * This method is currently not in use.
+	 */
 	public void getTimeline(RequestListener listener) {
 		long time = System.currentTimeMillis();
 
@@ -51,6 +57,10 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
+	/*
+	 * Sends a request to Facebook's graph API for the registered user's
+	 * friends.
+	 */
 	public void getFriends(RequestListener listener) {
 		long time = System.currentTimeMillis();
 
@@ -63,6 +73,12 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
+	/*
+	 * Sends a request to Facebook's graph API for the registered user's friends
+	 * lists.
+	 * 
+	 * This method is currently not in use.
+	 */
 	public void getFriendsLists(RequestListener listener) {
 		long time = System.currentTimeMillis();
 
@@ -75,6 +91,11 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
+	/*
+	 * Sends a request to Facebook's graph API for the feed of the user given as
+	 * parameter. Returns only statuses, no likes, photos and other types of
+	 * updates.
+	 */
 	public void getUserFeed(String userID, RequestListener listener) {
 		long time = System.currentTimeMillis();
 
@@ -88,6 +109,9 @@ public class FacebookHelper {
 						+ (System.currentTimeMillis() - time));
 	}
 
+	/*
+	 * Uses <code>getUserFeed</code> to request the statuses of a list of users.
+	 */
 	public void getFeedsForUsers(List<User> facebookUsersInFeed,
 			final RequestListener listener) {
 		for (final User user : facebookUsersInFeed) {
@@ -95,13 +119,20 @@ public class FacebookHelper {
 		}
 	}
 
+	/*
+	 * Is called by all request methods, to use an asynchronized request caller.
+	 */
 	private void request(String requestURL, Bundle params,
 			RequestListener listener) {
 		asyncFacebookRunner.request(requestURL, params, listener);
 	}
 
-	// Gets small version of profile picture. Add ?type=large for big version
+	/*
+	 * Creates a URL of the profile picture for a specific user.
+	 */
 	public String getProfileImageURL(String id) {
+		// Gets small version of profile picture. Add ?type=large for big
+		// version
 		return ("http://graph.facebook.com/" + id + "/picture");
 	}
 }
