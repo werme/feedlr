@@ -1,5 +1,6 @@
 package com.chalmers.feedlr.database;
 
+import com.chalmers.feedlr.external.SimpleCursorLoader;
 import com.chalmers.feedlr.model.Feed;
 
 import android.content.Context;
@@ -20,7 +21,7 @@ public class FeedCursorLoader extends SimpleCursorLoader {
 
 	@Override
 	public Cursor loadInBackground() {
-		Cursor cursor = db.getItems(new Feed(feedTitle));
+		Cursor cursor = db.getItems(new Feed(feedTitle), 60);
 		Log.i("loader", "items: " + cursor.getCount());
 		return cursor;
 	}

@@ -41,6 +41,7 @@ public class UserItemView extends LinearLayout implements Checkable {
 	@Override
 	public void setChecked(boolean checked) {
 		if (checked) {
+
 			setBackgroundColor(Color.rgb(39, 51, 56));
 			textView.setTextColor(Color.rgb(136, 171, 183));
 		} else {

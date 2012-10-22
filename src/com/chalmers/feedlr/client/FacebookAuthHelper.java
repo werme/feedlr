@@ -45,7 +45,21 @@ public class FacebookAuthHelper {
 	public FacebookAuthHelper(Context context) {
 		this.context = context;
 		facebook = Clients.getFacebook();
-		// setAccessToken();
+		facebook.extendAccessTokenIfNeeded(context, null);
+
+		if (ClientStore.getFacebookAccessToken(context) != null) {
+			authorize(new AuthListener() {
+
+				@Override
+				public void onAuthorizationComplete() {
+				}
+
+				@Override
+				public void onAuthorizationFail() {
+				}
+			});
+		}
+		setAccessToken();
 	}
 
 	/*
@@ -53,15 +67,13 @@ public class FacebookAuthHelper {
 	 * one, applies it to this session. Also sets expiration time of the token.
 	 */
 	public void setAccessToken() {
-		ClientStore.getFacebookAccessToken(context);
-
 		String accessToken = ClientStore.getFacebookAccessToken(context);
 		Long accessTokenExpires = ClientStore
 				.getFacebookAccessTokenExpires(context);
-		
+
 		if (accessToken != null)
 			facebook.setAccessToken(accessToken);
-		
+
 		if (accessTokenExpires != 0)
 			facebook.setAccessExpires(accessTokenExpires);
 	}
@@ -75,28 +87,30 @@ public class FacebookAuthHelper {
 
 		if (!Clients.isAuthorized(Clients.FACEBOOK, context)) {
 			facebook.authorize((Activity) context, new String[] {
-					"read_stream", "read_friendlists" }, Facebook.FORCE_DIALOG_AUTH,
+					"read_stream", "read_friendlists" },
+					Facebook.FORCE_DIALOG_AUTH,
 
-			new DialogListener() {
-				@Override
-				public void onComplete(Bundle values) {
-					ClientStore.saveFacebookAccessToken(facebook, context);
-					ClientStore.saveFacebookAccessTokenExpires(facebook,
-							context);
-				}
+					new DialogListener() {
+						@Override
+						public void onComplete(Bundle values) {
+							ClientStore.saveFacebookAccessToken(facebook,
+									context);
+							ClientStore.saveFacebookAccessTokenExpires(
+									facebook, context);
+						}
 
-				@Override
-				public void onFacebookError(FacebookError error) {
-				}
+						@Override
+						public void onFacebookError(FacebookError error) {
+						}
 
-				@Override
-				public void onError(DialogError e) {
-				}
+						@Override
+						public void onError(DialogError e) {
+						}
 
-				@Override
-				public void onCancel() {
-				}
-			});
+						@Override
+						public void onCancel() {
+						}
+					});
 		}
 		authListener.onAuthorizationComplete();
 	}
@@ -112,9 +126,10 @@ public class FacebookAuthHelper {
 	 * <code>extendAccessToken</code>
 	 */
 	public void extendTokenIfNeeded() {
-		facebook.extendAccessTokenIfNeeded(context, null);
-		ClientStore.saveFacebookAccessToken(facebook, context);
-		ClientStore.saveFacebookAccessTokenExpires(facebook, context);
+		if (!facebook.extendAccessTokenIfNeeded(context, null)) {
+			ClientStore.saveFacebookAccessToken(facebook, context);
+			ClientStore.saveFacebookAccessTokenExpires(facebook, context);
+		}
 	}
 
 	public void onAuthCallback(int requestCode, int resultCode, Intent data) {

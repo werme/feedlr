@@ -48,6 +48,9 @@ public class DataServiceHelper {
 		isBound = false;
 	}
 
+	/*
+	 * This method is never used, it is only there for future implementations.
+	 */
 	public void updateAll() {
 		List<Integer> authorizedClients = Clients.getAuthorizedClients(context);
 
@@ -76,7 +79,6 @@ public class DataServiceHelper {
 				break;
 			case Clients.FACEBOOK:
 				dataService.updateFacebookUsers();
-				System.out.println("KJHDSKGJSDLGKSDJGÖSKDGJLSDK");
 				break;
 			default:
 				Log.wtf(getClass().getName() + " updateUsers",

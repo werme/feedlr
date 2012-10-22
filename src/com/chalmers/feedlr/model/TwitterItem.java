@@ -20,8 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -35,11 +33,11 @@ public class TwitterItem implements Item {
 	private String text;
 	private User user;
 	private String timestamp;
-	private String source = "twitter";
 	private String id;
 
 	public TwitterItem() {
 		user = new User();
+		user.setSource("twitter");
 	}
 
 	/*
@@ -51,17 +49,6 @@ public class TwitterItem implements Item {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.chalmers.feedlr.model.Item#setSource(java.lang.String)
-	 */
-	@Override
-	public void setSource(String source) {
-		this.source = source;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -72,6 +59,7 @@ public class TwitterItem implements Item {
 	@Override
 	public void setUser(User user) {
 		this.user = user;
+		this.user.setSource("twitter");
 	}
 
 	/*
@@ -83,27 +71,16 @@ public class TwitterItem implements Item {
 				"EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH);
 		dateFormat.setLenient(false);
 		Date created = null;
-		
+
 		try {
 			created = dateFormat.parse(timestamp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		this.timestamp = d.format(created);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.chalmers.feedlr.model.Item#getSource()
-	 */
-	@Override
-	public String getSource() {
-		return source;
-	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -137,23 +114,8 @@ public class TwitterItem implements Item {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return d.getTime();
-	}
-
-	@Override
-	public String getType() {
-		return "STATUS";
-	}
-
-	@Override
-	public String getURL() {
-		return null;
-	}
-
-	@Override
-	public String getIMGURL() {
-		return null;
 	}
 
 	@Override

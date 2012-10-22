@@ -3,11 +3,11 @@
     android:id="@+id/feed_item"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
-    android:orientation="vertical"
+    android:layout_marginBottom="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginBottom="10dp" >
+    android:background="#ffffff"
+    android:orientation="vertical" >
 
     <ImageView
         android:id="@+id/feed_item_author_image"
@@ -15,9 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/ic_launcher" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/feed_item_timestamp"
@@ -26,8 +25,9 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
-        android:text="5 min ago"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#818285" />
 
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,8 +37,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/feed_item_author_image"
         android:padding="10sp"
-        android:text="Lorem ipsum dolor sit amet, consectur adipiscing elit."
-        android:textColor="#111111"
+        android:text=""
+        android:textColor="#231f20"
         android:textSize="14sp"
         android:textStyle="italic" />
 
@@ -48,8 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/feed_item_author"
         android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/feed_item_author_image"
-        android:src="@drawable/source_twitter" />
+        android:layout_toRightOf="@+id/feed_item_author_image" />
 
     <TextView
         android:id="@+id/feed_item_author"
@@ -59,8 +58,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/feed_item_author_image"
-        android:text="Olle Werme"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#111111" />
+        android:textColor="#231f20" />
 
 </RelativeLayout>

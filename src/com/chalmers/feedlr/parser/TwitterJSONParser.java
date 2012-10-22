@@ -17,7 +17,6 @@
 package com.chalmers.feedlr.parser;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,10 +81,10 @@ public class TwitterJSONParser {
 			e.printStackTrace();
 		}
 
-		// Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
-		// Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
-		// Log.i(TwitterJSONParser.class.getName(),
-		// "Time in millis: " + (System.currentTimeMillis() - time));
+		Log.i(TwitterJSONParser.class.getName(), "Data binding parse");
+		Log.i(TwitterJSONParser.class.getName(), "Items: " + list.size());
+		Log.i(TwitterJSONParser.class.getName(),
+				"Time in millis: " + (System.currentTimeMillis() - time));
 
 		return list;
 	}

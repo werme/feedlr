@@ -30,6 +30,8 @@ import com.chalmers.feedlr.listener.FeedListener;
 import com.chalmers.feedlr.model.Feed;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -38,6 +40,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
@@ -48,6 +51,7 @@ import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -55,6 +59,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -70,16 +75,18 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	private DatabaseHelper db;
 
 	// Twitter strings
-	public static final String TWITTER_TIMELINE_UPDATED = "com.chalmers.feedlr.TWITTER_TIMELINE_UPDATED";
 	public static final String TWITTER_USERS_UPDATED = "com.chalmers.feedlr.TWITTER_USERS_UPDATED";
-	public static final String TWITTER_USER_TWEETS_UPDATED = "com.chalmers.feedlr.TWITTER_USER_TWEETS_UPDATED";
+	public static final String TWITTER_USERS_PROBLEM_UPDATING = "com.chalmers.feedlr.TWITTER_USERS_PROBLEM_UPDATING";
 
 	// Facebook strings
 	public static final String FACEBOOK_TIMELINE_UPDATED = "com.chalmers.feedlr.FACEBOOK_TIMELINE_UPDATED";
 	public static final String FACEBOOK_USERS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USERS_UPDATED";
+	public static final String FACEBOOK_USERS_PROBLEM_UPDATING = "com.chalmers.feedlr.FACEBOOK_USERS_PROBLEM_UPDATING";
 	public static final String FACEBOOK_USER_NEWS_UPDATED = "com.chalmers.feedlr.FACEBOOK_USER_NEWS_UPDATED";
 
 	public static final String FEED_UPDATED = "com.chalmers.feedlr.FEED_UPDATED";
+	public static final String FEED_PROBLEM_UPDATING = "com.chalmers.feedlr.FEED_PROBLEM_UPDATING";
+	public static final String NO_CONNECTION = "com.chalmers.feedlr.NO_CONNECTION";
 
 	// Android system helpers
 	private Resources res;
@@ -113,40 +120,33 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String broadcast = intent.getAction();
-			Bundle b = intent.getExtras();
 
-			String dialog;
-
-			if (broadcast.equals(TWITTER_TIMELINE_UPDATED)) {
-				dialog = "Twitter timeline updated!";
-
-			} else if (broadcast.equals(TWITTER_USERS_UPDATED)) {
-				dialog = "Twitter users updated!";
+			if (broadcast.equals(TWITTER_USERS_UPDATED)) {
 				userAdapter.swapCursor(db.getAllUsers());
-
-			} else if (broadcast.equals(TWITTER_USER_TWEETS_UPDATED)) {
-				dialog = "Tweets for Twitter user with ID: "
-						+ b.getInt("userID") + " updated!";
-
-			} else if (broadcast.equals(FACEBOOK_TIMELINE_UPDATED)) {
-				dialog = "Facebook timeline updated!";
 
 			} else if (broadcast.equals(FACEBOOK_USERS_UPDATED)) {
-				dialog = "Facebook users updated!";
 				userAdapter.swapCursor(db.getAllUsers());
 
-			} else if (broadcast.equals(FACEBOOK_USER_NEWS_UPDATED)) {
-				dialog = "News for Facebook user with ID: "
-						+ b.getInt("userID") + " updated!";
+			} else if (broadcast.equals(TWITTER_USERS_PROBLEM_UPDATING)) {
+				Toast.makeText(
+						context,
+						"The was a problem refreshing your twitter friends. Please check your connection and try again.",
+						Toast.LENGTH_SHORT).show();
 
-			} else if (broadcast.equals(FEED_UPDATED)) {
-				dialog = "Feed: " + b.getString("feedTitle") + " updated!";
-
+			} else if (broadcast.equals(FACEBOOK_USERS_PROBLEM_UPDATING)) {
+				Toast.makeText(
+						context,
+						"The was a problem refreshing your facebook friends. Please check your connection and try again.",
+						Toast.LENGTH_SHORT).show();
+			} else if (broadcast.equals(FEED_PROBLEM_UPDATING)) {
+				Toast.makeText(
+						context,
+						"The was a problem refreshing the feed. Please check your connection and try again.",
+						Toast.LENGTH_SHORT).show();
 			} else {
-				dialog = "broadcast from unknown intent recieved!";
+				Log.wtf(getClass().getName(),
+						"broadcast from unknown intent recieved!");
 			}
-
-			Toast.makeText(context, dialog, Toast.LENGTH_SHORT).show();
 		}
 	};
 
@@ -162,23 +162,21 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		// add intent filter to be used by broadcast reciever
 		intentFilter = new IntentFilter();
-		intentFilter.addAction(TWITTER_TIMELINE_UPDATED);
 		intentFilter.addAction(TWITTER_USERS_UPDATED);
-		intentFilter.addAction(TWITTER_USER_TWEETS_UPDATED);
+		intentFilter.addAction(TWITTER_USERS_PROBLEM_UPDATING);
 		intentFilter.addAction(FACEBOOK_TIMELINE_UPDATED);
 		intentFilter.addAction(FACEBOOK_USERS_UPDATED);
+		intentFilter.addAction(FACEBOOK_USERS_PROBLEM_UPDATING);
 		intentFilter.addAction(FACEBOOK_USER_NEWS_UPDATED);
-		intentFilter.addAction(FEED_UPDATED);
+		intentFilter.addAction(FEED_PROBLEM_UPDATING);
 
 		// instanciate database helper
 		db = new DatabaseHelper(this);
 
 		// load typefaces from assets
-		Typeface robotoThinItalic = Typeface.createFromAsset(getAssets(),
-				"fonts/Roboto-ThinItalic.ttf");
 		Typeface robotoMedium = Typeface.createFromAsset(getAssets(),
 				"fonts/Roboto-Medium.ttf");
-		
+
 		// find views inflated from xml
 		mainViewFlipper = (ViewFlipper) findViewById(R.id.main_view_flipper);
 		feedViewSwiper = (ViewPager) findViewById(R.id.feed_view_pager);
@@ -208,8 +206,13 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		feedAdapter = new PageAdapter(getSupportFragmentManager(), db, this);
 		feedViewSwiper.setAdapter(feedAdapter);
 
-		// swipe testing, this is just a stub
-		feedViewSwiper
+		// lets 3 feedsviews to each side of the current one be retained in an
+		// idle state.
+		feedViewSwiper.setOffscreenPageLimit(3);
+
+		CirclePageIndicator circleIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+		circleIndicator.setViewPager(feedViewSwiper);
+		circleIndicator
 				.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 					@Override
 					public void onPageSelected(int feedIndex) {
@@ -219,7 +222,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 					@Override
 					public void onPageScrolled(int arg0, float arg1, int arg2) {
-						// TODO Auto-generated method stub
+						// TODO Auto-generated method stub'
 					}
 
 					@Override
@@ -227,9 +230,6 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 						// TODO Auto-generated method stub
 					}
 				});
-
-		CirclePageIndicator circleIndicator = (CirclePageIndicator) findViewById(R.id.titles);
-		circleIndicator.setViewPager(feedViewSwiper);
 
 		// instanciate client and service helpers
 		clientHandler = new ClientHandler(this);
@@ -245,10 +245,17 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		slideInRight = AnimationUtils
 				.loadAnimation(this, R.anim.slide_in_right);
 
+		// Display name correct
+		if (feedAdapter.getCount() > 0) {
+			String feedTitle = feedAdapter.getFeedTitle(0);
+			feedTitleTextView.setText(feedTitle);
+		}
+		
 		// misc
 		settingsViewFlipper.setInAnimation(slideInRight);
 		settingsViewFlipper.setOutAnimation(slideOutLeft);
 
+		updateOverlay();
 	}
 
 	@Override
@@ -279,6 +286,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.getString(R.string.facebook_authorized) : res
 				.getString(R.string.authorize_facebook));
 		facebookAuthButton.setEnabled(!isFacebookAuthorized);
+		if (isFacebookAuthorized) {
+			facebookAuthButton.setTextColor(Color.parseColor("#919191"));
+			facebookAuthButton
+					.setBackgroundResource(R.drawable.facebook_logo_disabled);
+		}
 
 		boolean isTwitterAuthorized = Clients.isAuthorized(Clients.TWITTER,
 				this);
@@ -286,6 +298,11 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				.getString(R.string.twitter_authorized) : res
 				.getString(R.string.authorize_twitter));
 		twitterAuthButton.setEnabled(!isTwitterAuthorized);
+		if (isTwitterAuthorized) {
+			twitterAuthButton.setTextColor(Color.parseColor("#919191"));
+			twitterAuthButton
+					.setBackgroundResource(R.drawable.twitter_logo_disabled);
+		}
 
 		lbm.registerReceiver(receiver, intentFilter);
 
@@ -302,6 +319,20 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.feed_layout, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			toggleSettingsView(null);
+			break;
+		case R.id.menu_exit:
+			finish();
+			break;
+
+		}
 		return true;
 	}
 
@@ -343,7 +374,25 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 	@Override
 	public void onFeedUpdateRequest(String feedTitle) {
+		// if (isOnline()) {
 		feedService.updateFeed(new Feed(feedTitle));
+		// } else {
+		// Intent intent = new Intent();
+		// intent.setAction(NO_CONNECTION);
+		// lbm.sendBroadcast(intent);
+		// }
+	}
+
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo i = cm.getActiveNetworkInfo();
+		if (i == null)
+			return false;
+		if (!i.isConnected())
+			return false;
+		if (!i.isAvailable())
+			return false;
+		return true;
 	}
 
 	// Methods called on button press below. See xml files.
@@ -368,13 +417,18 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		userListView = (ListView) userListLayout
 				.findViewById(R.id.user_list_view);
 
+		// if (isOnline()) {
 		feedService.updateUsers();
+		// } else {
+		// Toast.makeText(this, "No connection available", Toast.LENGTH_LONG)
+		// .show();
+		// }
 
 		Cursor cursor = db.getAllUsers();
-		Log.i(getClass().getName(), "" + cursor.getCount());
 
 		String[] columns = new String[] { DatabaseHelper.USER_COLUMN_USERNAME,
-				DatabaseHelper.USER_COLUMN_USERID };
+				DatabaseHelper.USER_COLUMN_USERID,
+				DatabaseHelper.USER_COLUMN_SOURCE };
 		int[] to = new int[] { R.id.user_item_text_view };
 
 		userAdapter = new UserAdapter(this, R.layout.user_list_item, cursor,
@@ -387,6 +441,7 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	}
 
 	public void createFeed(View button) {
+
 		// Animate switch to main view
 		toggleSettingsView(null);
 
@@ -413,9 +468,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 
 		// Save user list as a feed in database
 		db.addFeed(feed);
-		long feedID = db.getFeedID(feed);
+		long feed_id = db.getFeed_id(feed);
 		for (Integer i : userIDs)
-			db.addFeedUserBridge(feedID, i);
+			db.addFeedUserBridge(feed_id, i);
 		Log.i(getClass().getName(), "Added feed \"" + feed.getTitle()
 				+ "\" with " + userIDs.size() + " users.");
 
@@ -434,6 +489,26 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		settingsViewFlipper.removeView(v);
 		userListLayout = null;
 		userListView = null;
+
+<<<<<<< HEAD
+		LinearLayout bajs = (LinearLayout) mainViewFlipper
+				.findViewById(R.id.main_layout);
+		ImageView hej = (ImageView) bajs.findViewById(R.id.no_feed_image);
+		hej.setVisibility(8);
+=======
+		// Check overlay
+		updateOverlay();
+	}
+
+	private void updateOverlay() {
+		if (feedAdapter.getCount() > 0) {
+			LinearLayout overlayLayout = (LinearLayout) mainViewFlipper
+					.findViewById(R.id.main_layout);
+			ImageView overlay = (ImageView) overlayLayout
+					.findViewById(R.id.no_feed_image);
+			overlay.setVisibility(View.INVISIBLE);
+		}
+>>>>>>> Created menu and made some small fixes
 	}
 
 	public void authorizeTwitter(View v) {
@@ -446,6 +521,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				twitterAuthButton.setText(res
 						.getString(R.string.twitter_authorized));
 				twitterAuthButton.setEnabled(false);
+				twitterAuthButton.setTextColor(Color.parseColor("#919191"));
+				twitterAuthButton
+						.setBackgroundResource(R.drawable.twitter_logo_disabled);
 			}
 
 			@Override
@@ -467,6 +545,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 				facebookAuthButton.setText(res
 						.getString(R.string.facebook_authorized));
 				facebookAuthButton.setEnabled(false);
+				facebookAuthButton.setTextColor(Color.parseColor("#919191"));
+				facebookAuthButton
+						.setBackgroundResource(R.drawable.facebook_logo_disabled);
 			}
 
 			@Override
