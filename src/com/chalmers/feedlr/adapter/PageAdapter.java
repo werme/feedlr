@@ -46,8 +46,6 @@ public class PageAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int index) {
-		
-		
 		Bundle bundle = new Bundle();
 		bundle.putString("title", feedTitles.get(index));
 		FeedFragment f = FeedFragment.newInstance(bundle);
@@ -63,6 +61,11 @@ public class PageAdapter extends FragmentPagerAdapter {
 	public void addFeed(Feed feed) {
 		numberOfFeeds++;
 		feedTitles.add(feed.getTitle());
+	}
+	
+	public void removeFeed(int index) {
+		feedTitles.remove(index);
+		--numberOfFeeds;
 	}
 	
 	public String getFeedTitle(int index) {

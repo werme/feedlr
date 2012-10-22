@@ -19,6 +19,7 @@ package com.chalmers.feedlr.activity;
 import java.util.ArrayList;
 
 import com.chalmers.feedlr.R;
+import com.chalmers.feedlr.adapter.FeedAdapter;
 import com.chalmers.feedlr.adapter.PageAdapter;
 import com.chalmers.feedlr.adapter.UserAdapter;
 import com.chalmers.feedlr.client.Clients;
@@ -325,6 +326,9 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menu_delete_feed:
+			removeCurrentFeed();
+			break;
 		case R.id.menu_settings:
 			toggleSettingsView(null);
 			break;
@@ -336,10 +340,23 @@ public class FeedActivity extends FragmentActivity implements FeedListener {
 		return true;
 	}
 
+	private void removeCurrentFeed() {
+		if (feedAdapter.getCount() > 0) {
+			int feedIndex = feedViewSwiper.getCurrentItem();
+			String feedTitle = feedAdapter.getFeedTitle(feedIndex);
+
+			feedViewSwiper.removeViewAt(feedIndex);
+			feedAdapter.removeFeed(feedIndex);
+			feedViewSwiper.setCurrentItem(0);
+
+			db.removeFeed(new Feed(feedTitle));
+		}
+	}
+
 	@Override
 	public void onBackPressed() {
 		// TODO: Toggle animation for the create feed view. Currently sliding
-		// away in the wring direction.
+		// away in the wrong direction.
 
 		if (mainViewFlipper.getCurrentView().getId() == R.id.settings_layout) {
 			if (settingsViewFlipper.getCurrentView().getId() == R.id.user_list_layout) {
